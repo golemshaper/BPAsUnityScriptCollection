@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+
+
 public class AckkStateMachine
 {
     int currentState=-1;
@@ -48,7 +50,7 @@ public class AckkStateMachine
         if (nState == currentState) return;
         //EXIT STATE
         Action exitStateAction = null;
-        onEnterState.TryGetValue(currentState, out exitStateAction);
+        onExitState.TryGetValue(currentState, out exitStateAction);
         if (exitStateAction != null) exitStateAction();
         //Previous State
         previousState = currentState;
