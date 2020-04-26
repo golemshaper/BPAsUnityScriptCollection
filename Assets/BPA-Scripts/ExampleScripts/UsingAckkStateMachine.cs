@@ -13,15 +13,18 @@ public class UsingAckkStateMachine : MonoBehaviour
     State testState = State.idle;
     [SerializeField]
     bool changeState;
+    [Header("Debug:")]
+    [SerializeField]
+    int debugState;
 
     // Start is called before the first frame update
     void Start()
     {
-        sm.LinkStates((int)State.idle, () => Idle(),
+        sm.LinkStates(State.idle, () => Idle(),
             ()=> Debug.Log("I have begun Idling"),
             ()=> Debug.Log("I have stopped Idling"));
-        sm.LinkStates((int)State.walk, () => Walk());
-        sm.LinkStates((int)State.run, () => Run());
+        sm.LinkStates(State.walk, () => Walk());
+        sm.LinkStates(State.run, () => Run());
     }
     private void Update()
     {
@@ -31,6 +34,8 @@ public class UsingAckkStateMachine : MonoBehaviour
             sm.SetState((int)testState);
         }
         sm.UpdateTick();
+        debugState = sm.GetState();
+
     }
     void Idle()
     {
@@ -42,7 +47,7 @@ public class UsingAckkStateMachine : MonoBehaviour
         if (sm.TimeInState > 2f)
         {
             Debug.Log("Tired of walking");
-            sm.SetState((int)State.idle);
+            sm.SetState(State.idle);
         }
     }
     void Run()
@@ -51,7 +56,7 @@ public class UsingAckkStateMachine : MonoBehaviour
         if (sm.TimeInState > 4f)
         {
             Debug.Log("Tired of running");
-            sm.SetState((int)State.walk);
+            sm.SetState(State.walk);
         }
     }
 }

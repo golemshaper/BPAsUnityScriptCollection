@@ -40,6 +40,28 @@ public class AckkStateMachine
     {
         onEnterState.Add(state, onEnter);
     }
+    //--generic enum--
+    public void LinkStates(Enum State, Action looping, Action onEnter, Action onExit)
+    {
+        int state = Convert.ToInt32(State);
+        LinkStates(state, looping, onEnter, onExit);
+    }
+    public void LinkStates(Enum State, Action looping, Action onEnter)
+    {
+        int state = Convert.ToInt32(State);
+        LinkStates(state, looping, onEnter);
+    }
+    public void LinkStates(Enum State, Action looping)
+    {
+        int state = Convert.ToInt32(State);
+        LinkStates(state, looping);
+    }
+    public void LinkOnEnterState(Enum State, Action onEnter)
+    {
+        int state = Convert.ToInt32(State);
+        LinkOnEnterState(state, onEnter);
+    }
+
     /// <summary>
     /// Cast an Enum to an int to use it as the state.
     /// </summary>
@@ -62,6 +84,10 @@ public class AckkStateMachine
         Action enterStateAction = null;
         onEnterState.TryGetValue(currentState, out enterStateAction);
         if (enterStateAction != null) enterStateAction();
+    }
+    public void SetState(Enum nState)
+    {
+        SetState(Convert.ToInt32(nState));
     }
     public int GetState()
     {
