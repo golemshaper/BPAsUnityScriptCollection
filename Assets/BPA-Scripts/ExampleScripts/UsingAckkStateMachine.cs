@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
+ * How to use the state machine
+ */
 public class UsingAckkStateMachine : MonoBehaviour
 {
     public AckkStateMachine sm= new AckkStateMachine();
@@ -37,10 +39,19 @@ public class UsingAckkStateMachine : MonoBehaviour
     void Walk()
     {
         Debug.Log("I am walking");
-
+        if (sm.TimeInState > 2f)
+        {
+            Debug.Log("Tired of walking");
+            sm.SetState((int)State.idle);
+        }
     }
     void Run()
     {
         Debug.Log("I am running");
+        if (sm.TimeInState > 4f)
+        {
+            Debug.Log("Tired of running");
+            sm.SetState((int)State.walk);
+        }
     }
 }
