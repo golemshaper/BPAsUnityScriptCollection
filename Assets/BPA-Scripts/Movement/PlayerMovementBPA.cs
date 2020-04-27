@@ -298,6 +298,7 @@ public class PlayerMovementBPA : MonoBehaviour,IUpdateSlave
     }
     void MovmentUpdate()
 	{
+        if (!enabled) return;
 		//Standard movement update...
 
 		//Get Camera angle

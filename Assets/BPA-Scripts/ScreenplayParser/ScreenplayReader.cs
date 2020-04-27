@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using Ackk.Text.Parsing;
 public class ScreenplayReader : MonoBehaviour 
 {
@@ -35,8 +36,40 @@ public class ScreenplayReader : MonoBehaviour
     const string menuGroupName = "Menu";
     const string choiceKeyRootName = "Choice";
     //------------------------------------------
-	// Use this for initialization
-	void Awake()
+
+    //...
+    //Subscriptions
+    List<Action> OnDialogueRead = new List<Action>();
+    List<Action> OnDialogueEnd= new List<Action>();
+
+    public void SubscribeOnDialogeRead(Action a)
+    {
+        OnDialogueRead.Add(a);
+        numberOfSubscriptions = OnDialogueRead.Count;
+    }
+    /// <summary>
+    /// Warning! Store Delegate in an Action if you plan to unsubscribe ever!
+    /// </summary>
+    /// <param name="a"></param>
+    public void UnsubscribeOnDialogueRead(Action a)
+    {
+        OnDialogueRead.Remove(a);
+        numberOfSubscriptions = OnDialogueRead.Count;
+    }
+    public void SubscribeOnDialogeEnd(Action a)
+    {
+        OnDialogueEnd.Add(a);
+    }
+    public void UnsubscribeOnDialogueEnd(Action a)
+    {
+        OnDialogueEnd.Remove(a);
+    }
+    public int numberOfSubscriptions;
+    //...
+
+
+    // Use this for initialization
+    void Awake()
 	{
 		if (instance == null)instance = this;
         nameDisplay.ClearText();
@@ -131,9 +164,23 @@ public class ScreenplayReader : MonoBehaviour
 		isReading = true;
 		
 		yield return true;
+
+        //PREDIALOGUE
+        foreach(Action a in OnDialogueRead)
+        {
+            a();
+        }
+        //DIALOGUE
 		yield return StartCoroutine(ReadGroup (groupToRead));
-		isReading = false;
-		yield break;
+        //POST DIALOGUE
+        yield return true;
+        foreach (Action a in OnDialogueEnd)
+        {
+            a();
+        }
+        //EXIT
+        isReading = false;
+        yield break;
 	}
 	bool BREAK_LOOP=false;
 	public bool next;

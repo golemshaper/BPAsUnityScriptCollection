@@ -1367,6 +1367,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 1549434260}
+  PlayerMovement: {fileID: 1549434262}
+  pauseMovementOnReadDialogue: 1
 --- !u!114 &566405007
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4118,6 +4120,7 @@ MonoBehaviour:
   UI: {fileID: 0}
   menuPrompt: {fileID: 0}
   autoNextAtEndIfPromptIsRequested: 1
+  numberOfSubscriptions: 0
   next: 0
   curSentenceValue: -1
   pauseTime: 0

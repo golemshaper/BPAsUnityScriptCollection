@@ -15,8 +15,8 @@ public class ScreenplayParser : MonoBehaviour
 	void Awake () 
 	{
 	
-		Sentences=ParseScreenplay (Screenplay.text);
-        Sentences.AddRange (ParseFromSpreadsheet (TSVTextData.text));
+		if(Screenplay!=null) Sentences=ParseScreenplay (Screenplay.text);
+        if(TSVTextData!=null) Sentences.AddRange (ParseFromSpreadsheet (TSVTextData.text));
 	}
 	public List<SentenceGroup> GetScreenplay()
 	{
