@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-
 public class AckkStateMachine
 {
     int currentState=-1;
@@ -61,7 +60,6 @@ public class AckkStateMachine
         int state = Convert.ToInt32(State);
         LinkOnEnterState(state, onEnter);
     }
-
     /// <summary>
     /// Cast an Enum to an int to use it as the state.
     /// </summary>

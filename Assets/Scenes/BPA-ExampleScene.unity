@@ -1619,6 +1619,7 @@ GameObject:
   - component: {fileID: 901995472}
   - component: {fileID: 901995475}
   - component: {fileID: 901995476}
+  - component: {fileID: 901995477}
   m_Layer: 0
   m_Name: Pill
   m_TagString: Untagged
@@ -1758,6 +1759,22 @@ MonoBehaviour:
   modifyCounter: {fileID: 0}
   value: 0
   modifyType: 0
+--- !u!114 &901995477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 901995470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc0928cd5a8f58e4e8b4b8533df9a8de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  comments:
+  - "In reality you'd want this to be a prefab.\nIt will add to the score counter\nusing
+    the child object. \nThe child object will also disable the \nparent object (this
+    Pill object)\n\n"
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
