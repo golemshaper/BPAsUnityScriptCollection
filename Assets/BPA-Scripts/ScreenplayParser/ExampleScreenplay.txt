@@ -1,0 +1,16 @@
+HELLO.WORLD
+	@EnPeeSea
+		Hi, I'm EnPeeSee. I can say things!;
+		And I can do it with multiple lines!!;
+		...;
+		.......;
+		Bye!;
+EXAMPLE.GROUP
+	NAME1
+		Name style 1 needs all caps and whitespace;
+		No need for at symbol...;
+	@Name2
+		Name style 2 doesn't need all caps.
+MY.GROUP.IN.ALL.CAPS.AND.NO.SPACES
+	MyName
+		My Dialoge goes here...;
