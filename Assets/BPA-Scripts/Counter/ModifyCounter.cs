@@ -9,8 +9,9 @@ namespace BPA.Gamedata
         [Header("ModifyOnEnable")]
         public Counter modifyCounter;
         public int value = 1;
-        public enum ModifyType { Add, Sub, Mult, Div };
+        public enum ModifyType { Add, Sub, Mult, Div,Set };
         public ModifyType modifyType;
+        public bool autoDisable;
 
         private void OnEnable()
         {
@@ -29,6 +30,13 @@ namespace BPA.Gamedata
                 case ModifyType.Div:
                     modifyCounter.Divide(value);
                     break;
+                case ModifyType.Set:
+                    modifyCounter.Set(value);
+                    break;
+            }
+            if(autoDisable)
+            {
+                this.gameObject.SetActive(false);
             }
         }
     }
