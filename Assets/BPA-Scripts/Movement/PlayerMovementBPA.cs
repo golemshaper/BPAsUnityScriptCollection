@@ -3,23 +3,33 @@ using System.Collections;
 
 public class PlayerMovementBPA : MonoBehaviour,IUpdateSlave
 {
+    /*
+     * This was pulled out of another project and it needs to be cleaned up.
+     */
 	//Public:
 	[Header("Settings:")]
     public bool autoUpdate = true;
 	public float speed = 7.0F;
     public float speedBoost = 1f;
-
-	public float jumpSpeed = 8.0F;
+    public bool disableCeilingCheck;
+    public bool alwaysMove;
+    [Header("Jump and Gravity:")]
+    public bool enableDoubleJump = true;
+    public bool enableAutoJump = false;
+    public bool infiniteJump;
+    public float jumpSpeed = 8.0F;
 	public float gravity = 20.0F;
-	public float rotationalSpeed=10f;
+    public bool zeroGravity;
+
+    [Header("Rotation")]
+    public float rotationalSpeed=10f;
     public bool enableRotation=true;
     public bool enableLean=false;
     public float leanAmount = 1f;
 	public bool enableJumpButton=true;
-	public bool enableDoubleJump=true;
-    public bool enableAutoJump=false;
+
     public bool enableInAirMovement;
-    public bool zeroGravity;
+
     public bool useLadderControls=false;
     public bool disableLeftAndRightLadder=false;
     public float respawnAtY = -10f;
@@ -262,6 +272,10 @@ public class PlayerMovementBPA : MonoBehaviour,IUpdateSlave
     }
     public bool CheckCeiling( bool autoSendToFloor,float checkDist)
     {
+        if(disableCeilingCheck==false)
+        {
+            return false;
+        }
         Vector3 forwardOffset = rotationObj.forward * 0.4f ;
         //with front offset:
         Ray hit = new Ray(myTransform.position+ ceilingCheckOffset+ forwardOffset, myTransform.up);
@@ -362,6 +376,14 @@ public class PlayerMovementBPA : MonoBehaviour,IUpdateSlave
 		} 
 		else 
 		{
+            if(infiniteJump)
+            {
+                if (GetJumpInput())
+                {
+                    moveDirection.y = jumpSpeed;
+                    littleHop = true; //ignore the next little hop
+                }
+            }
             if (!littleHop)
             {
                 littleHop = true;
@@ -691,6 +713,7 @@ public class PlayerMovementBPA : MonoBehaviour,IUpdateSlave
     }
     bool requestJump;
     //disableLeftAndRightLadder
+    Vector2 alwaysMoveDefaultVector = new Vector2(0, 1);
     public Vector2 GetMovement()
     {
         if (PlayerInput.instance == null) 
@@ -709,6 +732,7 @@ public class PlayerMovementBPA : MonoBehaviour,IUpdateSlave
             inputFromStick.x = 0f;
         }
         Vector2 results = inputFromStick + additionalInput;
+     
         if (lockInput)
         {
             return lockedInputVal;
@@ -726,8 +750,20 @@ public class PlayerMovementBPA : MonoBehaviour,IUpdateSlave
         {
             lazySteerVector = results;
         }
-
-        
+        if(alwaysMove)
+        {
+            results = results* 2f;
+            results.Normalize();
+            if(results.magnitude<=0)
+            {
+                results = alwaysMoveDefaultVector;
+            }
+            else
+            {
+                alwaysMoveDefaultVector = results;
+            }
+        }
+      
         return results;
     }
 
