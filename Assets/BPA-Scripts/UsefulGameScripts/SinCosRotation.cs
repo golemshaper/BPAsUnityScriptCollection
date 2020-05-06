@@ -3,14 +3,14 @@ using System.Collections;
 
 public class SinCosRotation : MonoBehaviour,IUpdateSlave {
 
-	public bool scaleX;
-	public bool scaleY;
-	public bool scaleZ;
+	public bool x;
+	public bool y;
+	public bool z;
 	Vector3 CaptureOriginalEularAngles=new Vector3(0,0,0);
 	Transform myTransform;
 
 	public bool useCos;
-	public bool useAbsoluteValue=true;
+	public bool useAbsoluteValue=false;
 	public float speedMultiply=1f;
 	public bool useBlenderCorrection;
 	public Vector3 correctionAxis=new Vector3(270f,0,0);
@@ -71,15 +71,15 @@ public class SinCosRotation : MonoBehaviour,IUpdateSlave {
 		
 		if(addToInitialValue)
 		{
-			if(scaleX)nx+=sinVal*multiplyEffect;
-			if(scaleY)ny+=sinVal*multiplyEffect;
-			if(scaleZ)nz+=sinVal*multiplyEffect;
+			if(x)nx+=sinVal*multiplyEffect;
+			if(y)ny+=sinVal*multiplyEffect;
+			if(z)nz+=sinVal*multiplyEffect;
 		}
 		else
 		{
-			if(scaleX)nx=sinVal*multiplyEffect;
-			if(scaleY)ny=sinVal*multiplyEffect;
-			if(scaleZ)nz=sinVal*multiplyEffect;
+			if(x)nx=sinVal*multiplyEffect;
+			if(y)ny=sinVal*multiplyEffect;
+			if(z)nz=sinVal*multiplyEffect;
 		}
 		
 		if(limitUpdate)

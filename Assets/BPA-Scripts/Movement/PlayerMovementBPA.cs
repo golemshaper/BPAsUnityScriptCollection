@@ -213,7 +213,7 @@ public class PlayerMovementBPA : MonoBehaviour,IUpdateSlave
 
         MovmentUpdate ();
       
-        CheckCeiling(true);
+      //  CheckCeiling(true);
        
     }
     public Vector3 GetMovementHypothetically()

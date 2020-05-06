@@ -52,17 +52,17 @@ namespace BPA.Gamedata
         {
             Value /= divide;
         }
-        void Save()
+        public void Save()
         {
             if (IniGameMemory.instance == null) return;
             IniGameMemory.instance.WriteData(group, key, Value);
         }
-        void Load()
+        public void Load()
         {
             if (IniGameMemory.instance == null) return;
             Value = IniGameMemory.instance.GetDataValue(group, key, value);
         }
-        void ValueChanged()
+        public void ValueChanged()
         {
             foreach (var a in onValueChanged)
             {

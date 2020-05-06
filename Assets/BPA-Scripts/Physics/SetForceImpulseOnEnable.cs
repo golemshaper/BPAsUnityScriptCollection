@@ -12,4 +12,8 @@ public class SetForceImpulseOnEnable : MonoBehaviour
         rb.AddForce(thrust, ForceMode.Impulse);
         rb.AddTorque(thrust, ForceMode.Impulse);
     }
+    private void OnDisable()
+    {
+        rb.velocity = Vector3.zero;
+    }
 }
