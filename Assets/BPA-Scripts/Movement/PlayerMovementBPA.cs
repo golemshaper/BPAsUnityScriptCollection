@@ -20,7 +20,7 @@ public class PlayerMovementBPA : MonoBehaviour,IUpdateSlave
     public float jumpSpeed = 8.0F;
 	public float gravity = 20.0F;
     public bool zeroGravity;
-
+    public bool disableJump = false;
     [Header("Rotation")]
     public float rotationalSpeed=10f;
     public bool enableRotation=true;
@@ -678,6 +678,10 @@ public class PlayerMovementBPA : MonoBehaviour,IUpdateSlave
     bool simulateJumpInput = false;
 	public bool GetJumpInput(bool ignoreInputIgnore)
 	{
+        if(disableJump)
+        {
+            return false;
+        }
         if (enableJumpButton == false) return false;
         if (CheckCeiling(false,1f))
         {
