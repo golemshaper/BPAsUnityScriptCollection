@@ -162,7 +162,7 @@ public class ObjectPoolEntry
     public string Name;
     [SerializeField]
     public GameObject prefab;
-    public int objectCount;
+    public int objectCount=1;
     
    // [HideInInspector]
     public List<GameObject> pool= new List<GameObject>();
