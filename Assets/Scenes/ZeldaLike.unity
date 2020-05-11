@@ -589,6 +589,8 @@ GameObject:
   - component: {fileID: 1159223465}
   - component: {fileID: 1159223469}
   - component: {fileID: 1159223470}
+  - component: {fileID: 1159223471}
+  - component: {fileID: 1159223472}
   m_Layer: 0
   m_Name: EnemyOctoBlue
   m_TagString: Untagged
@@ -704,6 +706,65 @@ MonoBehaviour:
   offset: {x: 0, y: 0, z: 0}
   speed: 5
   targetMustBeActive: 0
+--- !u!114 &1159223471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1159223464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d34f8b4277cf7b045a1d63fcbf98325d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TriggerIfTouching: []
+  includeHero: 0
+  checkTags:
+  - Sword
+  CheckMultitag: 1
+  doNotExitIfTouchingSameTag: 0
+  exitOnStart: 0
+  enableIfEnter: []
+  disableIfEnter:
+  - {fileID: 1159223464}
+  enableIfExit: []
+  disableIfExit: []
+  playSFXOnEnter: []
+  playSFXOnExit: []
+  volume: 1
+  playAtPosition: 0
+  ignoreAudio: 0
+  meshFx: {fileID: 0}
+  useMeshEffects: 0
+  markDynamic: 1
+  scaleFactor: {x: 1, y: 1, z: 1}
+  offsetFactor: {x: 0, y: 0, z: 0}
+  useRumble: 0
+  useCurveID: 1
+  rumbleDuration: 0.2
+  rumbleMultiplier: 0.8
+  useScreenShake: 0
+  power: 0.1
+  duration: 0.1
+  myTransform: {fileID: 0}
+  LookAtTriggerOnCollision: 0
+  lookAtObject: {fileID: 0}
+  disableAttackZone: 0
+--- !u!114 &1159223472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1159223464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f63e133da9ab4244d95fb01fd688ac48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Tags:
+  - Enemy
 --- !u!1 &1168212392
 GameObject:
   m_ObjectHideFlags: 0
@@ -719,6 +780,7 @@ GameObject:
   - component: {fileID: 1168212398}
   - component: {fileID: 1168212397}
   - component: {fileID: 1168212399}
+  - component: {fileID: 1168212400}
   m_Layer: 0
   m_Name: $Sword
   m_TagString: Untagged
@@ -847,6 +909,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SpawnObject: Bullet
   spawnPoint: {fileID: 1168212393}
+--- !u!114 &1168212400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1168212392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f63e133da9ab4244d95fb01fd688ac48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Tags:
+  - Sword
 --- !u!1 &1537627655
 GameObject:
   m_ObjectHideFlags: 0
@@ -1193,6 +1269,8 @@ GameObject:
   - component: {fileID: 1968035367}
   - component: {fileID: 1968035366}
   - component: {fileID: 1968035371}
+  - component: {fileID: 1968035372}
+  - component: {fileID: 1968035373}
   m_Layer: 0
   m_Name: SwordBullet
   m_TagString: Untagged
@@ -1316,6 +1394,67 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4c3e1dcff004f24bad9212a9cb57e6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timer: 2
+  timer: 1
   PoolName: Bullet
   objectToRepool: {fileID: 1968035364}
+  RepoolOnDisable: 1
+  pauseTimer: 0
+--- !u!114 &1968035372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1968035364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f63e133da9ab4244d95fb01fd688ac48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Tags:
+  - Sword
+--- !u!114 &1968035373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1968035364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d34f8b4277cf7b045a1d63fcbf98325d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TriggerIfTouching: []
+  includeHero: 0
+  checkTags:
+  - Enemy
+  CheckMultitag: 1
+  doNotExitIfTouchingSameTag: 0
+  exitOnStart: 0
+  enableIfEnter: []
+  disableIfEnter:
+  - {fileID: 1968035364}
+  enableIfExit: []
+  disableIfExit: []
+  playSFXOnEnter: []
+  playSFXOnExit: []
+  volume: 1
+  playAtPosition: 0
+  ignoreAudio: 0
+  meshFx: {fileID: 0}
+  useMeshEffects: 0
+  markDynamic: 1
+  scaleFactor: {x: 1, y: 1, z: 1}
+  offsetFactor: {x: 0, y: 0, z: 0}
+  useRumble: 0
+  useCurveID: 1
+  rumbleDuration: 0.2
+  rumbleMultiplier: 0.8
+  useScreenShake: 0
+  power: 0.1
+  duration: 0.1
+  myTransform: {fileID: 0}
+  LookAtTriggerOnCollision: 0
+  lookAtObject: {fileID: 0}
+  disableAttackZone: 0

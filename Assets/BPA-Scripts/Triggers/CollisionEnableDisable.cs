@@ -3,10 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 public class CollisionEnableDisable : MonoBehaviour {
 
+    [Header("Test Against")]
     public List<GameObject> TriggerIfTouching= new List<GameObject>();
     public bool includeHero;
+    public List<string> checkTags = new List<string>();
+    public bool CheckMultitag;
 
-  
     public bool doNotExitIfTouchingSameTag;
     public bool exitOnStart;
     [Header("On Enter")]
@@ -110,16 +112,41 @@ public class CollisionEnableDisable : MonoBehaviour {
     {
         OnTriggerEnterGO(col.gameObject);
     }
+    bool CheckTag(GameObject col)
+    {
+        MultiTags mt = col.GetComponent<MultiTags>();
+        if (mt != null)
+        {
+            for (int i = 0; i < mt.Tags.Length; i++)
+            {
+                string s = mt.Tags[i];
+                for (int y = 0; y < checkTags.Count; y++)
+                {
+                    string t = checkTags[y];
+                    if (s == t)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
     void OnTriggerEnterGO(GameObject col)
     {
-       
+       if(CheckMultitag)
+        {
+            if (CheckTag(col))
+            { 
+                SuccessOnEnter(col);
+                return;
+            }
+        }
         foreach (GameObject g in TriggerIfTouching)
         {
             if (col.gameObject == g)
             {
-            
                 SuccessOnEnter(g);
-             
                 return;
             }
         }
