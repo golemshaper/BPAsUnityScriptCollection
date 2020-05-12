@@ -7,7 +7,27 @@ using System.Text;
 
 public class ScreenplayParser : MonoBehaviour 
 {
-	public TextAsset Screenplay;
+    /*EXAMPLE DATA:
+     * 
+     * 
+     * 
+HELLO.WORLD
+				@EnPeeSea
+	Hi, I'm EnPeeSee. I can say things!;
+	And I can do it with multiple lines!!;
+	...;
+	.......;
+	Bye!;
+	Actually wait, do you have the time?;
+					PROMPT
+	Yes, I do. =HELLO.WORLD.YES
+	No I don't =HELLO.WORLD.NO
+HELLO.WORLD.YES
+                 @SYSTEM
+    Make sure you didn't end the prompt choice with a ;
+
+     */
+    public TextAsset Screenplay;
     public TextAsset TSVTextData;
 	public List<SentenceGroup> Sentences= new List<SentenceGroup>();
 	public bool ConsolidateMultilinesToSingleLine=true;

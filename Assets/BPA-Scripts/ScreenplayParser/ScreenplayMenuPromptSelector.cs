@@ -1,13 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
+
 public class ScreenplayMenuPromptSelector : MonoBehaviour 
 {
 	bool promptIsOpen=false;
 	public List<string> choicesList= new List<string>();
 	public StringWriter outputTemplate;
 	public GameObject EnableIfActive;
-	public void ClearChoicesList()
+    public bool stripFormatting = false;
+    public bool UseRTF=true;
+
+    StringBuilder sb = new StringBuilder();
+    public void ClearChoicesList()
 	{
 		choicesList= new List<string>();
 	}
@@ -45,24 +51,45 @@ public class ScreenplayMenuPromptSelector : MonoBehaviour
 	{
 		//this is temporary. eventually make each choice its own object
 		//with its own string writer.
-		string choiceListAsSingleString = string.Empty;
+		
 		int curLine = 0;
+        sb.Length = 0;
 		foreach (string choice in choicesList) 
 		{
             
 			string formatSel="";
-			string pointingCursor=" ";
+            string formatSelEnd ="";
+			string pointingCursor="-"; //space to prevent change in word position
 			if(curLine==selection)
 			{
 				formatSel="|";
-				//shift to alt character set with a hand cursor pointing right defined.
+                formatSelEnd = "|";
+				//shift to alt character set with a hand cursor pointing right defined. was ^>^ but does not work in TMP. need to make a custom format option...
 				pointingCursor="^>^";
-			}
-			choiceListAsSingleString+=pointingCursor+formatSel+choice+formatSel+"\n";
-			curLine++;
+                if(UseRTF)
+                {
+                    formatSel = "<color=yellow>";
+                    formatSelEnd = "</color>";
+                    pointingCursor = "<color=red>></color>"; //note: the extra > is the cursor
+                }
+                if (stripFormatting)
+                {
+                    pointingCursor = ">";
+                    formatSel = "";
+                }
+            }
+           
+            sb.Append(pointingCursor);
+            sb.Append(formatSel);
+            sb.Append(choice);
+            sb.Append(formatSelEnd);
+            sb.Append("\n");
+
+            curLine++;
 		}
-		outputTemplate.SetText (choiceListAsSingleString, false);
+		outputTemplate.SetText (sb.ToString(), false);
 	}
+
 	int lastSel=-1;
 	IEnumerator PromptUpdate()
 	{

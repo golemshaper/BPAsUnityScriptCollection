@@ -168,6 +168,7 @@ MonoBehaviour:
   modifyCounter: {fileID: 1482331007}
   value: 1
   modifyType: 0
+  autoDisable: 0
 --- !u!114 &55264060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,6 +237,7 @@ MonoBehaviour:
   modifyCounter: {fileID: 0}
   value: 0
   modifyType: 0
+  autoDisable: 0
 --- !u!114 &250585052
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -250,6 +252,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TriggerIfTouching: []
   includeHero: 1
+  checkTags: []
+  CheckMultitag: 0
   doNotExitIfTouchingSameTag: 0
   exitOnStart: 0
   enableIfEnter:
@@ -455,6 +459,7 @@ MonoBehaviour:
   modifyCounter: {fileID: 0}
   value: 0
   modifyType: 0
+  autoDisable: 0
 --- !u!114 &377947747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -469,6 +474,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TriggerIfTouching: []
   includeHero: 1
+  checkTags: []
+  CheckMultitag: 0
   doNotExitIfTouchingSameTag: 0
   exitOnStart: 0
   enableIfEnter:
@@ -608,6 +615,7 @@ MonoBehaviour:
   modifyCounter: {fileID: 0}
   value: 0
   modifyType: 0
+  autoDisable: 0
 --- !u!114 &378140834
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -622,6 +630,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TriggerIfTouching: []
   includeHero: 1
+  checkTags: []
+  CheckMultitag: 0
   doNotExitIfTouchingSameTag: 0
   exitOnStart: 0
   enableIfEnter:
@@ -757,6 +767,7 @@ MonoBehaviour:
   modifyCounter: {fileID: 1482331007}
   value: 1
   modifyType: 0
+  autoDisable: 0
 --- !u!114 &393820562
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -800,16 +811,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 427058105}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1560029211}
+  m_Father: {fileID: 1098455056}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 298, y: 308}
+  m_AnchoredPosition: {x: -186, y: -27}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &427058107
@@ -828,9 +839,9 @@ MonoBehaviour:
   DisplayAsTextMeshPro: {fileID: 427058109}
   typewritter: 1
   printYieldTime: 0.001
-  ifNoPuntuationMarkAtEndDrawPeriod: 1
+  ifNoPuntuationMarkAtEndDrawPeriod: 0
   handleVariables: 1
-  maxCharCountPerLine: 50
+  maxCharCountPerLine: 5000
   onlyBreakOnSpaces: 1
   skip: 0
 --- !u!114 &427058109
@@ -879,8 +890,8 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 76.1
-  m_fontSizeBase: 76.1
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -917,7 +928,7 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -1392.7972, w: -116.854065}
+  m_margin: {x: 0, y: 47.64894, z: -359.91315, w: -116.854065}
   m_textInfo:
     textComponent: {fileID: 427058109}
     characterCount: 3
@@ -964,7 +975,7 @@ GameObject:
   - component: {fileID: 452118932}
   - component: {fileID: 452118934}
   m_Layer: 0
-  m_Name: Text (TMP)
+  m_Name: ScoreDisplay(TXT)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -982,11 +993,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1560029211}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 298, y: -172}
+  m_AnchoredPosition: {x: 119, y: -48}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &452118932
@@ -1035,8 +1046,8 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 76.1
-  m_fontSizeBase: 76.1
+  m_fontSize: 32
+  m_fontSizeBase: 32
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1052,7 +1063,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: 0
+  m_firstOverflowCharacterIndex: -1
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
@@ -1163,6 +1174,183 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &511654538
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 511654539}
+  - component: {fileID: 511654542}
+  - component: {fileID: 511654541}
+  - component: {fileID: 511654540}
+  m_Layer: 0
+  m_Name: ChoiceDisplay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &511654539
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 511654538}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1098455056}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 27, y: 40}
+  m_SizeDelta: {x: 200, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &511654540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 511654538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0475dc1d44f1e8479260b2596790ea3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DisplayAsTextmesh: {fileID: 0}
+  DisplayAsTextMeshPro: {fileID: 511654541}
+  typewritter: 0
+  printYieldTime: 0.001
+  ifNoPuntuationMarkAtEndDrawPeriod: 0
+  handleVariables: 1
+  maxCharCountPerLine: 200
+  onlyBreakOnSpaces: 1
+  skip: 0
+--- !u!114 &511654541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 511654538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: ...
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4291480266
+  m_fontColor: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_outlineColor:
+    serializedVersion: 2
+    rgba: 4278190080
+  m_fontSize: 24
+  m_fontSizeBase: 24
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_textAlignment: 257
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_firstOverflowCharacterIndex: -1
+  m_linkedTextComponent: {fileID: 0}
+  m_isLinkedTextComponent: 0
+  m_isTextTruncated: 0
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_ignoreRectMaskCulling: 0
+  m_ignoreCulling: 1
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_VertexBufferAutoSizeReduction: 1
+  m_firstVisibleCharacter: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 102.31427, y: 58.487442, z: -195.15994, w: -185.65985}
+  m_textInfo:
+    textComponent: {fileID: 511654541}
+    characterCount: 3
+    spriteCount: 0
+    spaceCount: 0
+    wordCount: 1
+    linkCount: 0
+    lineCount: 1
+    pageCount: 1
+    materialCount: 1
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_spriteAnimator: {fileID: 0}
+  m_hasFontAssetChanged: 0
+  m_subTextObjects:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &511654542
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 511654538}
+  m_CullTransparentMesh: 0
 --- !u!1 &516448460
 GameObject:
   m_ObjectHideFlags: 0
@@ -1210,6 +1398,7 @@ MonoBehaviour:
   modifyCounter: {fileID: 1482331007}
   value: 1
   modifyType: 0
+  autoDisable: 0
 --- !u!114 &516448463
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1398,7 +1587,7 @@ GameObject:
   - component: {fileID: 630244306}
   - component: {fileID: 630244305}
   m_Layer: 0
-  m_Name: Text (TMP) (1)
+  m_Name: Collect5(TXT)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1416,11 +1605,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1560029211}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 298, y: -252}
+  m_AnchoredPosition: {x: 119, y: -91}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &630244305
@@ -1469,8 +1658,8 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 76.1
-  m_fontSizeBase: 76.1
+  m_fontSize: 32
+  m_fontSizeBase: 32
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1486,7 +1675,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: 0
+  m_firstOverflowCharacterIndex: -1
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
@@ -1684,6 +1873,7 @@ MonoBehaviour:
   modifyCounter: {fileID: 0}
   value: 0
   modifyType: 0
+  autoDisable: 0
 --- !u!114 &751266143
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1698,6 +1888,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TriggerIfTouching: []
   includeHero: 1
+  checkTags: []
+  CheckMultitag: 0
   doNotExitIfTouchingSameTag: 0
   exitOnStart: 0
   enableIfEnter:
@@ -1897,6 +2089,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TriggerIfTouching: []
   includeHero: 1
+  checkTags: []
+  CheckMultitag: 0
   doNotExitIfTouchingSameTag: 0
   exitOnStart: 0
   enableIfEnter:
@@ -1940,6 +2134,7 @@ MonoBehaviour:
   modifyCounter: {fileID: 0}
   value: 0
   modifyType: 0
+  autoDisable: 0
 --- !u!114 &901995477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2090,6 +2285,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TriggerIfTouching: []
   includeHero: 1
+  checkTags: []
+  CheckMultitag: 0
   doNotExitIfTouchingSameTag: 0
   exitOnStart: 0
   enableIfEnter:
@@ -2238,6 +2435,7 @@ MonoBehaviour:
   modifyCounter: {fileID: 1482331007}
   value: 1
   modifyType: 0
+  autoDisable: 0
 --- !u!114 &1084030415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2255,6 +2453,44 @@ MonoBehaviour:
   disable:
   - {fileID: 1212890934}
   invert: 0
+--- !u!1 &1098455055
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1098455056}
+  m_Layer: 0
+  m_Name: +DialogueOutput
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1098455056
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1098455055}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1622097335}
+  - {fileID: 427058106}
+  - {fileID: 511654539}
+  m_Father: {fileID: 1560029211}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 331, y: 186}
+  m_SizeDelta: {x: 1, y: 1}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1099811226
 GameObject:
   m_ObjectHideFlags: 0
@@ -2306,6 +2542,7 @@ MonoBehaviour:
   modifyCounter: {fileID: 0}
   value: 0
   modifyType: 0
+  autoDisable: 0
 --- !u!114 &1099811229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2320,6 +2557,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TriggerIfTouching: []
   includeHero: 1
+  checkTags: []
+  CheckMultitag: 0
   doNotExitIfTouchingSameTag: 0
   exitOnStart: 0
   enableIfEnter:
@@ -2552,6 +2791,7 @@ MonoBehaviour:
   modifyCounter: {fileID: 0}
   value: 0
   modifyType: 0
+  autoDisable: 0
 --- !u!114 &1212890937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2566,6 +2806,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TriggerIfTouching: []
   includeHero: 1
+  checkTags: []
+  CheckMultitag: 0
   doNotExitIfTouchingSameTag: 0
   exitOnStart: 0
   enableIfEnter:
@@ -2705,6 +2947,7 @@ MonoBehaviour:
   modifyCounter: {fileID: 0}
   value: 0
   modifyType: 0
+  autoDisable: 0
 --- !u!114 &1253947211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2719,6 +2962,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TriggerIfTouching: []
   includeHero: 1
+  checkTags: []
+  CheckMultitag: 0
   doNotExitIfTouchingSameTag: 0
   exitOnStart: 0
   enableIfEnter:
@@ -2837,7 +3082,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1560029211}
-  m_RootOrder: 4
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3009,6 +3254,7 @@ MonoBehaviour:
   modifyCounter: {fileID: 1482331007}
   value: 1
   modifyType: 0
+  autoDisable: 0
 --- !u!114 &1335045744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3171,6 +3417,7 @@ MonoBehaviour:
   modifyCounter: {fileID: 1482331007}
   value: 1
   modifyType: 0
+  autoDisable: 0
 --- !u!114 &1509621723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3235,6 +3482,7 @@ MonoBehaviour:
   modifyCounter: {fileID: 1482331007}
   value: 1
   modifyType: 0
+  autoDisable: 0
 --- !u!114 &1523098725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3306,17 +3554,21 @@ MonoBehaviour:
   autoUpdate: 1
   speed: 7
   speedBoost: 1
+  disableCeilingCheck: 0
+  alwaysMove: 0
+  enableDoubleJump: 1
+  enableAutoJump: 0
+  infiniteJump: 0
   jumpSpeed: 8
   gravity: 20
+  zeroGravity: 0
+  disableJump: 0
   rotationalSpeed: 10
   enableRotation: 1
   enableLean: 0
   leanAmount: 1
   enableJumpButton: 1
-  enableDoubleJump: 1
-  enableAutoJump: 0
   enableInAirMovement: 1
-  zeroGravity: 0
   useLadderControls: 0
   disableLeftAndRightLadder: 0
   respawnAtY: -10
@@ -3439,11 +3691,10 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 1622097335}
-  - {fileID: 427058106}
   - {fileID: 452118931}
   - {fileID: 630244303}
   - {fileID: 1267527891}
+  - {fileID: 1098455056}
   m_Father: {fileID: 1971261440}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3563,6 +3814,7 @@ MonoBehaviour:
   modifyCounter: {fileID: 0}
   value: 0
   modifyType: 0
+  autoDisable: 0
 --- !u!114 &1613377945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3577,6 +3829,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TriggerIfTouching: []
   includeHero: 1
+  checkTags: []
+  CheckMultitag: 0
   doNotExitIfTouchingSameTag: 0
   exitOnStart: 0
   enableIfEnter:
@@ -3691,16 +3945,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1622097334}
-  m_LocalRotation: {x: -0, y: -0, z: 0.12641333, w: 0.99197763}
+  m_LocalRotation: {x: -0, y: -0, z: 0.12641335, w: 0.9919777}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1560029211}
+  m_Father: {fileID: 1098455056}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 14.525001}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 256, y: 392}
+  m_AnchoredPosition: {x: -198, y: -24}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1622097336
@@ -3719,9 +3973,9 @@ MonoBehaviour:
   DisplayAsTextMeshPro: {fileID: 1622097338}
   typewritter: 0
   printYieldTime: 0.001
-  ifNoPuntuationMarkAtEndDrawPeriod: 1
+  ifNoPuntuationMarkAtEndDrawPeriod: 0
   handleVariables: 1
-  maxCharCountPerLine: 50
+  maxCharCountPerLine: 500
   onlyBreakOnSpaces: 1
   skip: 0
 --- !u!114 &1622097338
@@ -3770,8 +4024,8 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 76.1
-  m_fontSizeBase: 76.1
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3787,7 +4041,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: 0
+  m_firstOverflowCharacterIndex: -1
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
@@ -4154,6 +4408,7 @@ MonoBehaviour:
   modifyCounter: {fileID: 1482331007}
   value: 1
   modifyType: 0
+  autoDisable: 0
 --- !u!114 &1802989182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4267,6 +4522,7 @@ MonoBehaviour:
   modifyCounter: {fileID: 1482331007}
   value: 1
   modifyType: 0
+  autoDisable: 0
 --- !u!114 &1965371254
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4293,8 +4549,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1970945532}
-  - component: {fileID: 1970945534}
   - component: {fileID: 1970945533}
+  - component: {fileID: 1970945534}
+  - component: {fileID: 1970945535}
   m_Layer: 0
   m_Name: DialogueSystem
   m_TagString: Untagged
@@ -4352,12 +4609,32 @@ MonoBehaviour:
   nameDisplay: {fileID: 1622097336}
   SentenceDisplay: {fileID: 427058107}
   UI: {fileID: 0}
-  menuPrompt: {fileID: 0}
+  menuPrompt: {fileID: 1970945535}
   autoNextAtEndIfPromptIsRequested: 1
   numberOfSubscriptions: 0
   next: 0
   curSentenceValue: -1
   pauseTime: 0
+--- !u!114 &1970945535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1970945531}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d588a560d0f07e5489db49be8744a1e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  choicesList: []
+  outputTemplate: {fileID: 511654540}
+  EnableIfActive: {fileID: 0}
+  stripFormatting: 0
+  UseRTF: 1
+  selectPressed: 0
+  selection: 0
+  deley: 0
 --- !u!1 &1971261439
 GameObject:
   m_ObjectHideFlags: 0
@@ -4444,6 +4721,7 @@ MonoBehaviour:
   modifyCounter: {fileID: 0}
   value: 0
   modifyType: 0
+  autoDisable: 0
 --- !u!114 &2046049795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4458,6 +4736,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TriggerIfTouching: []
   includeHero: 1
+  checkTags: []
+  CheckMultitag: 0
   doNotExitIfTouchingSameTag: 0
   exitOnStart: 0
   enableIfEnter:
@@ -4636,6 +4916,7 @@ MonoBehaviour:
   modifyCounter: {fileID: 1482331007}
   value: 1
   modifyType: 0
+  autoDisable: 0
 --- !u!114 &2143674104
 MonoBehaviour:
   m_ObjectHideFlags: 0

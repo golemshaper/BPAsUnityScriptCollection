@@ -1,15 +1,25 @@
 HELLO.WORLD
-	@EnPeeSea
+					@EnPeeSea
 		Hi, I'm EnPeeSee. I can say things!;
 		And I can do it with multiple lines!!;
 		...;
 		.......;
 		Bye!;
+		Actually wait, do you have the time?;
+						PROMPT
+		Yes, I do. =HELLO.WORLD.YES
+		No, I don't. =HELLO.WORLD.NO
+HELLO.WORLD.YES
+		@EnPeeSea
+	Oh wait, I don't care...;
+HELLO.WORLD.NO
+		@EnPeeSea
+	Oh well...
 EXAMPLE.GROUP
-	NAME1
+							NAME1
 		Name style 1 needs all caps and whitespace;
 		No need for at symbol...;
-	@Name2
+							@Name2
 		Name style 2 doesn't need all caps.
 MY.GROUP.IN.ALL.CAPS.AND.NO.SPACES
 	MyName
