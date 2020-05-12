@@ -11,7 +11,9 @@ public class SimpleMenu : MonoBehaviour
     public Transform cursor;
     public Vector3 cursorOffset;
     public bool x, y, z = true;
-    public bool smoothCursor = true;
+  
+    public enum CursorMovementType {smooth,instant};
+    public CursorMovementType cursorMoveType;
     [Header("Movement:")]
     public bool allowXMove=false;
     public bool allowYMove=true;
@@ -24,7 +26,7 @@ public class SimpleMenu : MonoBehaviour
     float fastWait = 0.1f;
     float curWaitTime = 0.5f;
     float timer = 0.2f;
-    int curTick = 0;
+    short curTick = 0;
     //Const:
     const float deadZone = 0.01f;
     private void OnEnable()
@@ -108,12 +110,21 @@ public class SimpleMenu : MonoBehaviour
         {
             cursorTPos = cursor.localPosition;
         }
-
-        if (smoothCursor)
+        switch (cursorMoveType)
         {
-            cursorResultLocation = Vector3.SmoothDamp(cursorTPos, slotPosition, ref velocity, smoothTime);
-
+            case CursorMovementType.smooth:
+              cursorResultLocation = Vector3.SmoothDamp(cursorTPos, slotPosition, ref velocity, smoothTime);
+                break;
+          
+            case CursorMovementType.instant:
+                cursorResultLocation = slotPosition;
+                break;
         }
+       
+        if (!x) cursorResultLocation.x = cursorTPos.x;
+        if (!y) cursorResultLocation.y = cursorTPos.y;
+        if (!z) cursorResultLocation.z = cursorTPos.z;
+
         if (useLocalPosition)
         {
             cursor.localPosition = cursorResultLocation;
