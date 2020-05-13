@@ -12,7 +12,6 @@ public class LifeDisplay : MonoBehaviour
     public GameObject[] LifeObjects;
     Action myAction;
     int val = 0;
-    // Start is called before the first frame update
     void Start()
     {
         myAction = ()=> UpdateDisplay();
@@ -33,5 +32,4 @@ public class LifeDisplay : MonoBehaviour
             }
         }
     }
-   
 }
