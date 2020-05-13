@@ -4,8 +4,14 @@ using UnityEngine;
 
 public class SimpleMenu : MonoBehaviour
 {
+    [Header("Main Settings")]
+    public SimpleMenuMaster driveByMaster;
+    public bool disableOnClose=true;
+    public bool enableOnOpen=true;
+    public bool enableBackButton = true;
     [Header("Slots")]
     public SimpleMenuSlot[] menuSlots;
+  
     [Header("Cursor Settings")]
     public int cursorIndex = 0;
     public Transform cursor;
@@ -21,18 +27,23 @@ public class SimpleMenu : MonoBehaviour
     public bool snapToIndexZeroOnEnable;
     public int ticsTillFastScroll = 2;
     public bool useLocalPosition;
+    
+    public enum SelectButtonType {A_cross,B_circle};
+    [Header("Input")]
+  
+    public SelectButtonType selectButton = SelectButtonType.B_circle;
     //Private:
     float slowWait = 0.5f;
     float fastWait = 0.1f;
     float curWaitTime = 0.5f;
     float timer = 0.2f;
     short curTick = 0;
+    SimpleMenu history=null;
     //Const:
     const float deadZone = 0.01f;
     private void OnEnable()
     {
-        if(snapToIndexZeroOnEnable)cursorIndex = 0;
-        Clamp();
+        OpenMenu();
     }
     Vector2 GetInputMove()
     {
@@ -45,8 +56,44 @@ public class SimpleMenu : MonoBehaviour
     {
         return  GetInputMove().normalized.x+ GetInputMove().normalized.y;
     }
+    private void Update()
+    {
+        if(driveByMaster==null)
+        {
+            DoUpdate();
+        }
+    }
+    public void GoBack()
+    {
+        if (history == null) return;
+        if(driveByMaster!=null)
+        {
+            //don't record history going backwards!
+            driveByMaster.SetActiveMenu(history, false);
+        }
+    }
+    public void OpenMenu()
+    {
+        OpenMenu(null);
+    }
+    public void OpenMenu(SimpleMenu nHistory)
+    {
+        if(nHistory!=null) history = nHistory;
+        Clamp();
+        if (snapToIndexZeroOnEnable) cursorIndex = 0;
+      
+        SetCursorPosition(true);
+        if (!enableOnOpen) return;
+        this.gameObject.SetActive(true);
+    }
+    public void CloseMenu()
+    {
+        if (!disableOnClose) return;
+        this.gameObject.SetActive(false);
+    }
+   
     // Update is called once per frame
-    void Update()
+    public void DoUpdate()
     {
         if (GetInput1D() <deadZone && GetInput1D() >-deadZone)
         {
@@ -55,14 +102,13 @@ public class SimpleMenu : MonoBehaviour
             curWaitTime = slowWait;
             curTick = 0;
         }
-         SetCursorPosition();
+        SetCursorPosition();
         if(timer>0f)
         {
             //delay timer
             timer -= Time.deltaTime;
             return;
         }
-
         if(GetInput1D()>deadZone)
         {
             //Move cursor up
@@ -81,16 +127,57 @@ public class SimpleMenu : MonoBehaviour
             if (curTick >= ticsTillFastScroll) curWaitTime = fastWait;
             curTick++;
         }
-     
         //Clamp cursor:
         Clamp();
-       
-        if(PlayerInput.instance.GetFire2_A())
+        //SELECT
+        ReadSelection();
+        //GO BACK
+        ReadBackButton();
+
+
+    }
+    void ReadBackButton()
+    {
+        if (!enableBackButton) return;
+        switch (selectButton)
         {
-            //SELECT
-            menuSlots[cursorIndex].DoSelectAction();
+            case SelectButtonType.A_cross:
+                if (PlayerInput.instance.GetFire1_B())
+                {
+                    //Opposite of click button on purpose
+                    GoBack();
+                }
+                break;
+            case SelectButtonType.B_circle:
+                if (PlayerInput.instance.GetFire2_A())
+                {
+                    //Opposite of click button on purpose
+                    GoBack();
+                }
+                break;
         }
-       
+        return;
+    }
+    void ReadSelection()
+    {
+        switch (selectButton)
+        {
+            case SelectButtonType.A_cross:
+                if (PlayerInput.instance.GetFire2_A())
+                {
+                    //SELECT
+                    menuSlots[cursorIndex].DoSelectAction();
+                }
+                break;
+            case SelectButtonType.B_circle:
+                if (PlayerInput.instance.GetFire1_B())
+                {
+                    //SELECT
+                    menuSlots[cursorIndex].DoSelectAction();
+                }
+                break;
+        }
+     
     }
     void Clamp()
     {
@@ -102,6 +189,10 @@ public class SimpleMenu : MonoBehaviour
     float smoothTime = 0.05f;
     private Vector3 velocity = Vector3.zero;
     void SetCursorPosition()
+    {
+        SetCursorPosition(false);
+    }
+    void SetCursorPosition(bool snap)
     {
         Vector3 slotPosition = menuSlots[cursorIndex].GetPosition(useLocalPosition);
         Vector3 cursorResultLocation = slotPosition;
@@ -120,7 +211,10 @@ public class SimpleMenu : MonoBehaviour
                 cursorResultLocation = slotPosition;
                 break;
         }
-       
+        if(snap)
+        {
+            cursorResultLocation = slotPosition;
+        }
         if (!x) cursorResultLocation.x = cursorTPos.x;
         if (!y) cursorResultLocation.y = cursorTPos.y;
         if (!z) cursorResultLocation.z = cursorTPos.z;
@@ -131,7 +225,7 @@ public class SimpleMenu : MonoBehaviour
         }
         else
         {
-            cursor.localPosition = cursorResultLocation;
+            cursor.position = cursorResultLocation;
         }
     }
 }

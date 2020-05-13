@@ -7,6 +7,7 @@ public class CollisionEnableDisable : MonoBehaviour {
     public List<GameObject> TriggerIfTouching= new List<GameObject>();
     public bool includeHero;
     public List<string> checkTags = new List<string>();
+    int[] checkTagsHashed;
     public bool CheckMultitag;
 
     public bool doNotExitIfTouchingSameTag;
@@ -67,7 +68,8 @@ public class CollisionEnableDisable : MonoBehaviour {
     void Start()
     {
         if (GameManager.instance == null) return;
-        if(includeHero)
+        checkTagsHashed= MultiTags.GetHashedTagsArray(checkTags.ToArray());
+        if (includeHero)
         {
             TriggerIfTouching.Add(GameManager.instance.Player.gameObject);
         }
@@ -117,6 +119,10 @@ public class CollisionEnableDisable : MonoBehaviour {
         MultiTags mt = col.GetComponent<MultiTags>();
         if (mt != null)
         {
+            /*
+             * Simple tag checks can be done with strings, but it's faster to check ints, so I'll use the hashed list instead:
+             * 
+             * String check example:
             for (int i = 0; i < mt.Tags.Length; i++)
             {
                 string s = mt.Tags[i];
@@ -124,6 +130,19 @@ public class CollisionEnableDisable : MonoBehaviour {
                 {
                     string t = checkTags[y];
                     if (s == t)
+                    {
+                        return true;
+                    }
+                }
+            }
+             */
+            for (int i = 0; i < mt.TagsHashed.Length; i++)
+            {
+                int t1 = mt.TagsHashed[i];
+                for (int y = 0; y < checkTagsHashed.Length; y++)
+                {
+                    int t2 = checkTagsHashed[y];
+                    if (t1 == t2)
                     {
                         return true;
                     }
