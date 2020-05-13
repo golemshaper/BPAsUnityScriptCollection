@@ -412,6 +412,8 @@ Transform:
   m_Children:
   - {fileID: 1827724772}
   - {fileID: 1353800699}
+  - {fileID: 662410340}
+  - {fileID: 1511192157}
   m_Father: {fileID: 462026983}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
@@ -536,6 +538,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf38510bcf5dad04aa91739919fd73d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &662410339
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 662410340}
+  m_Layer: 0
+  m_Name: MakeInvulnerable
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &662410340
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 662410339}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 333741515}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &684873373
 GameObject:
   m_ObjectHideFlags: 0
@@ -1062,6 +1094,7 @@ GameObject:
   - component: {fileID: 1159223470}
   - component: {fileID: 1159223471}
   - component: {fileID: 1159223472}
+  - component: {fileID: 1159223473}
   m_Layer: 0
   m_Name: EnemyOctoBlue
   m_TagString: Untagged
@@ -1237,6 +1270,50 @@ MonoBehaviour:
   Tags:
   - Enemy
   TagsHashed: 
+--- !u!114 &1159223473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1159223464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d34f8b4277cf7b045a1d63fcbf98325d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TriggerIfTouching: []
+  includeHero: 1
+  checkTags: []
+  CheckMultitag: 0
+  doNotExitIfTouchingSameTag: 0
+  exitOnStart: 0
+  enableIfEnter:
+  - {fileID: 1353800698}
+  disableIfEnter: []
+  enableIfExit: []
+  disableIfExit: []
+  playSFXOnEnter: []
+  playSFXOnExit: []
+  volume: 1
+  playAtPosition: 0
+  ignoreAudio: 0
+  meshFx: {fileID: 0}
+  useMeshEffects: 0
+  markDynamic: 1
+  scaleFactor: {x: 1, y: 1, z: 1}
+  offsetFactor: {x: 0, y: 0, z: 0}
+  useRumble: 0
+  useCurveID: 1
+  rumbleDuration: 0.2
+  rumbleMultiplier: 0.8
+  useScreenShake: 0
+  power: 0.1
+  duration: 0.1
+  myTransform: {fileID: 0}
+  LookAtTriggerOnCollision: 0
+  lookAtObject: {fileID: 0}
+  disableAttackZone: 0
 --- !u!1 &1168212392
 GameObject:
   m_ObjectHideFlags: 0
@@ -1406,6 +1483,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1353800699}
   - component: {fileID: 1353800700}
+  - component: {fileID: 1353800701}
   m_Layer: 0
   m_Name: Hurt x1
   m_TagString: Untagged
@@ -1420,7 +1498,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1353800698}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -1442,7 +1520,26 @@ MonoBehaviour:
   modifyCounter: {fileID: 684873376}
   value: 1
   modifyType: 1
-  autoDisable: 1
+  autoDisable: 0
+  ignoreIfActive: {fileID: 662410339}
+--- !u!114 &1353800701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1353800698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 113e42c3b7f883942823e1aa3b1d3a94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Timer: 0
+  enable:
+  - {fileID: 1511192155}
+  disable:
+  - {fileID: 1353800698}
+  invert: 0
 --- !u!1 &1412588518
 GameObject:
   m_ObjectHideFlags: 0
@@ -1516,6 +1613,60 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1412588518}
   m_CullTransparentMesh: 0
+--- !u!1 &1511192155
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1511192157}
+  - component: {fileID: 1511192156}
+  m_Layer: 0
+  m_Name: DoFlash
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &1511192156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511192155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66e573b90f4528046b58c410c28a1016, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UpdateOnEnable: 1
+  delay: 0
+  duration: 1
+  frequency: 0.05
+  BlinkObject: {fileID: 0}
+  BlinkRenderer: {fileID: 333741517}
+  ActiveAtEnd: 1
+  enableAtEnd: []
+  disableAtEnd: []
+  stopFlashingIfInactive: {fileID: 0}
+  disableSelfAtEnd: 1
+--- !u!4 &1511192157
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511192155}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 333741515}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1537627655
 GameObject:
   m_ObjectHideFlags: 0
@@ -1809,6 +1960,7 @@ GameObject:
   - component: {fileID: 1966638070}
   - component: {fileID: 1966638069}
   - component: {fileID: 1966638068}
+  - component: {fileID: 1966638074}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -1920,6 +2072,51 @@ Transform:
   m_Father: {fileID: 968405410}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1966638074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1966638067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d34f8b4277cf7b045a1d63fcbf98325d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TriggerIfTouching: []
+  includeHero: 1
+  checkTags: []
+  CheckMultitag: 0
+  doNotExitIfTouchingSameTag: 0
+  exitOnStart: 0
+  enableIfEnter:
+  - {fileID: 1353800698}
+  disableIfEnter:
+  - {fileID: 1966638067}
+  enableIfExit: []
+  disableIfExit: []
+  playSFXOnEnter: []
+  playSFXOnExit: []
+  volume: 1
+  playAtPosition: 0
+  ignoreAudio: 0
+  meshFx: {fileID: 0}
+  useMeshEffects: 0
+  markDynamic: 1
+  scaleFactor: {x: 1, y: 1, z: 1}
+  offsetFactor: {x: 0, y: 0, z: 0}
+  useRumble: 0
+  useCurveID: 1
+  rumbleDuration: 0.2
+  rumbleMultiplier: 0.8
+  useScreenShake: 0
+  power: 0.1
+  duration: 0.1
+  myTransform: {fileID: 0}
+  LookAtTriggerOnCollision: 0
+  lookAtObject: {fileID: 0}
+  disableAttackZone: 0
 --- !u!1 &1968035364
 GameObject:
   m_ObjectHideFlags: 0

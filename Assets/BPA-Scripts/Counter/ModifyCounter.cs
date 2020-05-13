@@ -12,9 +12,14 @@ namespace BPA.Gamedata
         public enum ModifyType { Add, Sub, Mult, Div,Set };
         public ModifyType modifyType;
         public bool autoDisable;
-
+        public GameObject ignoreIfActive;
         private void OnEnable()
         {
+            if(ignoreIfActive!=null)
+            {
+                if (ignoreIfActive.activeSelf) return;
+            }
+
             if (modifyCounter == null) return;
             switch (modifyType)
             {

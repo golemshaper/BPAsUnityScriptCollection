@@ -19,15 +19,7 @@ public class FlashObject : MonoBehaviour,IUpdateSlave
     float curDelay=0f;
     public GameObject stopFlashingIfInactive;
     public bool disableSelfAtEnd;
-    void Awake()
-    {
-        if (BlinkObject == null)
-        {
-            //if no blink object, then you must want to use the renderer...
-            //because you couldn't attatch this directly to the blinking object(well you could could if not using the enable thingm or it will end...)
-            BlinkRenderer=this.GetComponent<Renderer>();
-        }
-    }
+
     //Implement interface
     #region IUpdateSlave implementation
     public void DoUpdate()
