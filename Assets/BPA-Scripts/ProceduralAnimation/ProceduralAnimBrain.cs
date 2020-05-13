@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Ackk.Animation.Procedural;
+using UnityEditor;
+
 public class ProceduralAnimBrain : MonoBehaviour
 {
+    public bool executeInEditor;
     public ProcAnimSkeleton skeleton = new ProcAnimSkeleton();
     ProcAnimFunctions procAnim = new ProcAnimFunctions();
     // Start is called before the first frame update
@@ -11,11 +14,27 @@ public class ProceduralAnimBrain : MonoBehaviour
     {
         skeleton.Initialize();
     }
+  /*  TODO: this can work in the editor, but you need a copy of the default state! doin't use for now
+   *  private void OnEnable()
+    {
+        if(executeInEditor)
+        {
+            EditorApplication.update += WalkCycle;
+        }
+    }
+    private void OnDisable()
+    {
+       EditorApplication.update -= WalkCycle;
+    }
+    private void OnDestroy()
+    {
+       EditorApplication.update -= WalkCycle;
+    }*/
     public float curTime;
     public float speed=2f;
     public float extream = 1f;
     public float bobPower=1f;
-
+    public bool enableUpdate=true;
     // Update is called once per frame
     void Update()
     {
@@ -30,14 +49,20 @@ public class ProceduralAnimBrain : MonoBehaviour
     public Vector3 BodyBobXZY = new Vector3(0, 2f, 0);
     void WalkCycle()
     {
+        /*
+         * TODO:
+         * Instead of referencing the limb transforms, store in cutsom vectors and pass the results back using some sort of body wrapper class.
+         * Use this class(that doesn't exist yet) to store the initial position and use it to blend animations...
+         */
         //TODO: Move this in to a walk animation class!
-        curTime += speed * Time.deltaTime;
+        if(enableUpdate)curTime += speed * Time.deltaTime;
+
         //Root Bob: (Multiply cur time for double time bounce
         skeleton.Body.localPosition = new Vector3(skeleton.VectorDictinary[skeleton.Body].x, 
             skeleton.VectorDictinary[skeleton.Body].y 
             +(Mathf.Sin(curTime*2) * BodyBobXZY.y),
             skeleton.VectorDictinary[skeleton.Body].z) * bobPower;
-        //LEGS
+        //LEGSW
         RotateLimbsForWalk(skeleton.LegL,LegsXYZ,false);
         RotateLimbsForWalk(skeleton.LegR, LegsXYZ, true);
         //SPINE
