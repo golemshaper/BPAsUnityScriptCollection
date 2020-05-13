@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraFade : MonoBehaviour
 {
     private static CameraFade mInstance = null;
-
+   
     public GUIStyle backgroundStyle = new GUIStyle();                     
     public Texture2D fadeTexture;                                       
     public Color currentScreenOverlayColor = new Color(0, 0, 0, 0);
@@ -50,9 +50,11 @@ public class CameraFade : MonoBehaviour
     public float _testFadeTIme;
     public bool _testFadeMode;
 
+  
     public void StartFade(Color fadeColor, float fadeTime,bool doFadeIn)
     {
-        fadeInMode = doFadeIn;
+        currentScreenOverlayColor = fadeColor;
+         fadeInMode = doFadeIn;
         maxWaitTime = fadeTime;
         curentFadeTime = 0;
         holdScreen = false;
