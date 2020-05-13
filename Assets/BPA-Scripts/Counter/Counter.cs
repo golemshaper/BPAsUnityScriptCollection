@@ -42,7 +42,7 @@ namespace BPA.Gamedata
         }
         public void Sub(int subVal)
         {
-            Value += subVal;
+            Value -= subVal;
         }
         public void Mult(int mult)
         {

@@ -22,7 +22,7 @@ namespace BPA.Gamedata
                     modifyCounter.Add(value);
                     break;
                 case ModifyType.Sub:
-                    modifyCounter.Add(value);
+                    modifyCounter.Sub(value);
                     break;
                 case ModifyType.Mult:
                     modifyCounter.Mult(value);
