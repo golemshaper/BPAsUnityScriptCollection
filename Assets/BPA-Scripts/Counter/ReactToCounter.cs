@@ -9,7 +9,7 @@ namespace BPA.Gamedata
         public Counter watchCounter;
         public int value;
         public Counter getValueFromCounter;
-        public enum CompareType {Equals,LessThen,GreaterThen};
+        public enum CompareType {Equals,LessThen,LessThenOrEqual,GreaterThen,GreaterThenOrEqual};
         public CompareType compareType = CompareType.Equals;
         public GameObject[] enableIfMatch;
         public GameObject[] disableIfMatch;
@@ -32,6 +32,12 @@ namespace BPA.Gamedata
                     break;
                 case CompareType.GreaterThen:
                     if (watchCounter.Value > value) DoAction();
+                    break;
+                case CompareType.LessThenOrEqual:
+                    if (watchCounter.Value <= value) DoAction();
+                    break;
+                case CompareType.GreaterThenOrEqual:
+                    if (watchCounter.Value >= value) DoAction();
                     break;
             }
 

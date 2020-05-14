@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Ackk.GameEngine.Helpers;
 
 public class FlashObject : MonoBehaviour,IUpdateSlave 
 {
@@ -14,6 +15,10 @@ public class FlashObject : MonoBehaviour,IUpdateSlave
     public GameObject BlinkObject;
     public Renderer BlinkRenderer;
     public bool ActiveAtEnd = true;
+    [Header("START")]
+    public GameObject[] enableAtStart;
+    public GameObject[] disableAtStart;
+    [Header("END")]
     public GameObject[] enableAtEnd;
     public GameObject[] disableAtEnd;
     float curDelay=0f;
@@ -67,11 +72,14 @@ public class FlashObject : MonoBehaviour,IUpdateSlave
     public void BeginFlash(float lastsFor,float rate,bool showAtEnd)
     {
         BeginFlash(lastsFor,rate,showAtEnd,0f);
+
     }
     public void BeginFlash(float lastsFor,float rate,bool showAtEnd,float waitBeforeStarting)
     {
         if (isFlashing)
             return;
+        GameObjectOperations.EnableDisableGameObjects(enableAtStart, true);
+        GameObjectOperations.EnableDisableGameObjects(disableAtStart, false);
         delay = waitBeforeStarting;
         duration = lastsFor;
         frequency = rate;
@@ -100,8 +108,9 @@ public class FlashObject : MonoBehaviour,IUpdateSlave
         UpdateMaster.Deregister(this as IUpdateSlave);
         isFlashing = false;
 
-        Ackk.GameEngine.Helpers.GameObjectOperations.EnableDisableGameObjects(enableAtEnd, true);
-        Ackk.GameEngine.Helpers.GameObjectOperations.EnableDisableGameObjects(disableAtEnd,false);
+        GameObjectOperations.EnableDisableGameObjects(enableAtEnd, true);
+        GameObjectOperations.EnableDisableGameObjects(disableAtEnd,false);
+
         if (disableSelfAtEnd) this.gameObject.SetActive(false);
 
     }
@@ -115,6 +124,8 @@ public class FlashObject : MonoBehaviour,IUpdateSlave
                 return;
             UpdateMaster.Register(this as IUpdateSlave);
             isFlashing = true;
+            GameObjectOperations.EnableDisableGameObjects(enableAtStart, true);
+            GameObjectOperations.EnableDisableGameObjects(disableAtStart, false);
         }
     }
     void OnDisable()

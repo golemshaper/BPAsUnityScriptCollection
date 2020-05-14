@@ -11,12 +11,16 @@ public class ShootProjectile : MonoBehaviour
     public GameObject ShootWhileEnabled;
     public float fireRate = 0.1f;
     public bool enableUpdate = true;
-    
+    public bool desynchStartTime;
     // Start is called before the first frame update
     void Start()
     {
         projectileID = ObjectPool.instance.GetPoolID(projectileName);
         if (spawnLocation == null) spawnLocation = this.transform;
+        if(desynchStartTime)
+        {
+            timer = Random.Range(0, 2f);
+        }
     }
     void CreateBullet()
     {

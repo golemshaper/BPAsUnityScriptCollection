@@ -14,6 +14,9 @@ namespace BPA.Gamedata
         private int value;
         List<System.Action> onValueChanged = new List<System.Action>();
         public bool AutoSave = true;
+        public bool AutoLoad = true;
+        public bool reloadOrSetInitialOnEnable;
+        int initialVal = 0;
         public void SubscribeToValueChange(System.Action a)
         {
             onValueChanged.Add(a);
@@ -22,9 +25,28 @@ namespace BPA.Gamedata
         {
             onValueChanged.Add(a);
         }
+        private void Awake()
+        {
+            initialVal = value;
+        }
         private void Start()
         {
+            
+            if (!AutoLoad)
+            {
+              
+                return;
+            }
             Load();
+
+        }
+        private void OnEnable()
+        {
+            if(reloadOrSetInitialOnEnable)
+            {
+                if (AutoLoad) Load();
+                else Value = initialVal;
+            }
         }
         public int Value
         {
