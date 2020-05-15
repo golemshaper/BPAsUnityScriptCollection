@@ -16,7 +16,7 @@ public class SpawnViaPoolOnEnable : MonoBehaviour
     // Start is called before the first frame update
     void OnEnable()
     {
-        if (spawnID == null) Start();
+        if (spawnID == -1) Start();
         GameObject g= ObjectPool.instance.SpawnObject(spawnID, spawnPoint.position);
         if (g != null) g.transform.rotation = spawnPoint.rotation;
     }

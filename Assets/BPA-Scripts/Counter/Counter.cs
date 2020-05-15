@@ -55,6 +55,7 @@ namespace BPA.Gamedata
         }
         public void Set(int value)
         {
+            //set is vvalled by modifying Value 
             this.value = value;
             ValueChanged();
         }
