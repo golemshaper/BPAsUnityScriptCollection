@@ -7,7 +7,7 @@ using UnityEngine;
 public class DrawLineThroughChildren : MonoBehaviour
 {
     public LineRenderer lineRenderer;
-    Transform[] children;
+
     // Start is called before the first frame update
    /* void OnEnable()
     {
@@ -30,12 +30,13 @@ public class DrawLineThroughChildren : MonoBehaviour
     }
     void DrawLines()
     {
-        children = gameObject.GetComponentsInChildren<Transform>();
-
-        lineRenderer.positionCount = children.Length;
-        for(int i=0; i < children.Length; i++)
+        Transform[] children = gameObject.GetComponentsInChildren<Transform>();
+        List<Transform> childrenList = new List<Transform>(children);
+        childrenList.Remove(this.transform);
+        lineRenderer.positionCount = childrenList.Count;
+        for(int i=0; i < childrenList.Count; i++)
         {
-            lineRenderer.SetPosition(i, children[i].position);
+            lineRenderer.SetPosition(i, childrenList[i].position);
         }
     }
 }
