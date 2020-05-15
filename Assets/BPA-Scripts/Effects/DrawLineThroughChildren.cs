@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[ExecuteInEditMode]
+//[ExecuteInEditMode]
 public class DrawLineThroughChildren : MonoBehaviour
 {
     public LineRenderer lineRenderer;
     Transform[] children;
     // Start is called before the first frame update
-    void OnEnable()
+   /* void OnEnable()
     {
         //consider this:
         EditorApplication.update += DrawLines;
@@ -22,7 +22,7 @@ public class DrawLineThroughChildren : MonoBehaviour
     private void OnDestroy()
     {
         EditorApplication.update -= DrawLines;
-    }
+    }*/
     // Update is called once per frame
     void Update()
     {
