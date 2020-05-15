@@ -3,6 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 public static class GameMath
 {
+    //untested:
+    public static float LerpUnclamped(float a, float b, float t, bool overshootEnabled = false)
+    {
+        if (!overshootEnabled)
+            t = Mathf.Clamp01(t);
+        return t * b + (1 - t) * a;
+    }
+
     public static System.Random rand= new System.Random();
     //spring math
     public static float Spring(float start, float end, float value)
