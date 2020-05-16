@@ -27,6 +27,7 @@ public class ShootProjectile : MonoBehaviour
         //change timer 
         timer = fireRate;
         GameObject bullet = ObjectPool.instance.SpawnObject(projectileID, spawnLocation.position);
+        if (bullet == null) return; //pool is empty!
         bullet.transform.rotation = spawnLocation.rotation;
 
     }

@@ -4621,6 +4621,7 @@ GameObject:
   - component: {fileID: 1970945535}
   - component: {fileID: 1970945536}
   - component: {fileID: 1970945537}
+  - component: {fileID: 1970945538}
   m_Layer: 0
   m_Name: DialogueSystem
   m_TagString: Untagged
@@ -4731,6 +4732,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 495820e5ac31ada49b9f9dc98b41a152, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1970945538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1970945531}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc0928cd5a8f58e4e8b4b8533df9a8de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  comments:
+  - 'ini math function event reciever lets
+
+    you use small "scripting" in the
+    screen play
+
+    see example screenplays for details
+
+    Also requires
+
+    Common
+    System Script Reactions I think
+
+'
 --- !u!1 &1971261439
 GameObject:
   m_ObjectHideFlags: 0
