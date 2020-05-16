@@ -1525,7 +1525,6 @@ GameObject:
   m_Component:
   - component: {fileID: 566405005}
   - component: {fileID: 566405006}
-  - component: {fileID: 566405007}
   - component: {fileID: 566405008}
   m_Layer: 0
   m_Name: $GameManager
@@ -1547,6 +1546,7 @@ Transform:
   m_Children:
   - {fileID: 1482331006}
   - {fileID: 1970945532}
+  - {fileID: 1089954885}
   m_Father: {fileID: 1971261440}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1565,23 +1565,6 @@ MonoBehaviour:
   Player: {fileID: 1549434260}
   PlayerMovement: {fileID: 1549434262}
   pauseMovementOnReadDialogue: 1
---- !u!114 &566405007
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 566405004}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a45a276b471c3d9428d7c3d2643465f4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  FileName: SaveSlot0
-  doSave: 0
-  doLoad: 1
-  FileLocation: 
-  groups: []
 --- !u!114 &566405008
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2476,6 +2459,54 @@ MonoBehaviour:
   disable:
   - {fileID: 1212890934}
   invert: 0
+--- !u!1 &1089954884
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1089954885}
+  - component: {fileID: 1089954886}
+  m_Layer: 0
+  m_Name: SaveData
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1089954885
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089954884}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 566405005}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1089954886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089954884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a45a276b471c3d9428d7c3d2643465f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FileName: SaveSlot0
+  doSave: 0
+  doLoad: 1
+  FileLocation: 
+  groups: []
 --- !u!1 &1098455055
 GameObject:
   m_ObjectHideFlags: 0
