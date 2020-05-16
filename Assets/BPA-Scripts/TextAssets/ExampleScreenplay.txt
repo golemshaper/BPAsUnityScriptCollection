@@ -1,7 +1,11 @@
 HELLO.WORLD
+This is a comment. like in a screenplay, it has not trailing whitespace. It cannot be in all caps, or it will be a group instead.
 					@EnPeeSea
 		Hi, I'm EnPeeSee. I can say things!;
+				{Memory/SET(Variables,TalkedToNPC,EnPeeSea)}
+
 		And I can do it with multiple lines!!;
+						{Memory/ADD(Variables,TalkTotal,1)}
 		...;
 		.......;
 		Bye!;

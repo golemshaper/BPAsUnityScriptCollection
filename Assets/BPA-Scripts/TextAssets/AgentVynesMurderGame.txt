@@ -1,0 +1,162 @@
+GAME.BEGIN
+//Just a test by BP@ Based on a really shitty dream.
+//Note: Vynes is the player. Hustow is the sidekick.
+					HUSTOW
+	This is the third one this week...;
+	{Memory/SET(Variables,H,Hustow)}
+	{Memory/SET(Variables,V,Vynes)}
+	{Memory/SET(Variables,C,Chief Walsh)}
+//You can use these variables to refer to their names now if you want just use at and dollar sign followed by variable name. or just dollar sign if in the script itself.
+	I keep spilling these damn drinks.;
+					VYNES
+//Type in names like this (in all caps)
+	What did you say ©$H©?;
+					@Hustow
+//Or use the at symbol to have the name display exactly as you typed it.
+	It's these damn drinks I swear.;
+	You know, I think they make the lids shit on purpose ©$V©...;
+					@$V
+//If you don't want to worry about screwing up the spelling, then you can use a variable containing the name of the character (use dollar sign to read variable names)
+	I thought you meant the murders.;
+					@$H
+	What? No. There were only just the two of those.;
+					SYSTEM
+	Husto was now playing with his coffee soaked tie.;
+					@$V
+	Would you cut that shit out?;
+	We have a job to do;
+					SYSTEM
+	We slowly made our way to the tower entrance.;
+	We were going to be the second team at the crime scene.;
+	This was how things worked now.; Two teams working against each other.;
+	The |Police|, and |A.R.M.I|.;
+	I was with |A.R.M.I|, along with my partner, $H;
+	Inside this tower, a husband and wife were found murdered.;
+	They had been disintegrated by the |white light|.;
+	The police have been calling these white light attacks murder.;
+	I wasn't so sure at first.;
+	That is until I saw the damage myself.;
+	If this wasn't murder, then freak accidents were getting more sadistic.;
+	This was the second murder this week. Unless you were to count this as |two| murders...;
+	I wouldn't though. The victims both died at the same exact time.;
+					@$V
+	Any new details on this case I should know about?
+					@$H
+	A potential witness was found at the scene.;
+					SYSTEM
+	The last time we found a witness at a white light murder, they hadn't been much help.;
+	That's because they had lost their minds.; They only spoke in nonsense now.;
+					@$V
+	Shit. Who is this witness?;
+					@$H
+	Fuck if I know. The daughter I think. Some little kid- IX years old.;
+					SYSTEM
+	As we arrived, we were greeted by the |Chief of Police|, |Victor Walsh|.;
+					@$H
+	Ah, ©Chief Walsh©. Good to see you. Forgive my tie. Damn drinks again.;
+					@$C
+	Forget all that. Listen you two...;
+	About the witness. It's their daughter...;
+					PROMPT
+				What about her?=CHIEF.INQUIRE
+				Yeah, I've just heard.=CHIEF.DONTINQUIRE
+//Prompt will call open a menu that will link to the dialoge group after the equals sign. (Dont put a semi colon here)
+CHIEF.DONTINQUIRE
+					@$C
+	Well... I'll just let you get to it then shall I?;
+	Don't screw this up.;
+					GOTO
+	goto=CHIEF.INTRODUCE.CRIMESCENE
+CHIEF.INQUIRE
+					@$C
+	She's... Not well.
+					@$V
+	So... It's just like the others.;
+					@$C
+	I'm afraid it's worse. she was only IX years old after all.;
+	She won't speak at all.;	
+					GOTO
+	goto=CHIEF.INTRODUCE.CRIMESCENE
+CHIEF.INTRODUCE.CRIMESCENE
+					@$C
+	The victim is fragile. I'm sure you won't cause her any unwarranted stress.;
+					@$H
+	Hey, leave this part to us will you?;
+	We don't need the Police screwing up this case like the last one.;
+					@$C
+	Why you arog-;
+					@$V
+	Alright you two, don't do this here.;
+					@$C
+	You are right. I'm sorry. It's true that the Police aren't really trained for this sort of task.;
+	Just be gentle, will you?;
+	Oh, and before I leave.;
+	These are for you.;
+					SYSTEM
+	©$C handed over the crime scene photos.©
+					@$C
+	This is what the scene looked like before the |cleanup crew| arrived.;
+	SYSTEM
+	The |cleanup crew| was the first responding sub-team of the Police.;
+	They arrive even before the police to take a 4D photo set of the scene, and clean the place spotless.;
+	Once they are done, almost can't tell that a crime was committed.;
+	I used to work cleanup. I don't miss it.;
+					@$V
+	Thanks, we'll look over these.;
+					@$C
+	Make sure you do.; 
+	They should hold the key to this whole ordeal.;
+	That is, unless you still believe in eyewitnesses.
+					SYSTEM
+	©$C left the building.©;
+//the chief has left, now have them look over crime scene photos before talking to victim for first time.
+					GOTO
+	goto=CHIEF.INTRODUCE.CRIMESCENE.MENU
+CHIEF.INTRODUCE.CRIMESCENE.MENU
+	Let's see... I should
+	{System/Menu/RemoveAfterView}
+					PROMPT
+			Inspect Photographs=CHIEF.INTRODUCE.CRIMESCENE.CHOICE.PHOTOS
+			Talk to Hustow=CHIEF.INTRODUCE.CRIMESCENE.CHOICE.HUSTOW
+			Talk to witness=CHIEF.INTRODUCE.CRIMESCENE.CHOICE.WITNESS
+CHIEF.INTRODUCE.CRIMESCENE.CHOICE.PHOTOS
+	SYSTEM
+	...;
+	Todo: Finish this dialogue choice.;
+	{Memory/SET(Variables,HasSeenPhotos,1)}
+	{Memory/SET(Menu,Choice0,1)}
+//Remove menu choice 0 from options
+	GOTO
+	goto=CHIEF.INTRODUCE.CRIMESCENE.MENU
+
+CHIEF.INTRODUCE.CRIMESCENE.CHOICE.HUSTOW
+					@$H
+	...;
+	What's on you're mind $V?;
+	{Memory/SET(Menu,Choice1,1)}
+//Remove menu choice 1 from options
+	Todo: Finish this dialogue choice.;
+					GOTO
+	goto=CHIEF.INTRODUCE.CRIMESCENE.MENU
+CHIEF.INTRODUCE.CRIMESCENE.CHOICE.WITNESS
+	@$V
+	...;
+	Shall we talk to the witness?;
+	{if/Variables:HasSeenPhotos ==1 ? TALK.TO.WITNESS.WITH.PHOTOS : TALK.TO.WITNESS.WITHOUT.PHOTOS}
+
+TALK.TO.WITNESS.WITHOUT.PHOTOS
+				@$H
+	We should check out these photos first.;
+				GOTO
+	goto=CHIEF.INTRODUCE.CRIMESCENE.MENU
+TALK.TO.WITNESS.WITH.PHOTOS
+				@$H
+	Alright, let's get to it.;
+	SYSTEM
+	©We found the victim with the blahahabbajbab....©
+	...;
+	{Memory/CLEAR(Menu)}
+//Clear memory keys from Menu group to allow the choice menu to work again.
+				GOTO
+	goto=CHIEF.INTRODUCE.CRIMESCENE.MENU
+//Don't really goto in the final version of this group...
