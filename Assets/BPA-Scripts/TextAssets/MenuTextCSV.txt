@@ -1,0 +1,5 @@
+Group,English,OtherLanguage1,OtherLang2
+Default,Please type in the name of the group you need!
+NewGame,New Game
+LoadGame,Load Game
+QuitGame,Quit

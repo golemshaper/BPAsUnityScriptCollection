@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/BPA-Scenes/TitleScreenExample.unity
+    guid: 7950971d3968b2748a8e6dfe6e06330b
+  - enabled: 1
     path: Assets/Scenes/BPA-Scenes/PsychoBirdman.unity
     guid: 3d700015177afc74a88d6d0dfdcb0700
   m_configObjects: {}

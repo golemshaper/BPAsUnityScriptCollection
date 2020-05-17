@@ -3,9 +3,14 @@ using System.Collections;
 
 public class PlayerInput : MonoBehaviour,IUpdateSlave
 {
-	public static PlayerInput instance;
-	// Use this for initialization
-	void Awake () 
+    public static PlayerInput instance;
+
+    static PlayerInput CreateInstance()
+    {
+        return null;
+    }
+    // Use this for initialization
+    void Awake () 
 	{
 		if (instance == null)
 			instance = this;
@@ -124,20 +129,22 @@ public class PlayerInput : MonoBehaviour,IUpdateSlave
         return R1Hold;
     }
     bool lastR2State = false;
-   /* public bool GetR2Down()
-    {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            return true;
-        }
-        if (lastR2State != GetR2())
-        {
-            //axis 9
-            lastR2State = GetR2();
-            return lastR2State;
-        }
-        return false;
-    }*/
+
+  
+    /* public bool GetR2Down()
+{
+if (Input.GetKeyDown(KeyCode.F))
+{
+return true;
+}
+if (lastR2State != GetR2())
+{
+//axis 9
+lastR2State = GetR2();
+return lastR2State;
+}
+return false;
+}*/
 
     #region IUpdateSlave implementation
     public void DoUpdate()
