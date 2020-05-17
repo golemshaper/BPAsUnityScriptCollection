@@ -12,7 +12,6 @@ public class PlayerInput : MonoBehaviour,IUpdateSlave
     // Use this for initialization
     void Awake () 
 	{
-		if (instance == null)
 			instance = this;
 	}
 	public bool GetFire1_B()
