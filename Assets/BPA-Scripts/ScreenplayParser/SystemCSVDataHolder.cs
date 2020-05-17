@@ -7,7 +7,7 @@ public class SystemCSVDataHolder : MonoBehaviour
     public static SystemCSVDataHolder instance;
     public bool makeLocal=false;
     public TextAsset csvDataFile;
-    public CommaSeperatedValueParser csv;
+    public CommaSeperatedValueParser csv= new CommaSeperatedValueParser();
     // Start is called before the first frame update
     void Awake()
     {

@@ -1,9 +1,7 @@
 using System.Collections.Generic;
-[System.Serializable]
 public class CommaSeperatedValueParser
 {
     public Dictionary<string, string> csvStrings = new Dictionary<string, string>();
-   
     public void Parse(string SourceStr)
     {
         string[] splitByLine = SourceStr.Split("\n".ToCharArray());
