@@ -1,18 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
 [System.Serializable]
 public class CommaSeperatedValueParser
 {
-    [UnityEngine.Multiline(8)]public string SourceCSV;
     public Dictionary<string, string> csvStrings = new Dictionary<string, string>();
-    public void Parse()
-    {
-        Parse(SourceCSV);
-    }
+   
     public void Parse(string SourceStr)
     {
-        SourceCSV = SourceStr;
-        string[] splitByLine = SourceCSV.Split("\n".ToCharArray());
+        string[] splitByLine = SourceStr.Split("\n".ToCharArray());
         foreach(string s in splitByLine)
         {
             string[] subStr = s.Split(",".ToCharArray());
