@@ -125,7 +125,7 @@ namespace RPG.BPA
             if(Test1)
             {
                 Test1 = false;
-                CreatAction("Test #1:" + curTurn, 1f, null);
+                CreatAction("Test #1:" + curTurn, 1f, ()=> curTurn++);
             }
             switch (battleType)
             {
