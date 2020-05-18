@@ -14,7 +14,7 @@ public class IniGameMemory : MonoBehaviour
      * 
      */
     public static IniGameMemory instance;
-
+    public bool makeLocal;
     public string FileName = "SaveSlot0";
     const string extensionOfFile = ".ini";
     [Header("Data:")]
@@ -254,6 +254,7 @@ public class IniGameMemory : MonoBehaviour
         }
         return -1;
     }
+   
     //safe writers.....................................................................................
     public void WriteData(string group,string key,string data)
     {
@@ -373,6 +374,24 @@ public class IniGameMemory : MonoBehaviour
         {
             //key not found...
             return -1;
+        }
+        return groups[groupIndex].keys[keyIndex].intData;
+
+    }
+    public int GetDataValue(int group, string key, int defaultValue)
+    {
+        //group is an index instead. clean up idea: just make GetDataValue(string...) use this function and pass in the results of GetGroupIndex first
+        int groupIndex = group;
+        if (groupIndex == -1)
+        {
+            //group not found...
+            return defaultValue;
+        }
+        int keyIndex = GetKeyIndex(groupIndex, key);
+        if (keyIndex == -1)
+        {
+            //key not found...
+            return defaultValue;
         }
         return groups[groupIndex].keys[keyIndex].intData;
 
@@ -524,184 +543,4 @@ public class IniGameMemory : MonoBehaviour
         int gIndex = GetGroupIndex(groupName);
         groups[gIndex].SaveThisGroup = canSave;
     }
-}
-namespace Ackk.INI.Helpers
-{
-    [System.Serializable]
-    public class GroupData
-    {
-        public string name;
-        public GroupData(string str,bool enableSaving)
-        {
-            name = str;
-            SaveThisGroup = enableSaving;
-        }
-        public GroupData(string str)
-        {
-            name = str;
-            SaveThisGroup = true;
-        }
-        public GroupData()
-        {
-            name ="Default";
-            SaveThisGroup = true;
-        }
-        public bool SaveThisGroup = true;
-        public List<KeyData> keys= new List<KeyData>();
-    }
-    [System.Serializable]
-    public class KeyData
-    {
-        public KeyData()
-        {
-            strData = "-1";
-            intData = -1;
-        }
-        public KeyData(string keyName,string data)
-        {
-            name = keyName;
-            SetKeyData(data);
-        }
-        public KeyData(string keyName)
-        {
-            name = keyName;
-        }
-        public KeyData(string keyName,int data)
-        {
-            name = keyName;
-            SetKeyData(data);
-        }
-        public void SetKeyData(int data)
-        {
-            strData = data.ToString();
-            intData = data;
-        }
-        public void SetKeyData(string data)
-        {
-            strData = data;
-            int.TryParse(data, out intData);
-        }
-        public string name;
-        public string strData;
-        public int intData;
-    }
-    public static class INI
-    {
-        public static IniGameMemory Get()
-        {
-            return IniGameMemory.instance;
-        }
-        public static void Write(string groupName,string keyName,int value)
-        {
-            Get().WriteData(groupName, keyName, value);
-        }
-        public static void Write(string groupName,string keyName,string value)
-        {
-            Get().WriteData(groupName, keyName, value);
-        }
-        public static string workingGroupStr="Default";
-        public static void SetWorkingGroup(string group)
-        {
-            workingGroupStr=group;
-        }
-        public static void Write(string keyName,string value)
-        {
-            Get().WriteData(workingGroupStr, keyName, value);
-        }
-        public static void Write(string keyName,int value)
-        {
-            Get().WriteData(workingGroupStr, keyName, value);
-        }
-        public static void AddArray(string[] ary,char Delimiter)
-        {
-            Get().AddFromArray(workingGroupStr, ary, Delimiter);
-        }
-        public static void AddArray(string[] ary)
-        {
-            Get().AddFromArray(workingGroupStr, ary, ':');
-        }
-        public static List<GroupData> GetGroupINIDataFromString(string source,string groupBrackets,char dataSplit,char dataEnd,bool enableSaving)
-        {
-            //Simple INI parser in ~58 lines :)
-            List<GroupData> results = new List<GroupData>();
-            StringBuilder sb= new StringBuilder();
-
-            const int openBracket=0;
-            const int closeBracket=1;
-            const int equalsSign=2;
-            const int endLine=3;
-            const int key = 4;
-            const int value = 5;
-
-            int state = -1;
-            int currentGroup = -1;
-
-            if (dataSplit != '\n')
-            {
-                source.Replace('\n', ' ');
-            }
-            foreach (char c in source)
-            {
-                Debug.Log(c.ToString()+"state="+state);
-                if (c == groupBrackets[0])
-                {
-                    state = openBracket;
-                    currentGroup++;
-                    //continue here so the bracket is not a part of the name
-                    continue;
-                }
-                else if (c == groupBrackets[1])
-                {
-                    state = closeBracket;
-                    //do not use continue here;
-                }
-                else if (c == dataSplit)
-                {
-                    state = equalsSign;
-                    //do not use continue here;
-                }
-                else if (c == dataEnd)
-                {
-                    state = endLine;
-                    //do not use continue here;
-                }
-                switch (state)
-                {
-                    case openBracket:
-                        //begin building the group name
-                        sb.Append(c);
-                        break;
-                    case closeBracket:
-                        results.Add(new GroupData(sb.ToString().Trim(), enableSaving));
-                        //clear string builder
-                        sb.Length = 0;
-                        state = key;
-                        break;
-                    case equalsSign:
-                        results[currentGroup].keys.Add(new KeyData(sb.ToString().Trim(),"unknown"));
-                        //clear string builder
-                        sb.Length=0;
-                        state = value;
-                        break;
-                    case endLine:
-                        results[currentGroup].keys[results[currentGroup].keys.Count - 1].SetKeyData(sb.ToString().Trim());
-                        //clear string builder
-                        sb.Length = 0;
-                        state = key;
-                        break;
-                    case key:
-                        //build key name
-                        sb.Append(c);
-                        break;
-                    case value:
-                        //build key data
-                        sb.Append(c);
-                        break;
-                }
-            }
-            return results;
-        }
-    
-    }
-  
 }

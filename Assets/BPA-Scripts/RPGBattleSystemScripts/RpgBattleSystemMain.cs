@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Ackk.INI.Helpers;
 namespace RPG.BPA
 {
     public class RpgBattleSystemMain : MonoBehaviour
@@ -47,8 +47,12 @@ namespace RPG.BPA
          * I want this to be super easy to set up in a 2D or 3D game. 
          * 
          */
+
         [Header("TESTS")]
         public bool Test1;
+        [Header("Game Data")]
+        public TextAsset EnemyStatDefinitions;
+        public IniGeneralUse enemyStatsData;
 
         public static RpgBattleSystemMain instance;
         public enum BattleType { TurnBased, ATB, MultiTurnSpeedBased };
@@ -68,6 +72,8 @@ namespace RPG.BPA
         private void Awake()
         {
             instance = this;
+            enemyStatsData.MemoryFromIniString(EnemyStatDefinitions.text);
+
         }
         //Call when you create a new party layout.
         public void SetHeroPartyList(List<RPGActor> setHeroParty)
@@ -84,7 +90,7 @@ namespace RPG.BPA
             ememyParty = setEnemyParty;
             foreach(var a in ememyParty)
             {
-                a.LoadStatsFromStatsFile();
+                a.LoadStatsFromStatsFile(enemyStatsData);
             }
         }
         public void StartBattle()
@@ -216,12 +222,26 @@ namespace RPG.BPA
         //if its the player, non- key items can be stolen. maybe even add an option for enemies
         //to steal equipment you are wearing!
 
-        public void LoadStatsFromStatsFile(/*Add enemy stat lookup later*/)
+        public void LoadStatsFromStatsFile(IniGeneralUse iniStatsHolder)
         {
             //TODO: Load the stats from the stats file and place here!
             //If you have 2 stats pages and a level, use leveling curve and level input to interpolate between values for auto leveling.
-
+            int groupIndex = iniStatsHolder.GetGroupIndex(Name);
+            //hp
+            stats.hpMax = iniStatsHolder.GetDataValue(groupIndex, "hp",1);
             stats.hp = stats.GetMaxHP();
+            //mp
+            stats.mpMax = iniStatsHolder.GetDataValue(groupIndex, "mp",1);
+            stats.mp = stats.GetMaxMP();
+            //and the rest:
+            stats.str = iniStatsHolder.GetDataValue(groupIndex, "str", 1);
+            stats.def = iniStatsHolder.GetDataValue(groupIndex, "def", 1);
+            stats.spd = iniStatsHolder.GetDataValue(groupIndex, "spd", 1);
+            stats.wis = iniStatsHolder.GetDataValue(groupIndex, "wis", 1);
+            stats.luk = iniStatsHolder.GetDataValue(groupIndex, "luk", 1);
+            //TODO: Add equipment list to definition, but no need to add that to the stats.
+            //the GetAttack(), etc. functions will handle that.
+
         }
         public void LoadStatsFromSaveFile()
         {

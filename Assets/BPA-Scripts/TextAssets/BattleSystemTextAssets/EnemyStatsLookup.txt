@@ -1,0 +1,4 @@
+[Slime]
+	hp=4
+	def=1
+	spd=1
