@@ -404,6 +404,14 @@ public class IniGameMemory : MonoBehaviour
         if (data >= threshold) return true;
         return false;
     }
+    public bool GetDataBool(int group, string key)
+    {
+        //   Debug.Log(group+","+key + GetDataValue(group, key));
+        const int threshold = 1;
+        int data = GetDataValue(group, key,-1);
+        if (data >= threshold) return true;
+        return false;
+    }
     public bool GetDataBool(string group, string key,int threshold)
     {
         int data = GetDataValue(group, key);

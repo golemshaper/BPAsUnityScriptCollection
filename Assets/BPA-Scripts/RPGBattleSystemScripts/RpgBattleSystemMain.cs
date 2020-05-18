@@ -46,6 +46,13 @@ namespace RPG.BPA
          * Graphics will be able to be set up in a way that it auto-creates movement animation like squash stretch, and arc to jump to an enemy position.
          * I want this to be super easy to set up in a 2D or 3D game. 
          * 
+         * 
+         * 
+         * 
+         * Enemies should be no different from player characters.
+         * The skill menu should be able to read skills from enemies as well.
+         * This will enable things like monster collecting
+         * 
          */
 
         [Header("TESTS")]
@@ -59,9 +66,9 @@ namespace RPG.BPA
         [Header("Settings")]
         public BattleType battleType = BattleType.TurnBased;
         [Header("Current Data")]
-        List<RPGActor> heroParty = new List<RPGActor>();
-        List<RPGActor> ememyParty = new List<RPGActor>();
-        List<RPGActor> AllActors = new List<RPGActor>();
+        public List<RPGActor> heroParty = new List<RPGActor>();
+        public List<RPGActor> enemyParty = new List<RPGActor>();
+        public List<RPGActor> AllActors = new List<RPGActor>();
         public int curTurn = 0;
         string battlePrompt;
         //ACTIONS TO PERFORM
@@ -73,22 +80,31 @@ namespace RPG.BPA
         {
             instance = this;
             enemyStatsData.MemoryFromIniString(EnemyStatDefinitions.text);
-
+            //initialize default hero party. will be overriden by the party menu probably.
+            //this is really only being calleed here right now as a test. remove later:
+            MockData();
+        }
+        void MockData()
+        {
+            //initialize default hero party. will be overriden by the party menu probably.
+            //this is really only being calleed here right now as a test. remove later:
+            SetHeroPartyList(heroParty);
+            SetEnemyParty(enemyParty);
         }
         //Call when you create a new party layout.
         public void SetHeroPartyList(List<RPGActor> setHeroParty)
         {
             heroParty = setHeroParty;
-            foreach (var a in ememyParty)
+            foreach (var a in heroParty)
             {
-                a.LoadStatsFromSaveFile();
+                a.LoadStatsFromSaveFile(enemyStatsData);
             }
         }
         //Call before start battle!
         public void SetEnemyParty(List<RPGActor> setEnemyParty)
         {
-            ememyParty = setEnemyParty;
-            foreach(var a in ememyParty)
+            enemyParty = setEnemyParty;
+            foreach(var a in enemyParty)
             {
                 a.LoadStatsFromStatsFile(enemyStatsData);
             }
@@ -96,6 +112,12 @@ namespace RPG.BPA
         public void StartBattle()
         {
             curTurn = 0;
+            //add all to the acting actors list:
+            AllActors.AddRange(enemyParty);
+            foreach(RPGActor a in heroParty)
+            {
+                if (a.isInParty) AllActors.Add(a);
+            }
         }
         void SetUpBattleActors()
         {
@@ -215,9 +237,17 @@ namespace RPG.BPA
     [System.Serializable]
     public class RPGActor
     {
+        /*
+         * Acotrs should be things that are subscribed to by the health UI elements, and by the characte model that
+         * needs to do the actual animation. Maybe a component like RPGActorWatcher should be made to interface with the unity objects.
+         * 
+         * ideally this system could be used to make a game that doesn't need a separate battle screen, or one that has a separate battle screen.
+         * designers choice.
+         */
         public string Name; //name used internally, like in the save file
         public string displayName; //name displayed for current language
         public StatsPage stats;
+        public bool isInParty=true;
         //Add a list of items that can be stolen to stats definition if it's an enemy.
         //if its the player, non- key items can be stolen. maybe even add an option for enemies
         //to steal equipment you are wearing!
@@ -227,6 +257,8 @@ namespace RPG.BPA
             //TODO: Load the stats from the stats file and place here!
             //If you have 2 stats pages and a level, use leveling curve and level input to interpolate between values for auto leveling.
             int groupIndex = iniStatsHolder.GetGroupIndex(Name);
+            //lvl
+            stats.lvl = iniStatsHolder.GetDataValue(groupIndex, "lvl", 1);
             //hp
             stats.hpMax = iniStatsHolder.GetDataValue(groupIndex, "hp",1);
             stats.hp = stats.GetMaxHP();
@@ -235,17 +267,52 @@ namespace RPG.BPA
             stats.mp = stats.GetMaxMP();
             //and the rest:
             stats.str = iniStatsHolder.GetDataValue(groupIndex, "str", 1);
+            stats.str += iniStatsHolder.GetDataValue(groupIndex, "atk", 1); //just in case I use atk instead of str...
             stats.def = iniStatsHolder.GetDataValue(groupIndex, "def", 1);
             stats.spd = iniStatsHolder.GetDataValue(groupIndex, "spd", 1);
             stats.wis = iniStatsHolder.GetDataValue(groupIndex, "wis", 1);
             stats.luk = iniStatsHolder.GetDataValue(groupIndex, "luk", 1);
+            //this doesn't matter if it is an enemy:
+            isInParty = iniStatsHolder.GetDataBool(groupIndex, "isInParty");
             //TODO: Add equipment list to definition, but no need to add that to the stats.
             //the GetAttack(), etc. functions will handle that.
 
         }
-        public void LoadStatsFromSaveFile()
+        public void LoadStatsFromSaveFile(IniGeneralUse fallbackIni)
         {
-            //TODO: Load stats from the save file.
+            //unlike the enemy stats, this uses the main save file.
+            //be sure to write party stats to that file at the start of the game!
+            //consider passing in the enemy stats page with default hero stats.
+            //and reading from that in the event that the group index is not found (-1) it could
+            //be an easy way to auto initialize things, and keep all actor definitions in a single file.
+            if(IniGameMemory.instance==null)
+            {
+                LoadStatsFromStatsFile(fallbackIni);
+                return;
+            }
+            int groupIndex = INI.Get().GetGroupIndex(Name);
+            if(groupIndex==-1)
+            {
+                LoadStatsFromStatsFile(fallbackIni);
+                return;
+            }
+            //lvl
+            stats.lvl = INI.Get().GetDataValue(groupIndex, "lvl", 1);
+            //hp
+            stats.hpMax = INI.Get().GetDataValue(groupIndex, "hp", 1);
+            stats.hp = stats.GetMaxHP();
+            //mp
+            stats.mpMax = INI.Get().GetDataValue(groupIndex, "mp", 1);
+            stats.mp = stats.GetMaxMP();
+            //and the rest:
+            stats.str = INI.Get().GetDataValue(groupIndex, "str", 1);
+            stats.str += INI.Get().GetDataValue(groupIndex, "atk", 1);  //just in case I use atk instead of str... old habits
+            stats.def = INI.Get().GetDataValue(groupIndex, "def", 1);
+            stats.spd = INI.Get().GetDataValue(groupIndex, "spd", 1);
+            stats.wis = INI.Get().GetDataValue(groupIndex, "wis", 1);
+            stats.luk = INI.Get().GetDataValue(groupIndex, "luk", 1);
+
+            isInParty = INI.Get().GetDataBool(groupIndex, "isInParty");
         }
 
     }
