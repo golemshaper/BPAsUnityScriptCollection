@@ -7,6 +7,12 @@ using System.IO;
 
 public class IniGameMemory : MonoBehaviour 
 {
+
+    /*
+     * TODO: Make a serializable non monobehavior ini reader that can be used as an object in other classes.
+     * then make this class just a wrapper that interacts with that class instead.
+     * 
+     */
     public static IniGameMemory instance;
 
     public string FileName = "SaveSlot0";

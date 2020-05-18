@@ -7,12 +7,38 @@ public class LoadSceneOnEnable : MonoBehaviour
 {
     public string loadScene;
     public bool additive=false; //not done yet.
+    public string tagName = "Default";
+
     public bool resetGame;
     public bool resetLevel;
-    public string tagName = "Default";
+   
+    [Header("Advance")]
+    public bool unloadScene;
     private void OnEnable()
     {
-        if(GameManager.instance==null)
+        if(unloadScene)
+        {
+            DoUnloadScene();
+        }
+        else
+        {
+            DoLoadScene();
+        }
+    }
+    void DoUnloadScene()
+    {
+        if (GameManager.instance == null)
+        {
+            StartCoroutine(UnloadAScene(loadScene));
+        }
+        else
+        {
+            GameManager.instance.StartCoroutine(UnloadAScene(loadScene));
+        }
+    }
+    void DoLoadScene()
+    {
+        if (GameManager.instance == null)
         {
             LoadWithoutGameManager();
         }
@@ -74,5 +100,31 @@ public class LoadSceneOnEnable : MonoBehaviour
         }
         yield break;
     }
+    IEnumerator UnloadAScene(string sceneName)
+    {
 
+        float waitTime = 0.5f;
+        CameraFade.instance.StartFade(Color.black, waitTime, false);
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        while (waitTime > 0f)
+        {
+            waitTime -= Time.deltaTime;
+            yield return null;
+        }
+        AsyncOperation asyncLoad = SceneManager.UnloadSceneAsync(sceneName);
+        // Wait until the asynchronous scene fully loads
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+   
+        waitTime = 0.5f;
+        CameraFade.instance.StartFade(Color.black, waitTime, true);
+        while (waitTime > 0f)
+        {
+            waitTime -= Time.deltaTime;
+            yield return null;
+        }
+        yield break;
+    }
 }

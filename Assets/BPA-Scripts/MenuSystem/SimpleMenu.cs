@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class SimpleMenu : MonoBehaviour
 {
+    /*
+     * TODO: create a non monobehavior version of this class.
+     * No need to make a wraper if this is already in use...
+     */
     [Header("Main Settings")]
     public SimpleMenuMaster driveByMaster;
     public bool disableOnClose=true;

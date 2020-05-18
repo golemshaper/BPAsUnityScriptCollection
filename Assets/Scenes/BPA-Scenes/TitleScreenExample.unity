@@ -406,8 +406,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   makeLocal: 0
   csvDataFile: {fileID: 4900000, guid: 2977ca8fda1da0141a0eafde8d17c6fe, type: 3}
-  csv:
-    SourceCSV: 
 --- !u!1 &640128917
 GameObject:
   m_ObjectHideFlags: 0
@@ -506,7 +504,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf38510bcf5dad04aa91739919fd73d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forceLocal: 1
 --- !u!4 &840035111
 Transform:
   m_ObjectHideFlags: 0
