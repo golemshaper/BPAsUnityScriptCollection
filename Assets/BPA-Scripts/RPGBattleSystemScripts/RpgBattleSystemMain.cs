@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Ackk.INI.Helpers;
+
+
 namespace RPG.BPA
 {
     public class RpgBattleSystemMain : MonoBehaviour
@@ -60,16 +62,20 @@ namespace RPG.BPA
         [Header("Game Data")]
         public TextAsset EnemyStatDefinitions;
         public IniGeneralUse enemyStatsData;
+        public TextAsset battleMessages;
+        public CommaSeperatedValueParser battleMessage_csv= new CommaSeperatedValueParser();
 
         public static RpgBattleSystemMain instance;
         public enum BattleType { TurnBased, ATB, MultiTurnSpeedBased };
         [Header("Settings")]
         public BattleType battleType = BattleType.TurnBased;
         [Header("Current Data")]
+        public int curTurn = 0;
+
         public List<RPGActor> heroParty = new List<RPGActor>();
         public List<RPGActor> enemyParty = new List<RPGActor>();
         public List<RPGActor> AllActors = new List<RPGActor>();
-        public int curTurn = 0;
+        public List<string> battleLog= new List<string>();
         string battlePrompt;
         //ACTIONS TO PERFORM
         public List<ActionNode> actionQueue = new List<ActionNode>();
@@ -80,6 +86,7 @@ namespace RPG.BPA
         {
             instance = this;
             enemyStatsData.MemoryFromIniString(EnemyStatDefinitions.text);
+            battleMessage_csv.Parse(battleMessages.text);
             //initialize default hero party. will be overriden by the party menu probably.
             //this is really only being calleed here right now as a test. remove later:
             MockData();
@@ -90,6 +97,8 @@ namespace RPG.BPA
             //this is really only being calleed here right now as a test. remove later:
             SetHeroPartyList(heroParty);
             SetEnemyParty(enemyParty);
+            
+            StartBattle();
         }
         //Call when you create a new party layout.
         public void SetHeroPartyList(List<RPGActor> setHeroParty)
@@ -106,18 +115,49 @@ namespace RPG.BPA
             enemyParty = setEnemyParty;
             foreach(var a in enemyParty)
             {
+                a.useAI=true; //enemies use AI.
                 a.LoadStatsFromStatsFile(enemyStatsData);
             }
         }
         public void StartBattle()
         {
+            //clear last battle log.
+            battleLog.Clear();
             curTurn = 0;
+
+            //setup default AI targets...
+            foreach (RPGActor a in heroParty)
+            {
+                a.LoadDiplayName();
+                a.ai.SetTargets(enemyParty);
+            }
+            foreach (RPGActor a in enemyParty)
+            {
+                a.ai.SetTargets(heroParty);
+                a.LoadDiplayName();
+                WriteToPrompt(String.Format(battleMessage_csv.GetCSVData("EnemyAppears"), a.displayName));
+            }
             //add all to the acting actors list:
-            AllActors.AddRange(enemyParty);
-            foreach(RPGActor a in heroParty)
+
+            //Add hero's that are in party to the list:
+            foreach (RPGActor a in heroParty)
             {
                 if (a.isInParty) AllActors.Add(a);
             }
+            //Add the enemy list
+            AllActors.AddRange(enemyParty);
+            //SORT SPEED:
+            //LINQ version: AllActors = AllActors.OrderBy(o => o.stats.spd).ToList();
+            //Non-Linq sort by speed:
+            AllActors.Sort((y,x) => x.stats.spd.CompareTo(y.stats.spd));
+
+
+            allowUpdate = true;
+        }
+        public void EndBattle()
+        {
+            //battle clean up here...
+            allowUpdate = false;
         }
         void SetUpBattleActors()
         {
@@ -125,35 +165,38 @@ namespace RPG.BPA
             //populate target menus
             //TODO: 
         }
-        public void CreatAction(string message, float delay, Action nAction)
+        public void CreatAction(string message, float delay, Action nAction,Action endAction)
         {
             if (actionPool.Count > 0)
             {
                 //use pool
-                actionPool[0].Setup(message, delay, nAction);
+                actionPool[0].Setup(message, delay, nAction, endAction);
                 actionQueue.Add(actionPool[0]);
                 actionPool.Remove(actionPool[0]);
                 return;
             }
             //if not enough in pool, expand pool size!
-            actionQueue.Add(new ActionNode(message, delay, nAction));
+            actionQueue.Add(new ActionNode(message, delay, nAction, endAction));
         }
-        public void TurnEnd()
+        public void EndTurn()
         {
             curTurn++;
-            if (curTurn > AllActors.Count) curTurn = 0;
+            if (curTurn >= AllActors.Count) curTurn = 0;
+            actorTurnLimitOnce = false;
         }
         public void ConsumeAction()
         {
             actionPool.Add(actionQueue[0]);
             actionQueue.Remove(actionQueue[0]);
         }
+        bool allowUpdate = false;
         private void Update()
         {
+            if (!allowUpdate) return;
             if(Test1)
             {
                 Test1 = false;
-                CreatAction("Test #1:" + curTurn, 1f, ()=> curTurn++);
+                CreatAction("Test #1:" + curTurn, 1f, null,null);
             }
             switch (battleType)
             {
@@ -166,17 +209,42 @@ namespace RPG.BPA
                     break;
             }
         }
+        //write a message that the player can see. Either YIIK style (Do this by writing damage as an action node), or Breath of Fire IV style (The Default).
+        private void SetDisplayString(string input)
+        {
+            battlePrompt = input;
+            //a log of all commands. clear at start of battle
+            battleLog.Add(input);
+        }
+        //create a new action that displays txt to the player
+        public void WriteToPrompt(string input)
+        {
+            CreatAction(input, 1f, null,null);
+        }
+        bool actorTurnLimitOnce=false;
         void TurnBasedUpdate()
         {
             //TODO: Define a battle update loop here.
             if (actionQueue.Count > 0)
             {
-                //has actions to resolve
+                //has actions to resolve:
                 ActionAndMessageUpdate();
             }
             else
             {
-
+                if (actorTurnLimitOnce == false)
+                {
+                    //set false on end of turn...
+                    actorTurnLimitOnce = true;
+                    //only once at start of turn
+                    AllActors[curTurn].StartOfTurn();
+                   
+                }
+                else
+                {
+                    //Constant Update
+                    AllActors[curTurn].ActorUpdate();
+                }
             }
         }
         void ActionAndMessageUpdate()
@@ -184,7 +252,8 @@ namespace RPG.BPA
        
             if (actionQueue[0].limitOnce == false)
             {
-
+                //AT START OF TURN, DO THINGS
+                SetDisplayString(actionQueue[0].message);
             }
             actionQueue[0].ActionUpdate();
             
@@ -196,28 +265,34 @@ namespace RPG.BPA
         public float delay = 1f;
         public string message = "...";
         public Action doAction;
+        public Action doActionOnEnd;
         public bool limitOnce = false;
         public ActionNode()
         {
             //default constructor
         }
-        public ActionNode(string nMessage, float nDelay, Action nAction)
+        public ActionNode(string nMessage, float nDelay, Action nAction, Action endAction)
         {
-            Setup(nMessage, nDelay, nAction);
+            Setup(nMessage, nDelay, nAction,endAction);
         }
-        public void Setup(string nMessage,float nDelay, Action nAction)
+        public void Setup(string nMessage,float nDelay, Action nAction,Action endAction)
         {
             delay = nDelay;
             message = nMessage;
             doAction = nAction;
+            doActionOnEnd = endAction;
             limitOnce = false;
+        }
+        public virtual void OnStartOfAction()
+        {
+            if (doAction != null) doAction();
         }
         public virtual void ActionUpdate()
         {
             //Not sure if I'll use delagates or have skills derrived from ActionNode. We'll see...
             if (!limitOnce)
             {
-               if(doAction!=null) doAction();
+                OnStartOfAction();
                 limitOnce = true;
             }
             //by default when they delay ends, the turn is over.
@@ -225,11 +300,12 @@ namespace RPG.BPA
             delay -= Time.deltaTime;
             if(delay<=0)
             {
-                EndAction();
+                ConsumeMessage();
             }
         }
-        public void EndAction()
+        public void ConsumeMessage()
         {
+            if(doActionOnEnd!=null) doActionOnEnd();
             RpgBattleSystemMain.instance.ConsumeAction();
         }
     }
@@ -244,10 +320,46 @@ namespace RPG.BPA
          * ideally this system could be used to make a game that doesn't need a separate battle screen, or one that has a separate battle screen.
          * designers choice.
          */
-        public string Name; //name used internally, like in the save file
+        public string name; //name used internally, like in the save file
         public string displayName; //name displayed for current language
         public StatsPage stats;
         public bool isInParty=true;
+
+        public RPG_AI ai= new RPG_AI();
+        public bool useAI = false;
+
+        public void LoadDiplayName()
+        {
+            //get localized name!
+            displayName = name;
+        }
+
+        public void StartOfTurn()
+        {
+            //TODO: Start of turn stuff.
+            //proccess status aliments here.
+            //add poison, stone, confusion, silence etc.
+            //count down and remove ailments as needed.
+            // pull open menu, or use AI;
+            if(useAI)
+            {
+                ai.DoAction(this);
+            }
+            else
+            {
+                //only do this if you aren't confused, otherwise use AI, but set targets to hero party...
+                //or maybe chose a random skill, chose a random target, and use it! even allow item consumption maybe.
+                //give rare items a never use in confusion attribute or something if you don't want to be a dick (not made yet)
+                 ai.DoAction(this); //USE AI FOR NOW UNTIL A HUMAN INTERFACE IS MADE!   <REMOVE THIS LINE TO ACCEPT INPUT FROM PLAYER INSTEAD>
+                //Make it so that hero party members can also be set too AI! load that from save file.
+               
+            }
+        }
+        public void ActorUpdate()
+        {
+            //TODO READ MENU INPUT RESULT HERE? Either that or send a command with the menu via some function
+        }
+        
         //Add a list of items that can be stolen to stats definition if it's an enemy.
         //if its the player, non- key items can be stolen. maybe even add an option for enemies
         //to steal equipment you are wearing!
@@ -256,7 +368,7 @@ namespace RPG.BPA
         {
             //TODO: Load the stats from the stats file and place here!
             //If you have 2 stats pages and a level, use leveling curve and level input to interpolate between values for auto leveling.
-            int groupIndex = iniStatsHolder.GetGroupIndex(Name);
+            int groupIndex = iniStatsHolder.GetGroupIndex(name);
             //lvl
             stats.lvl = iniStatsHolder.GetDataValue(groupIndex, "lvl", 1);
             //hp
@@ -290,7 +402,7 @@ namespace RPG.BPA
                 LoadStatsFromStatsFile(fallbackIni);
                 return;
             }
-            int groupIndex = INI.Get().GetGroupIndex(Name);
+            int groupIndex = INI.Get().GetGroupIndex(name);
             if(groupIndex==-1)
             {
                 LoadStatsFromStatsFile(fallbackIni);
@@ -363,6 +475,74 @@ namespace RPG.BPA
         {
             //TODO: combine with stats from equipment!
             return luk;
+        }
+    }
+    [System.Serializable]
+    public class RPG_AI
+    {
+        [NonSerialized]
+        private List<RPGActor> targets= new List<RPGActor>();
+        [NonSerialized]
+        private Skill attack = new AttackActionStd();
+
+        public void SetTargets(List<RPGActor> nTargets)
+        {
+            targets=nTargets;
+        }
+        public void DoAction(RPGActor myActor)
+        {
+            //TODO: Select a target(s) via gambit conditions
+            //TODO: Do action based on AI gambit settings.
+            //create test action!
+            /*  RpgBattleSystemMain.instance.CreatAction(myActor.Name+" attacks!", 1f,null,null);
+              Action endTurn = () => RpgBattleSystemMain.instance.EndTurn();
+              RpgBattleSystemMain.instance.CreatAction(myActor.Name + " does " +myActor.stats.GetAttack() + " DMG!",1f,null, endTurn);
+              */
+            //Really what should happen is that the skill should be pushed to the queue, but I don't know if that can work with the pool.
+            //maybe the ActionNode should just be able to hold a skill and a skill can be its own thing.
+            //so for now I'll just simulate it and I'll probably make AttackActionStd NOT inherit ActionNode...
+            attack.SetMyActor(myActor);
+            attack.SetTargets(targets);
+            attack.OnStartOfAction();
+        }
+    }
+    public class Skill
+    {
+        [HideInInspector]
+        public RPGActor myActor;
+        [HideInInspector]
+        public  List<RPGActor>targets;
+        //SKILL not sure if SKILL will have any base...
+        public virtual void SetMyActor(RPGActor nActor)
+        {
+            myActor = nActor;
+        }
+        public virtual void SetTargets(List<RPGActor>nTargets)
+        {
+            targets = nTargets;
+        }
+        public virtual void OnStartOfAction()
+        {
+
+        }
+
+
+    }
+    public class AttackActionStd: Skill
+    {
+        public override void OnStartOfAction()
+        {
+            //{hero} attacks!
+            string getMessage = RpgBattleSystemMain.instance.battleMessage_csv.GetCSVData("AttacksMsg");
+            string msg = String.Format(getMessage, myActor.displayName, targets[0].displayName);
+            RpgBattleSystemMain.instance.CreatAction(msg, 1f, null, null);
+    
+            Action endTurn = () => RpgBattleSystemMain.instance.EndTurn();
+            //{slime} takes, {1} DMG!
+            getMessage = RpgBattleSystemMain.instance.battleMessage_csv.GetCSVData("DamageMsg");
+            msg = String.Format(getMessage, targets[0].displayName, myActor.stats.GetAttack().ToString());
+
+            RpgBattleSystemMain.instance.CreatAction(msg, 1f, null, endTurn);
         }
     }
 

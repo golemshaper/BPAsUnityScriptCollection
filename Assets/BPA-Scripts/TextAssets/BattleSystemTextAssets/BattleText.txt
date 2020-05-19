@@ -1,0 +1,4 @@
+Group,English
+EnemyAppears,{0} draws near!
+AttacksMsg,{0} attacks {1}!
+DamageMsg,{0} takes {1} DMG!
