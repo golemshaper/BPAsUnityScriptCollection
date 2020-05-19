@@ -9,7 +9,7 @@ public class CopyPosition : MonoBehaviour,IUpdateSlave {
     Vector3 coordinates=Vector3.zero;
    
     public bool x,y,z;
-    [SerializeField] bool onlyOnEnable;
+    [SerializeField] bool onlyOnEnable=false;
     #region IUpdateSlave implementation
     public void DoUpdate()
     {

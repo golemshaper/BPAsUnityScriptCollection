@@ -64,23 +64,23 @@ public class PlayerInput : MonoBehaviour,IUpdateSlave
     {
         return rawMove;
     }
-    bool fire1;
-    bool fire1Hold;
-    bool fire2;
-    bool fire2Hold;
-    bool fire3;
-	bool fire3Hold;
-    bool fire4;
-    bool fire4Hold;
-    bool L1;
-    bool L2Hold;
-    bool L2;
-    bool R2Hold;
-    bool R2;
-    bool R1;
-    bool R1Hold;
-    Vector2 move;
-    Vector2 rawMove;
+    bool fire1=false;
+    bool fire1Hold=false;
+    bool fire2=false;
+    bool fire2Hold=false;
+    bool fire3=false;
+	bool fire3Hold=false;
+    bool fire4=false;
+    bool fire4Hold=false;
+    bool L1=false;
+    //bool L2Hold=false;
+    //bool L2=false;
+    //bool R2Hold=false;
+    //bool R2=false;
+    bool R1=false;
+    bool R1Hold=false;
+    Vector2 move=Vector2.zero;
+    Vector2 rawMove=Vector2.zero;
     const string TriggerL2 = "TriggerL2";
     const string TriggerR2 = "TriggerR2";
   /*  public bool GetL2()
@@ -127,7 +127,7 @@ public class PlayerInput : MonoBehaviour,IUpdateSlave
     {
         return R1Hold;
     }
-    bool lastR2State = false;
+    //bool lastR2State = false;
 
   
     /* public bool GetR2Down()

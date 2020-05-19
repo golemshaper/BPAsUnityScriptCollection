@@ -14,7 +14,7 @@ public class LocalLookForPlayer : MonoBehaviour
     // Start is called before the first frame update
     [Tooltip("Show the Player character and game UI")]
     public bool requestPlayer = true;
-    [SerializeField] TagLocation[] allTaggedLocations;
+    [SerializeField] TagLocation[] allTaggedLocations= { };
     void Awake()
     {
         if(GameManager.instance==null)

@@ -10,7 +10,7 @@ public class ObjectPool : MonoBehaviour
     [SerializeField]
     private bool makeLocal=false;
     [SerializeField]
-    private bool doNotPopulatePools;
+    private bool doNotPopulatePools=false;
     public ObjectPoolEntry[] objectPools;
 
     // Awake is called before the first frame update
