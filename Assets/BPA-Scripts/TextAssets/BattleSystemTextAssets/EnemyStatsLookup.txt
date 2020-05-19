@@ -13,4 +13,4 @@
 	hp=4
 	atk=1
 	def=1
-	spd=1
+	spd=6

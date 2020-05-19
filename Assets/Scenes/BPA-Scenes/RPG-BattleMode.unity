@@ -238,39 +238,123 @@ MonoBehaviour:
     type: 3}
   enemyStatsData:
     groups: []
+  battleMessages: {fileID: 4900000, guid: 74b0c94c9e06a034296f5862544f095d, type: 3}
   battleType: 0
-  heroParty:
-  - Name: Hero
-    displayName: 
-    stats:
-      lvl: 0
-      hpMax: 0
-      hp: 0
-      mpMax: 0
-      mp: 0
-      str: 0
-      def: 0
-      spd: 0
-      wis: 0
-      luk: 0
-    isInParty: 0
-  enemyParty:
-  - Name: Slime
-    displayName: 
-    stats:
-      lvl: 0
-      hpMax: 0
-      hp: 0
-      mpMax: 0
-      mp: 0
-      str: 0
-      def: 0
-      spd: 0
-      wis: 0
-      luk: 0
-    isInParty: 0
-  AllActors: []
   curTurn: 0
+  heroParty:
+  - name: Hero
+    displayName: 
+    stats:
+      lvl: 0
+      hpMax: 0
+      hp: 0
+      mpMax: 0
+      mp: 0
+      str: 0
+      def: 0
+      spd: 0
+      wis: 0
+      luk: 0
+    isInParty: 0
+    ai:
+      targets: []
+      attack:
+        myActor:
+          name: 
+          displayName: 
+          stats:
+            lvl: 0
+            hpMax: 1
+            hp: 1
+            mpMax: 1
+            mp: 1
+            str: 1
+            def: 1
+            spd: 1
+            wis: 1
+            luk: 1
+          isInParty: 1
+          ai:
+            targets: []
+            attack:
+              myActor:
+                name: 
+                displayName: 
+                stats:
+                  lvl: 0
+                  hpMax: 1
+                  hp: 1
+                  mpMax: 1
+                  mp: 1
+                  str: 1
+                  def: 1
+                  spd: 1
+                  wis: 1
+                  luk: 1
+                isInParty: 1
+                useAI: 0
+              targets: []
+          useAI: 0
+        targets: []
+    useAI: 0
+  enemyParty:
+  - name: Slime
+    displayName: 
+    stats:
+      lvl: 0
+      hpMax: 0
+      hp: 0
+      mpMax: 0
+      mp: 0
+      str: 0
+      def: 0
+      spd: 0
+      wis: 0
+      luk: 0
+    isInParty: 0
+    ai:
+      targets: []
+      attack:
+        myActor:
+          name: 
+          displayName: 
+          stats:
+            lvl: 0
+            hpMax: 1
+            hp: 1
+            mpMax: 1
+            mp: 1
+            str: 1
+            def: 1
+            spd: 1
+            wis: 1
+            luk: 1
+          isInParty: 1
+          ai:
+            targets: []
+            attack:
+              myActor:
+                name: 
+                displayName: 
+                stats:
+                  lvl: 0
+                  hpMax: 1
+                  hp: 1
+                  mpMax: 1
+                  mp: 1
+                  str: 1
+                  def: 1
+                  spd: 1
+                  wis: 1
+                  luk: 1
+                isInParty: 1
+                useAI: 0
+              targets: []
+          useAI: 0
+        targets: []
+    useAI: 0
+  AllActors: []
+  battleLog: []
   actionQueue: []
   actionPool: []
 --- !u!4 &1529831232
