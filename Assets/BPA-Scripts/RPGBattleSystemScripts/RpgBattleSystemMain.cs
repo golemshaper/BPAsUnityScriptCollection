@@ -59,6 +59,9 @@ namespace RPG.BPA
 
         [Header("TESTS")]
         public bool Test1;
+        [Header("Setup")]
+        public StringWriter promptDisplay;
+        public StringWriter previousPromptDisplay;
         [Header("Game Data")]
         public TextAsset EnemyStatDefinitions;
         public IniGeneralUse enemyStatsData;
@@ -76,7 +79,7 @@ namespace RPG.BPA
         public List<RPGActor> enemyParty = new List<RPGActor>();
         public List<RPGActor> AllActors = new List<RPGActor>();
         public List<string> battleLog= new List<string>();
-        string battlePrompt;
+        string battlePrompt=string.Empty;
         //ACTIONS TO PERFORM
         public List<ActionNode> actionQueue = new List<ActionNode>();
         //maybe re-use actions so you don't need to use the New keyword!
@@ -212,7 +215,11 @@ namespace RPG.BPA
         //write a message that the player can see. Either YIIK style (Do this by writing damage as an action node), or Breath of Fire IV style (The Default).
         private void SetDisplayString(string input)
         {
+            //move old prompt to the old message display if availible
+            if (previousPromptDisplay != null) previousPromptDisplay.SetText(battlePrompt);
+
             battlePrompt = input;
+           if(promptDisplay!=null) promptDisplay.SetText(input);
             //a log of all commands. clear at start of battle
             battleLog.Add(input);
         }
@@ -326,6 +333,11 @@ namespace RPG.BPA
           * 
           * AI should anylize skills maybe and decide which to use. either that or  it should use a gambit sytem. not sure how those
           * should work together. maybe every skill comes pared with its own gambit and the AI reads that?
+          * 
+          * 
+          * Add a Persona 5 Style battle menu as well as a traditional battle menu.
+          * Change the array to a list in the simple menu class and you can probably build it using that. (Don't forget about object pooling here!
+          * Try to never use the new keyword in this system. we don't need grabage collection ruining the framerate.
           * 
           */
         public string name; //name used internally, like in the save file

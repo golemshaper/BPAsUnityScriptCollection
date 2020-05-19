@@ -24,6 +24,7 @@ public class StringWriter : MonoBehaviour {
 	public bool onlyBreakOnSpaces=true;
     string FilterForVariables(string filterThis)
     {
+        if (filterThis == string.Empty) return filterThis;
         if (handleVariables == false)
             return filterThis;
         StringBuilder sb= new StringBuilder();
@@ -77,8 +78,13 @@ public class StringWriter : MonoBehaviour {
 	}
 	public void SetText(string input, bool useTypewriter)
 	{
-		typewritter = useTypewriter;
+		//typewritter = useTypewriter; removed
 
+        if(useTypewriter==false)
+        {
+            DisplayAsTextmesh.text = input;
+            return;
+        }
         if (gameObject.activeSelf)
         {
             StartCoroutine(Typewriter(FilterForVariables(input), typewritter));
