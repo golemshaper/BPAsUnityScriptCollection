@@ -320,6 +320,14 @@ namespace RPG.BPA
          * ideally this system could be used to make a game that doesn't need a separate battle screen, or one that has a separate battle screen.
          * designers choice.
          */
+         /*
+          * TODO: Create a list of skills that the actor will hold. 
+          * (load from stats page maybe? or make a seperate skills package definition?)
+          * 
+          * AI should anylize skills maybe and decide which to use. either that or  it should use a gambit sytem. not sure how those
+          * should work together. maybe every skill comes pared with its own gambit and the AI reads that?
+          * 
+          */
         public string name; //name used internally, like in the save file
         public string displayName; //name displayed for current language
         public StatsPage stats;
