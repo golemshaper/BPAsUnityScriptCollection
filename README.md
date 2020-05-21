@@ -14,4 +14,5 @@ Highlights include:
 *Some example scenes. more to come.
 
 Coming soon:
+
 *Customizable Turn Based RPG Battle Mode (Work in progress)
