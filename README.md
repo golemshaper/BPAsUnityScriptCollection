@@ -12,3 +12,6 @@ Highlights include:
 *Save system based on .ini files
 
 *Some example scenes. more to come.
+
+Coming soon:
+*Customizable Turn Based RPG Battle Mode (Work in progress)
