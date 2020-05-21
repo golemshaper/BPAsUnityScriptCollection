@@ -237,6 +237,40 @@ namespace RPG.BPA
                     break;
             }
         }
+        public void CheckForVictoryOrDefeat()
+        {
+            bool heroPartyDead = true;
+            foreach(RPGActor a in heroParty)
+            {
+                if (a.stats.hp > 0)
+                {
+                    heroPartyDead = false;
+                    break;
+                }
+            }
+            if(heroPartyDead)
+            {
+                CreatAction(battleMessage_csv.GetCSVData("EnemyPartyWins"));
+                //Defeat!
+
+                return;
+            }
+            bool enemyPartyDead = true;
+            foreach (RPGActor a in enemyParty)
+            {
+                if (a.stats.hp > 0)
+                {
+                    enemyPartyDead = false;
+                    break;
+                }
+            }
+            if(enemyPartyDead)
+            {
+                CreatAction(battleMessage_csv.GetCSVData("HeroPartyWins"));
+                //Victory!
+                return;
+            }
+        }
         //write a message that the player can see. Either YIIK style (Do this by writing damage as an action node), or Breath of Fire IV style (The Default).
         private void SetDisplayString(string input)
         {
@@ -398,6 +432,7 @@ namespace RPG.BPA
             {
                 string deathMsg =String.Format (RpgBattleSystemMain.instance.battleMessage_csv.GetCSVData("Defeated"),displayName);
                 RpgBattleSystemMain.instance.CreatAction(deathMsg);
+                RpgBattleSystemMain.instance.CheckForVictoryOrDefeat();
             }
             //TODO: Play death animation here!
             //make hooks for all of these types of actions.
@@ -666,11 +701,18 @@ namespace RPG.BPA
                 RpgBattleSystemMain.instance.CreatAction(msg, 1f, null, null);
 
                 int attackPower = (myActor.stats.GetAttack() + attackOrWisdomStat) * multiplier;
+                //Critical attack!
                 bool useCritical = false;
                 if (GameMath.GetRandomInt(0, 100)<= myActor.stats.GetLuck())
                 {
                     useCritical = true;
                 }
+                //just a bit more random power
+                if (GameMath.GetRandomInt(0, 100)<50)
+                {
+                    attackPower += GameMath.GetRandomInt(0, 5);
+                }
+                
                 //TODO: Calculate criticals here! if critical, use a crit message instead!
                 int damageResult = target.Damage(attackPower);
 
