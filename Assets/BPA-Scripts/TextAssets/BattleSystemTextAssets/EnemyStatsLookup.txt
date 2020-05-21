@@ -9,9 +9,16 @@
 	wis=2
 	isInParty=1
 [TODO: Don't use hp, instead make a system for number of hits if lvl matches hero, and calculate hp from that]
+	Note=Lerp between high and low stats based on level maybe?
 [Slime]
 	lvl=1
 	hp=13
 	atk=1
 	def=1
 	spd=6
+[Slime*High]
+	lvl=100
+	hp=500
+	atk=128
+	def=64
+	spd=30
