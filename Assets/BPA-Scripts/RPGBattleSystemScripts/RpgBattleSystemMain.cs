@@ -59,6 +59,7 @@ namespace RPG.BPA
 
         [Header("TESTS")]
         public bool Test1;
+        public bool RESET_BATTLE_TEST;
         [Header("Setup")]
         public StringWriter promptDisplay;
         public StringWriter previousPromptDisplay;
@@ -66,6 +67,9 @@ namespace RPG.BPA
         public TextAsset EnemyStatDefinitions;
         public IniGeneralUse enemyStatsData;
         public TextAsset battleMessages;
+        public TextAsset skillDefinitions;
+        public IniGeneralUse skillData;
+
         public CommaSeperatedValueParser battleMessage_csv= new CommaSeperatedValueParser();
 
         public static RpgBattleSystemMain instance;
@@ -77,6 +81,7 @@ namespace RPG.BPA
 
         public List<RPGActor> heroParty = new List<RPGActor>();
         public List<RPGActor> enemyParty = new List<RPGActor>();
+
         public List<RPGActor> AllActors = new List<RPGActor>();
         public List<string> battleLog= new List<string>();
         string battlePrompt=string.Empty;
@@ -88,8 +93,11 @@ namespace RPG.BPA
         private void Awake()
         {
             instance = this;
+            //parse text data:
             enemyStatsData.MemoryFromIniString(EnemyStatDefinitions.text);
             battleMessage_csv.Parse(battleMessages.text);
+            skillData.MemoryFromIniString(skillDefinitions.text);
+
             //initialize default hero party. will be overriden by the party menu probably.
             //this is really only being calleed here right now as a test. remove later:
             MockData();
@@ -127,6 +135,7 @@ namespace RPG.BPA
             //clear last battle log.
             battleLog.Clear();
             curTurn = 0;
+            AllActors.Clear();
 
             //setup default AI targets...
             foreach (RPGActor a in heroParty)
@@ -168,6 +177,14 @@ namespace RPG.BPA
             //populate target menus
             //TODO: 
         }
+        public void CreatAction(string message)
+        {
+            CreatAction(message,  1f);
+        }
+        public void CreatAction(string message, float forTime)
+        {
+            CreatAction(message, forTime, null, null);
+        }
         public void CreatAction(string message, float delay, Action nAction,Action endAction)
         {
             if (actionPool.Count > 0)
@@ -201,6 +218,14 @@ namespace RPG.BPA
                 Test1 = false;
                 CreatAction("Test #1:" + curTurn, 1f, null,null);
             }
+            if(RESET_BATTLE_TEST)
+            {
+                RESET_BATTLE_TEST = false;
+              
+                MockData();
+                StartBattle();
+                return;
+            }
             switch (battleType)
             {
                 case BattleType.TurnBased:
@@ -215,6 +240,9 @@ namespace RPG.BPA
         //write a message that the player can see. Either YIIK style (Do this by writing damage as an action node), or Breath of Fire IV style (The Default).
         private void SetDisplayString(string input)
         {
+            if (input == string.Empty) return;//not allowed to send empty message.
+
+
             //move old prompt to the old message display if availible
             if (previousPromptDisplay != null) previousPromptDisplay.SetText(battlePrompt);
 
@@ -239,6 +267,8 @@ namespace RPG.BPA
             }
             else
             {
+                //TODO: Turn this in to a state machine!
+                //Start of turn:
                 if (actorTurnLimitOnce == false)
                 {
                     //set false on end of turn...
@@ -247,9 +277,9 @@ namespace RPG.BPA
                     AllActors[curTurn].StartOfTurn();
                    
                 }
+                //Constant Update
                 else
-                {
-                    //Constant Update
+                {   
                     AllActors[curTurn].ActorUpdate();
                 }
             }
@@ -348,6 +378,31 @@ namespace RPG.BPA
         public RPG_AI ai= new RPG_AI();
         public bool useAI = false;
 
+        public int Damage(int damageAmount)
+        {
+            int totalDamage = damageAmount -= (stats.GetDefence()/2);
+            stats.hp -= totalDamage;
+            if(totalDamage<=0)
+            {
+                totalDamage = GameMath.GetRandomInt(0, 1);
+            }
+            if (stats.hp <= 0) stats.hp = 0;
+            return totalDamage;
+        }
+        /// <summary>
+        /// Call this after damaging. The attack skill is responsible for this just so that messages are in the correct order and not tied to a weird timing mechanism.
+        /// </summary>
+        public void CheckIfDeadAuto()
+        {
+            if(stats.hp<=0)
+            {
+                string deathMsg =String.Format (RpgBattleSystemMain.instance.battleMessage_csv.GetCSVData("Defeated"),displayName);
+                RpgBattleSystemMain.instance.CreatAction(deathMsg);
+            }
+            //TODO: Play death animation here!
+            //make hooks for all of these types of actions.
+            //make a revive function as well.
+        }
         public void LoadDiplayName()
         {
             //get localized name!
@@ -356,6 +411,11 @@ namespace RPG.BPA
 
         public void StartOfTurn()
         {
+            if(stats.hp<=0)
+            {
+                RpgBattleSystemMain.instance.EndTurn();
+                return;
+            }
             //TODO: Start of turn stuff.
             //proccess status aliments here.
             //add poison, stone, confusion, silence etc.
@@ -548,22 +608,101 @@ namespace RPG.BPA
 
 
     }
-    public class AttackActionStd: Skill
+    public class AttackActionStd : Skill
     {
+        int attackPower = 1;
+        int multiplier = 1;
+        int wisdom = 1;
+        public Action DoOnStartOfAction;
+        public Action DoEndOfAction;
+        public bool isPhysicalAttack = true;
+
+        /*      Subscribe to skills like this:
+            DoOnStartOfAction += doAttackAnimation;
+         */
+
+
+        /*EXAMPLE:
+         * [Hard Strike]
+	        type=physical
+	        attribute=none
+	        str=1
+	        multiplier=1
+	        animation=attack
+         */
         public override void OnStartOfAction()
         {
-            //{hero} attacks!
+            //Use attack function if the type is physical (default)
+            if (isPhysicalAttack)
+            {
+                AttackOrMagic(attackPower);
+            }
+            else
+            {
+                AttackOrMagic(wisdom);
+            }
+        }
+        void AttackOrMagic(int attackOrWisdomStat)
+        {
+            if(DoOnStartOfAction!=null)DoOnStartOfAction();
+            //STRINGS:
+            //{hero} attacks! message
             string getMessage = RpgBattleSystemMain.instance.battleMessage_csv.GetCSVData("AttacksMsg");
             string msg = String.Format(getMessage, myActor.displayName, targets[0].displayName);
-            RpgBattleSystemMain.instance.CreatAction(msg, 1f, null, null);
-    
+            //{Slime} takes, {25} DMG!
+            string normalHit = RpgBattleSystemMain.instance.battleMessage_csv.GetCSVData("DamageMsg");
+            string criticalHit = RpgBattleSystemMain.instance.battleMessage_csv.GetCSVData("CriticalDamageMsg");
+            //
+            //Setup for end of turn:
             Action endTurn = () => RpgBattleSystemMain.instance.EndTurn();
-            //{slime} takes, {1} DMG!
-            getMessage = RpgBattleSystemMain.instance.battleMessage_csv.GetCSVData("DamageMsg");
-            msg = String.Format(getMessage, targets[0].displayName, myActor.stats.GetAttack().ToString());
+            if(DoEndOfAction!=null) endTurn += DoEndOfAction; //do end turn and any animation cleanup or anything like that here.
 
-            RpgBattleSystemMain.instance.CreatAction(msg, 1f, null, endTurn);
+            //----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----
+
+            foreach (RPGActor target in targets)
+            {
+                if (target.stats.hp <= 0) continue;//skip dead actors!
+
+                RpgBattleSystemMain.instance.CreatAction(msg, 1f, null, null);
+
+                int attackPower = (myActor.stats.GetAttack() + attackOrWisdomStat) * multiplier;
+                bool useCritical = false;
+                if (GameMath.GetRandomInt(0, 100)<= myActor.stats.GetLuck())
+                {
+                    useCritical = true;
+                }
+                //TODO: Calculate criticals here! if critical, use a crit message instead!
+                int damageResult = target.Damage(attackPower);
+
+                // Calc attack power and damage here. if you want shields to give a chance of deflecting, put that here!
+                if (useCritical)
+                {
+                    msg = String.Format(criticalHit, target.displayName, damageResult.ToString());
+
+                }
+                else
+                {
+                    msg = String.Format(normalHit, target.displayName, damageResult.ToString());
+
+                }
+                RpgBattleSystemMain.instance.CreatAction(msg, 1f, null, null);
+                //Deal with death here!
+                //I'm only doing this in the skill code so the message is in the correct order.
+                target.CheckIfDeadAuto();
+                //
+            }
+            //----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----
+            //END THE TURN:
+            RpgBattleSystemMain.instance.CreatAction(string.Empty, 0f, null, endTurn);
+            //END THE TURN ^
+        }
+        public void SkillsFromGroup(string group)
+        {
+            var skillParse = RpgBattleSystemMain.instance.skillData;
+            int groupId = skillParse.GetGroupIndex(group);
+            attackPower = skillParse.GetDataValue(groupId, "str", 1);
+            multiplier = skillParse.GetDataValue(groupId, "multiplier", 1);
+            wisdom = skillParse.GetDataValue(groupId, "wis", 1);
         }
     }
-
 }

@@ -1,0 +1,30 @@
+[Hard Strike]
+	type=physical
+	attribute=none
+	str=1
+	multiplier=1
+	animation=attack
+[Spin Attack]
+	type=physical
+	attribute=none
+	str=1
+	multiplier=1.2
+	animation=attack
+[Flame]
+	type=magic
+	attribute=fire
+	wis=1
+	multiplier=1.1
+	animation=magic
+[Water Jet]
+	type=magic
+	attribute=water
+	wis=1
+	multiplier=1.1
+	animation=magic
+[Stalagmite]
+	type=magic
+	attribute=earth
+	wis=1
+	multiplier=1.1
+	animation=magic

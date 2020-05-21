@@ -596,6 +596,9 @@ MonoBehaviour:
   enemyStatsData:
     groups: []
   battleMessages: {fileID: 4900000, guid: 74b0c94c9e06a034296f5862544f095d, type: 3}
+  skillDefinitions: {fileID: 4900000, guid: de4104be55c161841a8f3c25b9c11352, type: 3}
+  skillData:
+    groups: []
   battleType: 0
   curTurn: 0
   heroParty:
