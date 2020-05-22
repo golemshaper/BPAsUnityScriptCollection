@@ -8,15 +8,63 @@
 	luk=4
 	wis=2
 	isInParty=1
+[HeroParty.MaxLevelTarget]
+	note=this is a special definition that needs to be defined for auto leveling to work.
+	lvl=100
+	hp=999
+	mp=999
+	str=250
+	def=250
+	spd=128
+	luk=80
+	wis=1850
+[HeroParty.MinLevelTarget]
+	note=this is a special definition that needs to be defined for auto leveling to work.
+	lvl=1
+	hp=10
+	mp=8
+	str=4
+	def=3
+	spd=2
+	luk=4
+	wis=2
+	isInParty=1
 [TODO: Don't use hp, instead make a system for number of hits if lvl matches hero, and calculate hp from that]
 	Note=Lerp between high and low stats based on level maybe?
 [Slime]
+	lvl=1
+	autoLevel=true
+	hitsToKillMe=3
+	hitsToKillPlayer=6
+	assumePlayerPartySize=1
+	speedMin=10
+	speedMax=30
+	luckMin=10
+	luckMax=30
+[ExampleDragon]
+	lvl=8
+	Note=No other stats needed!
+	autoLevel=true
+	hitsToKillMe=3
+	hitsToKillPlayer=8
+	assumePlayerPartySize=1
+	speedMin=10
+	speedMax=30
+	luckMin=10
+	luckMax=30
+[SlimeX]
+	autoLevel=false
 	lvl=1
 	hp=13
 	atk=1
 	def=1
 	spd=6
-[Slime*High]
+	note= the following could be used as auto leveling stats. 
+	note2=set the enemy level and generate hp and mp based on assumed party size and average attack and defence of player party
+	hitsToKillMe=1
+	hitsToKillPlayer=8
+	assumePlayerPartySize=1
+[SlimeX*High]
 	lvl=100
 	hp=500
 	atk=128

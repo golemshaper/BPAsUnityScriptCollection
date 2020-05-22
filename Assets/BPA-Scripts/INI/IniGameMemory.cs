@@ -20,6 +20,7 @@ public class IniGameMemory : MonoBehaviour
     [Header("Data:")]
     public bool doSave;
     public bool doLoad;
+    public bool loadOnAwake;
     public string FileLocation;
     string  _FileLocation;
     List<System.Action> doActionsBeforeSave = new List<System.Action>();
@@ -44,6 +45,10 @@ public class IniGameMemory : MonoBehaviour
     {
         instance = this;
         _FileLocation = Application.persistentDataPath;
+        if(loadOnAwake)
+        {
+            LoadINIFile();
+        }
     }
     public void Update()
     {

@@ -59,6 +59,8 @@ namespace RPG.BPA
 
         [Header("TESTS")]
         public bool Test1;
+        public bool Test2;
+        public int test2Data = 100;
         public bool RESET_BATTLE_TEST;
         [Header("Setup")]
         public StringWriter promptDisplay;
@@ -106,9 +108,26 @@ namespace RPG.BPA
         {
             //initialize default hero party. will be overriden by the party menu probably.
             //this is really only being calleed here right now as a test. remove later:
+            //AUTO LEVEL EXAMPLE
+
+        
+            //-------------------------------------------------------------------------------------------
+            //load the hero stats so that you can set the enemy to a matching level for this mock data:
+            heroParty[0].LoadStatsFromSaveFile(enemyStatsData);
+            enemyParty[0].stats.lvl = 1;
+            //-------------------------------------------------------------------------------------------
+            //-------------------------------------------------------
+            //Set hero stats with level formula for now
+
+            //-------------------------------------------------------
+            //-------------------------------------------------------------------------------------------
+
+            //FORCE ADD PARTY:
             SetHeroPartyList(heroParty);
             SetEnemyParty(enemyParty);
-            
+
+           
+
             StartBattle();
         }
         //Call when you create a new party layout.
@@ -218,12 +237,16 @@ namespace RPG.BPA
                 Test1 = false;
                 CreatAction("Test #1:" + curTurn, 1f, null,null);
             }
+            if(Test2)
+            {
+                Test2 = false;
+                enemyParty[0].stats=enemyParty[0].LerpStats(enemyStatsData, enemyParty[0].name, (enemyParty[0].name + "*High"), test2Data);
+            }
             if(RESET_BATTLE_TEST)
             {
                 RESET_BATTLE_TEST = false;
               
                 MockData();
-                StartBattle();
                 return;
             }
             switch (battleType)
@@ -408,10 +431,12 @@ namespace RPG.BPA
         public string displayName; //name displayed for current language
         public StatsPage stats;
         public bool isInParty=true;
+        public bool autoLevel = false;
 
         public RPG_AI ai= new RPG_AI();
         public bool useAI = false;
 
+        public int DEBUG_INFO_HITS_TAKEN=0;
         public int Damage(int damageAmount)
         {
             int totalDamage = damageAmount -= (stats.GetDefence()/2);
@@ -421,6 +446,7 @@ namespace RPG.BPA
                 totalDamage = GameMath.GetRandomInt(0, 1);
             }
             if (stats.hp <= 0) stats.hp = 0;
+            DEBUG_INFO_HITS_TAKEN++;
             return totalDamage;
         }
         /// <summary>
@@ -481,11 +507,24 @@ namespace RPG.BPA
 
         public void LoadStatsFromStatsFile(IniGeneralUse iniStatsHolder)
         {
+            if(iniStatsHolder.GetDataBool(name,"autoLevel"))
+            {
+                autoLevel = true;
+            }
+           
+
             //TODO: Load the stats from the stats file and place here!
             //If you have 2 stats pages and a level, use leveling curve and level input to interpolate between values for auto leveling.
+            //^Use LarpStats for this...
             int groupIndex = iniStatsHolder.GetGroupIndex(name);
             //lvl
             stats.lvl = iniStatsHolder.GetDataValue(groupIndex, "lvl", 1);
+            if (autoLevel)
+            {
+                stats = CreateAutoLevelStats(iniStatsHolder, stats.lvl);
+                return;
+            }
+  
             //hp
             stats.hpMax = iniStatsHolder.GetDataValue(groupIndex, "hp",1);
             stats.hp = stats.GetMaxHP();
@@ -505,29 +544,186 @@ namespace RPG.BPA
             //the GetAttack(), etc. functions will handle that.
 
         }
+        public StatsPage CreateAutoLevelStats(IniGeneralUse iniStatsHolder,int myLevel)
+        {
+            if (myLevel <= 0) myLevel = 1;
+            /*
+             * The ideas is that if the player is on "myLevel" then it should take an average number of hits to kill this actor.
+             * If the hero is stronger, then it should take even less. For a true auto-level system, set the enemy level to the players max level, but
+             * that's not what this is for. It's designed to be an easier way to balance the game without needing to worry about specifics.
+             * if you want a boss enemy, increase the hitsToKillMe
+             * 
+             * 
+            [HeroParty.MaxLevelTarget]
+	            note=this is a special definition that needs to be defined for auto leveling to work.
+	            lvl=100
+	            hp=99999
+	            mp=99999
+	            str=1850
+	            def=1850
+	            spd=128
+	            luk=80
+	            wis=1850
+               
+             * 
+             * 
+             
+             * special stats needed:
+             * 
+                                   [Dragon]
+	                                    autoLevel=true
+	                                    hitsToKillMe=2
+	                                    hitsToKillPlayer=8
+	                                    assumePlayerPartySize=1
+                                        speedMin=10
+	                                    speedMax=30
+	                                    luckMin=10
+	                                    luckMax=30
+
+             */
+            StatsPage results = new StatsPage();
+            const string heroTargetLevelPage = "HeroParty.MaxLevelTarget";
+            const string heroStartingLevelPage = "HeroParty.MinLevelTarget";
+            const string hitsToKillMe = "hitsToKillMe";
+            const string hitsToKillPlayer = "hitsToKillPlayer";
+            const string assumePlayerPartySize = "assumePlayerPartySize";
+            const string speedMin = "speedMin";
+            const string speedMax = "speedMax";
+            const string luckMin = "luckMin";
+            const string luckMax = "luckMax";
+
+
+            StatsPage heroTargetMaxLevel = LookupStatsPage(iniStatsHolder, heroTargetLevelPage);
+            StatsPage heroTargetStartLevel= LookupStatsPage(iniStatsHolder, heroStartingLevelPage);
+            StatsPage approxHeroStatsAtMyLevel = LerpStats(heroTargetStartLevel, heroTargetMaxLevel, myLevel);
+
+            int groupIndex= iniStatsHolder.GetGroupIndex(name);
+            var rpgSys=RpgBattleSystemMain.instance;
+           
+            int heroPartyCount = iniStatsHolder.GetDataValue(groupIndex, assumePlayerPartySize, 1);
+            if (heroPartyCount <= 0) heroPartyCount = 1;
+
+            int hitsToKillMe_Value = iniStatsHolder.GetDataValue(groupIndex,hitsToKillMe,2);
+            int hitsToKillPlayer_Value = iniStatsHolder.GetDataValue(groupIndex, hitsToKillPlayer, 2);
+            int speedMin_Val= iniStatsHolder.GetDataValue(groupIndex, speedMin, 1);
+            int speedMax_Val = iniStatsHolder.GetDataValue(groupIndex, speedMax, 15);
+
+            int luckMin_Val = iniStatsHolder.GetDataValue(groupIndex, luckMin, 1);
+            int luckMax_Val = iniStatsHolder.GetDataValue(groupIndex, luckMax, 60);
+
+            //LVL
+            results.lvl = myLevel;
+            //HP CALC
+            results.hpMax = hitsToKillMe_Value * (approxHeroStatsAtMyLevel.GetAttack()/ heroPartyCount);
+            results.hp = results.GetMaxHP();
+            
+            //DEF
+            results.def = 0; //Don't bother with defence stats!
+            //ATTACK
+            results.str =  approxHeroStatsAtMyLevel.GetMaxHP()/ hitsToKillPlayer_Value;
+            Debug.Log("hitsToKillPlayer:" + hitsToKillPlayer_Value+ " Divide val:"+ approxHeroStatsAtMyLevel.GetMaxHP() +" RESULT:"+results.str);
+            //MAGIC
+            results.wis = hitsToKillPlayer_Value / approxHeroStatsAtMyLevel.GetMaxHP();
+            //SPEED
+            results.spd = MergeStat(speedMin_Val, speedMax_Val, myLevel * 0.01f);
+            //LUK
+            results.spd = MergeStat(luckMin_Val, luckMax_Val, myLevel * 0.01f);
+
+
+            return results;
+        }
+        public StatsPage LerpStats(IniGeneralUse iniStatsHolder, string statPageA,string statPageB, int myLevel)
+        {
+            StatsPage lowLevel= LookupStatsPage(iniStatsHolder, statPageA);
+            StatsPage highLevel= LookupStatsPage(iniStatsHolder,statPageB);
+            return LerpStats(lowLevel,highLevel, myLevel);
+        }
+        
+        public StatsPage LerpStats(StatsPage lowLevel, StatsPage highLevel, int myLevel)
+        {
+            //based on a max 100 level, but with the ability to over level...
+
+            float lerpVal = (myLevel-1) * 0.01f;
+          
+            StatsPage resultingStats = new StatsPage();
+            resultingStats.lvl = myLevel;
+            //TODO: Consider running this all through a curv.
+            resultingStats.hpMax = MergeStat(lowLevel.hpMax,highLevel.hpMax,lerpVal);
+            //Debug.Log("STAT MIN: " + lowLevel.hpMax + " : " + highLevel.hpMax+ "LERP: "+lerpVal+" is "+ resultingStats.hpMax.ToString());
+            resultingStats.hp = resultingStats.GetMaxHP();
+            resultingStats.str = MergeStat(lowLevel.str, highLevel.str, lerpVal);
+            resultingStats.def = MergeStat(lowLevel.def, highLevel.def, lerpVal);
+            resultingStats.spd = MergeStat(lowLevel.spd, highLevel.spd, lerpVal);
+            resultingStats.wis = MergeStat(lowLevel.wis, highLevel.wis, lerpVal);
+            resultingStats.luk = MergeStat(lowLevel.luk, highLevel.luk, lerpVal);
+
+            return resultingStats;
+        }
+
+
+        int MergeStat(int a, int b, float power)
+        {
+            return Mathf.RoundToInt(Mathf.Lerp(a,b,power));
+            //return Mathf.RoundToInt(GameMath.LerpUnclamped(a,b,power,true));
+        }
+        public StatsPage LookupStatsPage(IniGeneralUse iniStatsHolder, string statPageA)
+        {
+            StatsPage nStats = new StatsPage();
+            int groupIndex = iniStatsHolder.GetGroupIndex(statPageA);
+            //lvl
+            nStats.lvl = iniStatsHolder.GetDataValue(groupIndex, "lvl", 1);
+            //hp
+            nStats.hpMax = iniStatsHolder.GetDataValue(groupIndex, "hp", 1);
+            nStats.hp = stats.GetMaxHP();
+            //mp
+            nStats.mpMax = iniStatsHolder.GetDataValue(groupIndex, "mp", 1);
+            nStats.mp = stats.GetMaxMP();
+            //and the rest:
+            nStats.str = iniStatsHolder.GetDataValue(groupIndex, "str", 1);
+            nStats.str += iniStatsHolder.GetDataValue(groupIndex, "atk", 1); //just in case I use atk instead of str...
+            nStats.def = iniStatsHolder.GetDataValue(groupIndex, "def", 1);
+            nStats.spd = iniStatsHolder.GetDataValue(groupIndex, "spd", 1);
+            nStats.wis = iniStatsHolder.GetDataValue(groupIndex, "wis", 1);
+            nStats.luk = iniStatsHolder.GetDataValue(groupIndex, "luk", 1);
+            //this doesn't matter if it is an enemy:
+            return nStats;
+        }
+
         public void LoadStatsFromSaveFile(IniGeneralUse fallbackIni)
         {
+
+            //INITIALIZE HITS TAKEN:
+            DEBUG_INFO_HITS_TAKEN = 0;
+
+            //TODO: Consider wrapping the party stats group with a prefix for saving and loading...
+            //Example:
+            //[Party.Hero] instead of [Hero]
+
+
+
             //unlike the enemy stats, this uses the main save file.
             //be sure to write party stats to that file at the start of the game!
             //consider passing in the enemy stats page with default hero stats.
             //and reading from that in the event that the group index is not found (-1) it could
             //be an easy way to auto initialize things, and keep all actor definitions in a single file.
-            if(IniGameMemory.instance==null)
+            if (IniGameMemory.instance==null)
             {
                 LoadStatsFromStatsFile(fallbackIni);
+                Debug.LogError("IniGameMemory OBJECT MEMORY NOT FOUND");
                 return;
             }
             int groupIndex = INI.Get().GetGroupIndex(name);
             if(groupIndex==-1)
             {
                 LoadStatsFromStatsFile(fallbackIni);
+                Debug.LogError(name+"<- GROUP NOT FOUND, LOADIND DEFAULT FROM STATS DEFINITION");
                 return;
             }
             //lvl
             stats.lvl = INI.Get().GetDataValue(groupIndex, "lvl", 1);
             //hp
             stats.hpMax = INI.Get().GetDataValue(groupIndex, "hp", 1);
-            stats.hp = stats.GetMaxHP();
+            stats.hp = INI.Get().GetDataValue(groupIndex, "currentHp", stats.GetMaxHP());
             //mp
             stats.mpMax = INI.Get().GetDataValue(groupIndex, "mp", 1);
             stats.mp = stats.GetMaxMP();
@@ -540,6 +736,14 @@ namespace RPG.BPA
             stats.luk = INI.Get().GetDataValue(groupIndex, "luk", 1);
 
             isInParty = INI.Get().GetDataBool(groupIndex, "isInParty");
+        }
+        public void WriteStatsToIniFile()
+        {
+            //TODO: Consider wrapping the party stats group with a prefix for saving and loading...
+            //Example:
+            //[Party.Hero] instead of [Hero]
+
+
         }
 
     }
