@@ -14,6 +14,8 @@ public class RPGMenuBasic : MonoBehaviour
     public string MyActor = "Hero"; 
     public RPGMenuCommunication menuInterface = new RPGMenuCommunication();
     public List<string> skillStrings = new List<string>();
+
+    public bool debugAwaitingInputMSG = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,6 +36,10 @@ public class RPGMenuBasic : MonoBehaviour
         {
             limitOnce = true;
             skillStrings = menuInterface.GetSkillListAsStringList();
+            if(debugAwaitingInputMSG)
+            {
+                RpgBattleSystemMain.instance.WriteToPrompt("Awaiting input...");
+            }
         }
       
         //MENU CODE:

@@ -518,10 +518,13 @@ namespace RPG.BPA
         public void ActorUpdate()
         {
             //TODO READ MENU INPUT RESULT HERE? Either that or send a command with the menu via some function
-            if(myMenuInterface.IsReady())
+            if(myMenuInterface.IsReadyToUseSkill())
             {
                 myMenuInterface.ExecuteAction();
                 myMenuInterface.SetMenuIsActive(false);
+                //clear the menu so you can choose again next turn.
+                myMenuInterface.ClearAll();
+                Debug.Log("READY");
             }
         }
         

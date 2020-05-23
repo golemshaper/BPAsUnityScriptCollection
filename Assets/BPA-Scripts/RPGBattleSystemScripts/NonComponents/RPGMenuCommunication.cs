@@ -73,7 +73,7 @@ namespace RPG.BPA.MENU
         /// True if ready to attack/heal/whatever
         /// </summary>
         /// <returns></returns>
-        public bool IsReady()
+        public bool IsReadyToUseSkill()
         {
             if (targetsToHit == null) return false;
             if(targetsToHit.Count>0)
@@ -96,8 +96,9 @@ namespace RPG.BPA.MENU
         /// </summary>
         public void ClearAll()
         {
+
             skillToPerform = null;
-            targetsToHit.Clear();
+            //do not clear targets, just override them..
         }
     }
 }
