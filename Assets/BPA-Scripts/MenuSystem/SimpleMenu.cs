@@ -14,7 +14,7 @@ public class SimpleMenu : MonoBehaviour
     public bool enableOnOpen=true;
     public bool enableBackButton = true;
     [Header("Slots")]
-    public SimpleMenuSlot[] menuSlots;
+    public List<SimpleMenuSlot> menuSlots= new List<SimpleMenuSlot>();
   
     [Header("Cursor Settings")]
     public int cursorIndex = 0;
@@ -185,8 +185,8 @@ public class SimpleMenu : MonoBehaviour
     }
     void Clamp()
     {
-        if (cursorIndex > menuSlots.Length-1) cursorIndex = 0;
-        if (cursorIndex < 0) cursorIndex = menuSlots.Length - 1;
+        if (cursorIndex > menuSlots.Count-1) cursorIndex = 0;
+        if (cursorIndex < 0) cursorIndex = menuSlots.Count - 1;
 
     }
 

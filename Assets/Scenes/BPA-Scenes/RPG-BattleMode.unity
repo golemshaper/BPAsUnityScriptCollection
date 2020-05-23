@@ -215,8 +215,10 @@ GameObject:
   m_Component:
   - component: {fileID: 433357534}
   - component: {fileID: 433357533}
+  - component: {fileID: 433357535}
+  - component: {fileID: 433357536}
   m_Layer: 0
-  m_Name: SAVE.SYSTEM
+  m_Name: Example.Required
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -255,6 +257,32 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &433357535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 433357532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf38510bcf5dad04aa91739919fd73d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &433357536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 433357532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc0928cd5a8f58e4e8b4b8533df9a8de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  comments:
+  - "you need these for input \nand for saving/loading\n"
 --- !u!1 &1235970440
 GameObject:
   m_ObjectHideFlags: 0
@@ -432,6 +460,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1235970440}
   m_CullTransparentMesh: 0
+--- !u!1 &1359589617
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1359589618}
+  - component: {fileID: 1359589619}
+  m_Layer: 0
+  m_Name: BattleMenu.1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1359589618
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1359589617}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1529831232}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1359589619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1359589617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 224cbbac7880d0d4084e142c00fa420e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MyActor: Hero
 --- !u!1 &1371786590
 GameObject:
   m_ObjectHideFlags: 0
@@ -670,8 +742,8 @@ MonoBehaviour:
       luk: 0
     isInParty: 0
     autoLevel: 0
-    autoLevelBetweenStats: 0
     useAI: 0
+    DEBUG_INFO_HITS_TAKEN: 0
   enemyParty:
   - name: Slime
     displayName: 
@@ -688,8 +760,8 @@ MonoBehaviour:
       luk: 0
     isInParty: 0
     autoLevel: 1
-    autoLevelBetweenStats: 0
     useAI: 1
+    DEBUG_INFO_HITS_TAKEN: 0
   AllActors: []
   battleLog: []
   actionQueue: []
@@ -704,7 +776,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 485.5173, y: 172.44994, z: -161.35681}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 1359589618}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

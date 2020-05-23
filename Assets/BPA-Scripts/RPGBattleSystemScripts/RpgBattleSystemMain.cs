@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Ackk.INI.Helpers;
-
+using RPG.BPA.MENU;
 
 namespace RPG.BPA
 {
@@ -103,6 +103,17 @@ namespace RPG.BPA
             //initialize default hero party. will be overriden by the party menu probably.
             //this is really only being calleed here right now as a test. remove later:
             MockData();
+        }
+        public int GetHeroIndex(string name)
+        {
+            for (int i = 0; i < heroParty.Count; i++)
+            {
+                if (heroParty[i].name.ToLower()==name.ToLower())
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
         void MockData()
         {
@@ -436,6 +447,14 @@ namespace RPG.BPA
         public RPG_AI ai= new RPG_AI();
         public bool useAI = false;
 
+        public List<Skill> skills= new List<Skill>();
+
+        RPGMenuCommunication myMenuInterface;
+        public void SetMenuController(RPGMenuCommunication menu)
+        {
+            myMenuInterface = menu;
+        }
+
         public int DEBUG_INFO_HITS_TAKEN=0;
         public int Damage(int damageAmount)
         {
@@ -491,14 +510,19 @@ namespace RPG.BPA
                 //only do this if you aren't confused, otherwise use AI, but set targets to hero party...
                 //or maybe chose a random skill, chose a random target, and use it! even allow item consumption maybe.
                 //give rare items a never use in confusion attribute or something if you don't want to be a dick (not made yet)
-                 ai.DoAction(this); //USE AI FOR NOW UNTIL A HUMAN INTERFACE IS MADE!   <REMOVE THIS LINE TO ACCEPT INPUT FROM PLAYER INSTEAD>
+                // ai.DoAction(this); //USE AI FOR NOW UNTIL A HUMAN INTERFACE IS MADE!   <REMOVE THIS LINE TO ACCEPT INPUT FROM PLAYER INSTEAD>
                 //Make it so that hero party members can also be set too AI! load that from save file.
-               
+                myMenuInterface.SetMenuIsActive(true);
             }
         }
         public void ActorUpdate()
         {
             //TODO READ MENU INPUT RESULT HERE? Either that or send a command with the menu via some function
+            if(myMenuInterface.IsReady())
+            {
+                myMenuInterface.ExecuteAction();
+                myMenuInterface.SetMenuIsActive(false);
+            }
         }
         
         //Add a list of items that can be stolen to stats definition if it's an enemy.
@@ -621,7 +645,7 @@ namespace RPG.BPA
             results.def = 0; //Don't bother with defence stats!
             //ATTACK
             results.str =  approxHeroStatsAtMyLevel.GetMaxHP()/ hitsToKillPlayer_Value;
-            Debug.Log("hitsToKillPlayer:" + hitsToKillPlayer_Value+ " Divide val:"+ approxHeroStatsAtMyLevel.GetMaxHP() +" RESULT:"+results.str);
+            //Debug.Log("hitsToKillPlayer:" + hitsToKillPlayer_Value+ " Divide val:"+ approxHeroStatsAtMyLevel.GetMaxHP() +" RESULT:"+results.str);
             //MAGIC
             results.wis = hitsToKillPlayer_Value / approxHeroStatsAtMyLevel.GetMaxHP();
             //SPEED
@@ -803,7 +827,7 @@ namespace RPG.BPA
         private List<RPGActor> targets= new List<RPGActor>();
         [NonSerialized]
         private Skill attack = new AttackActionStd();
-
+        
         public void SetTargets(List<RPGActor> nTargets)
         {
             targets=nTargets;
@@ -827,6 +851,7 @@ namespace RPG.BPA
     }
     public class Skill
     {
+        public string skillName;
         [HideInInspector]
         public RPGActor myActor;
         [HideInInspector]
@@ -855,6 +880,14 @@ namespace RPG.BPA
         public Action DoOnStartOfAction;
         public Action DoEndOfAction;
         public bool isPhysicalAttack = true;
+        public AttackActionStd()
+        {
+
+        }
+        public AttackActionStd(string nName)
+        {
+            skillName = nName;
+        }
 
         /*      Subscribe to skills like this:
             DoOnStartOfAction += doAttackAnimation;
