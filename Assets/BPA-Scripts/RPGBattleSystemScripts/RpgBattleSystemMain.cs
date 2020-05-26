@@ -852,6 +852,7 @@ namespace RPG.BPA
             attack.SetTargets(targets);
             attack.OnStartOfAction();
         }
+   
     }
     [System.Serializable]
     public class Skill
@@ -875,7 +876,13 @@ namespace RPG.BPA
         {
 
         }
-
+        public virtual void ParseFromGroup(GroupData createFromGroup)
+        {
+            skillName = createFromGroup.GetValueIgnoreCase("nameOverride", createFromGroup.name);
+            string elementalAttribute = createFromGroup.GetValueIgnoreCase( "affinity", "none");
+            this.affinity.SetupMap();
+            this.affinity.SetMyAffinity(elementalAttribute);
+        }
 
     }
     [System.Serializable]
@@ -889,6 +896,17 @@ namespace RPG.BPA
         public bool isPhysicalAttack = true;
         public AttackActionStd()
         {
+
+        }
+        public override void ParseFromGroup(GroupData createFromGroup)
+        {
+            //do standard things first
+            base.ParseFromGroup(createFromGroup);
+            attackPower = createFromGroup.GetValueIgnoreCase("atk",1);
+            multiplier = createFromGroup.GetValueIgnoreCase("multiplier", 1);
+            wisdom = createFromGroup.GetValueIgnoreCase("wisdom", 1);
+            //default to physical attack, else use a magic attack
+            isPhysicalAttack = createFromGroup.GetBoolIgnoreCase("isPhysicalAttack", true);
 
         }
         public AttackActionStd(string nName)

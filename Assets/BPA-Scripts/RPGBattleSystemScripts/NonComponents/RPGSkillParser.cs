@@ -39,23 +39,9 @@ namespace RPG.BPA
            
                 string type = fileData.GetDataValue(i, "type","attack");
                 Skill nSkill = CreateSkillOfType(type);
-                //SKILL NAME
-                nSkill.skillName = fileData.GetDataString(fileData.groups[i].name, "nameOverride", fileData.groups[i].name);
-                //AFFINITY:
-                string elementalAttribute = fileData.GetDataValue(i, "affinity","none");
-                nSkill.affinity.SetupMap();
-                nSkill.affinity.SetMyAffinity(elementalAttribute) ; //TODO: Test this to make sure it actually works
-                //TODO: Add attack power and wisdom power to skill.
-                //Add other class types besides "attack" and "none"
-                //make a lookup that can ignore case. maybe make that an option for the INI file.
-                /*
-                 * 
-                 * UPDATED IDEA:
-                 Each skill should build itself off of thest the ini group passed to it.
-                 that way each skill can have custom settings based on its class type.
-                 */
-
-
+                //Send data to new skill:
+                nSkill.ParseFromGroup(fileData.groups[i]);
+                //each skill class takes care of its own attribute needs
                 //add skill to list
                 skills.Add(nSkill);
                 //add skill to dictionary

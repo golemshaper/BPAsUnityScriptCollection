@@ -388,6 +388,49 @@ namespace Ackk.INI.Helpers
             name = "Default";
             SaveThisGroup = true;
         }
+        public int GetValueIgnoreCase(string key, int defaultValue)
+        {
+            foreach(KeyData k in keys)
+            {
+                if(k.name.ToLower()==key.ToLower())
+                {
+                    return k.intData;
+                }
+            }
+            return defaultValue;
+        }
+        public bool GetBoolIgnoreCase(string key, bool defaultValue)
+        {
+            //   Debug.Log(group+","+key + GetDataValue(group, key));
+            foreach (KeyData k in keys)
+            {
+                if (k.name.ToLower() == key.ToLower())
+                {
+                    if(k.intData>0)
+                    {
+                        return true;
+                    }
+                    if(k.intData<=0)
+                    {
+                        if (k.strData.ToLower() == "true") return true;
+                        else return false;
+                    }
+                }
+            }
+            return defaultValue;
+        }
+
+        public string GetValueIgnoreCase(string key, string defaultValue)
+        {
+            foreach (KeyData k in keys)
+            {
+                if (k.name.ToLower() == key.ToLower())
+                {
+                    return k.strData;
+                }
+            }
+            return defaultValue;
+        }
         public bool SaveThisGroup = true;
         public List<KeyData> keys = new List<KeyData>();
     }
