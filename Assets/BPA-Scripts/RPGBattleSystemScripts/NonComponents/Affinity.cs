@@ -47,6 +47,10 @@ namespace RPG.Elements
             //Fire,Metal,Wood,Earth,Water,None,Ignore (IGNORE IS NOT A REAL AFFINITY! IT JUST MEANS NO WEAKNESS OR STRENGTH! USE NONE IF YOU WANT THIS)
             None,Fire, Metal,Wood,Earth,Water,Ignore
         };
+        public void SetMyAffinity(string affinityString)
+        {
+            myAffinity = (AffinityType)System.Enum.Parse(typeof(AffinityType), affinityString);
+        }
         Dictionary<AffinityType, AfinityMiniTable> affinityMaps = new Dictionary<AffinityType, AfinityMiniTable>();
         public AffinityType myAffinity = AffinityType.None;
         public AffinityResults GetAffinityResults(AffinityType attacker,AffinityType defender)
@@ -63,8 +67,8 @@ namespace RPG.Elements
 
             return results;
         }
-        //call this on awake in the battle system
-        private void SetupMap()
+        //Call before using
+        public  void SetupMap()
         {
             //---
             AfinityMiniTable fire;

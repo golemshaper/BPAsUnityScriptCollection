@@ -1,30 +1,40 @@
 [Hard Strike]
-	type=physical
-	attribute=none
+	type=Attack
+	affinity=None
 	str=1
 	multiplier=1
 	animation=attack
+	battleStrings=AttacksMsg
+	battleStringsCritical=AttacksMsg
 [Spin Attack]
-	type=physical
-	attribute=none
+	type=Attack
+	affinity=None
 	str=1
 	multiplier=1.2
 	animation=attack
+	battleStrings=AttacksMsg
+	battleStringsCritical=AttacksMsg
 [Flame]
-	type=magic
-	attribute=fire
+	type=Attack
+	affinity=Fire
 	wis=1
 	multiplier=1.1
 	animation=magic
+	battleStrings=AttacksMsg
+	battleStringsCritical=AttacksMsg
 [Water Jet]
-	type=magic
-	attribute=water
+	type=Attack
+	affinity=Water
 	wis=1
 	multiplier=1.1
 	animation=magic
+	battleStrings=AttacksMsg
+	battleStringsCritical=AttacksMsg
 [Stalagmite]
-	type=magic
-	attribute=earth
+	type=Attack
+	affinity=Earth
 	wis=1
 	multiplier=1.1
 	animation=magic
+	battleStrings=AttacksMsg
+	battleStringsCritical=AttacksMsg

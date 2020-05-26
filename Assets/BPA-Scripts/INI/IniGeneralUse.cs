@@ -296,6 +296,22 @@ namespace Ackk.INI.Helpers
             return groups[groupIndex].keys[keyIndex].intData;
 
         }
+        public string GetDataValue(int groupIndex, string key, string defaultData)
+        {
+            if (groupIndex == -1)
+            {
+                //group not found...
+                return defaultData;
+            }
+            int keyIndex = GetKeyIndex(groupIndex, key);
+            if (keyIndex == -1)
+            {
+                //key not found...
+                return defaultData;
+            }
+            return groups[groupIndex].keys[keyIndex].strData;
+
+        }
         public bool GetDataBool(string group, string key)
         {
             //   Debug.Log(group+","+key + GetDataValue(group, key));

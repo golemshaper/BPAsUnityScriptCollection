@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Ackk.INI.Helpers;
 using RPG.BPA.MENU;
+using RPG.Elements;
 
 namespace RPG.BPA
 {
@@ -852,6 +853,7 @@ namespace RPG.BPA
             attack.OnStartOfAction();
         }
     }
+    [System.Serializable]
     public class Skill
     {
         public string skillName;
@@ -859,6 +861,7 @@ namespace RPG.BPA
         public RPGActor myActor;
         [HideInInspector]
         public  List<RPGActor>targets;
+        public Affinity affinity = new Affinity();
         //SKILL not sure if SKILL will have any base...
         public virtual void SetMyActor(RPGActor nActor)
         {
@@ -875,6 +878,7 @@ namespace RPG.BPA
 
 
     }
+    [System.Serializable]
     public class AttackActionStd : Skill
     {
         int attackPower = 1;
