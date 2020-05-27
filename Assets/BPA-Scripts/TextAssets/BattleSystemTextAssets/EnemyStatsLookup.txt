@@ -8,6 +8,16 @@
 	luk=4
 	wis=2
 	isInParty=1
+[Heroine]
+	lvl=1
+	hp=8
+	mp=8
+	str=3
+	def=4
+	spd=1
+	luk=6
+	wis=9
+	isInParty=1
 [HeroParty.MaxLevelTarget]
 	note=this is a special definition that needs to be defined for auto leveling to work.
 	lvl=100

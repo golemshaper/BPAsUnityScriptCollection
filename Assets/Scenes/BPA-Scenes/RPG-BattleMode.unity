@@ -748,6 +748,24 @@ MonoBehaviour:
     useAI: 0
     skills: []
     DEBUG_INFO_HITS_TAKEN: 0
+  - name: Heroine
+    displayName: 
+    stats:
+      lvl: 0
+      hpMax: 0
+      hp: 0
+      mpMax: 0
+      mp: 0
+      str: 0
+      def: 0
+      spd: 0
+      wis: 0
+      luk: 0
+    isInParty: 0
+    autoLevel: 0
+    useAI: 1
+    skills: []
+    DEBUG_INFO_HITS_TAKEN: 0
   enemyParty:
   - name: Slime
     displayName: 

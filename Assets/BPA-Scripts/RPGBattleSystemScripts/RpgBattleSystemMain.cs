@@ -285,9 +285,9 @@ namespace RPG.BPA
             }
             if(heroPartyDead)
             {
-                CreatAction(battleMessage_csv.GetCSVData("EnemyPartyWins"));
+                CreatAction(battleMessage_csv.GetCSVData("EnemyPartyWins"), 0.5f, null, () => EndBattle());
                 //Defeat!
-
+                EndBattle();
                 return;
             }
             bool enemyPartyDead = true;
@@ -301,7 +301,8 @@ namespace RPG.BPA
             }
             if(enemyPartyDead)
             {
-                CreatAction(battleMessage_csv.GetCSVData("HeroPartyWins"));
+                CreatAction(battleMessage_csv.GetCSVData("HeroPartyWins"),0.5f,null, ()=>EndBattle());
+                
                 //Victory!
                 return;
             }
@@ -328,6 +329,13 @@ namespace RPG.BPA
         bool actorTurnLimitOnce=false;
         void TurnBasedUpdate()
         {
+
+           /*
+            * So what I want to do is do all of the player input first, and then go through all of the players turns, 
+            * and then when you loop back to the begnning, get all input again.
+            * 
+            * 
+            */
             //TODO: Define a battle update loop here.
             if (actionQueue.Count > 0)
             {
@@ -348,7 +356,10 @@ namespace RPG.BPA
                 }
                 //Constant Update
                 else
-                {   
+                {
+                    /*
+                    * I don't like this. no need for an update, just call an function or something.
+                    */
                     AllActors[curTurn].ActorUpdate();
                 }
             }
@@ -505,6 +516,7 @@ namespace RPG.BPA
             if(useAI)
             {
                 ai.DoAction(this);
+                return;
             }
             else
             {
@@ -516,10 +528,24 @@ namespace RPG.BPA
                 myMenuInterface.SetMenuIsActive(true);
             }
         }
+
         public void ActorUpdate()
         {
+            /*
+            * I don't like this. no need for an update, just call an function or something.
+            */
+
+
+            if (myMenuInterface==null)
+            {
+                Debug.Log(name + " has no menu interface, and isn't using ai, ending turn!");
+                RpgBattleSystemMain.instance.WriteToPrompt(
+                    string.Format(RpgBattleSystemMain.instance.battleMessage_csv.GetCSVData("DoesNothing"),displayName));
+                RpgBattleSystemMain.instance.EndTurn();
+                return;
+            }
             //TODO READ MENU INPUT RESULT HERE? Either that or send a command with the menu via some function
-            if(myMenuInterface.IsReadyToUseSkill())
+            if (myMenuInterface.IsReadyToUseSkill())
             {
                 myMenuInterface.ExecuteAction();
                 myMenuInterface.SetMenuIsActive(false);
@@ -945,7 +971,7 @@ namespace RPG.BPA
             //STRINGS:
             //{hero} attacks! message
             string getMessage = RpgBattleSystemMain.instance.battleMessage_csv.GetCSVData("AttacksMsg");
-            string msg = String.Format(getMessage, myActor.displayName, targets[0].displayName);
+            string msg = string.Empty;
             //{Slime} takes, {25} DMG!
             string normalHit = RpgBattleSystemMain.instance.battleMessage_csv.GetCSVData("DamageMsg");
             string criticalHit = RpgBattleSystemMain.instance.battleMessage_csv.GetCSVData("CriticalDamageMsg");
@@ -955,11 +981,11 @@ namespace RPG.BPA
             if(DoEndOfAction!=null) endTurn += DoEndOfAction; //do end turn and any animation cleanup or anything like that here.
 
             //----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----
-
+           
             foreach (RPGActor target in targets)
             {
                 if (target.stats.hp <= 0) continue;//skip dead actors!
-
+                msg = String.Format(getMessage, myActor.displayName, target.displayName);
                 RpgBattleSystemMain.instance.CreatAction(msg, 1f, null, null);
 
                 int attackPower = (myActor.stats.GetAttack() + attackOrWisdomStat) * multiplier;
@@ -982,13 +1008,13 @@ namespace RPG.BPA
                 if (useCritical)
                 {
                     msg = String.Format(criticalHit, target.displayName, damageResult.ToString());
-
                 }
                 else
                 {
                     msg = String.Format(normalHit, target.displayName, damageResult.ToString());
 
                 }
+              
                 RpgBattleSystemMain.instance.CreatAction(msg, 1f, null, null);
                 //Deal with death here!
                 //I'm only doing this in the skill code so the message is in the correct order.
