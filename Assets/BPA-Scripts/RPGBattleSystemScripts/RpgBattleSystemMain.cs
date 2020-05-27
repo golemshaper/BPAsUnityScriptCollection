@@ -525,6 +525,14 @@ namespace RPG.BPA
                 //give rare items a never use in confusion attribute or something if you don't want to be a dick (not made yet)
                 // ai.DoAction(this); //USE AI FOR NOW UNTIL A HUMAN INTERFACE IS MADE!   <REMOVE THIS LINE TO ACCEPT INPUT FROM PLAYER INSTEAD>
                 //Make it so that hero party members can also be set too AI! load that from save file.
+                if (myMenuInterface == null)
+                {
+                    Debug.Log(name + " has no menu interface, and isn't using ai, ending turn!");
+                    RpgBattleSystemMain.instance.WriteToPrompt(
+                        string.Format(RpgBattleSystemMain.instance.battleMessage_csv.GetCSVData("DoesNothing"), displayName));
+                    RpgBattleSystemMain.instance.EndTurn();
+                    return;
+                }
                 myMenuInterface.SetMenuIsActive(true);
             }
         }
@@ -770,7 +778,7 @@ namespace RPG.BPA
             if(groupIndex==-1)
             {
                 LoadStatsFromStatsFile(fallbackIni);
-                Debug.LogError(name+"<- GROUP NOT FOUND, LOADIND DEFAULT FROM STATS DEFINITION");
+                Debug.LogWarning(name+"<- GROUP NOT FOUND, LOADIND DEFAULT FROM STATS DEFINITION");
                 return;
             }
             //lvl
@@ -884,9 +892,9 @@ namespace RPG.BPA
     public class Skill
     {
         public string skillName;
-        [HideInInspector]
+        [NonSerialized]
         public RPGActor myActor;
-        [HideInInspector]
+        [NonSerialized]
         public  List<RPGActor>targets;
         public Affinity affinity = new Affinity();
         //SKILL not sure if SKILL will have any base...
