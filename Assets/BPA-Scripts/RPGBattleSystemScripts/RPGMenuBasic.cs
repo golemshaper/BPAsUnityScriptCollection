@@ -24,6 +24,18 @@ public class RPGMenuBasic : MonoBehaviour
     }
     bool limitOnce=false;
     public bool TEST;
+    /*
+     * 
+     * TODO: Draw list of skills in skill draw mode. then draw list of targets in target draw mode.
+     * Have item draw mode that draws items as skills.
+     * 
+     * either that or make it more generic like the YIIK battle menu. not sure yet. pros and cons to each idea.
+     * 
+     * 
+     * TODO: Select skill and then target and then execute.
+     * 
+     * Target aqquisition could be based on the enemy list and a max number of targets, or it could be based on collision.
+     */
     // Update is called once per frame
     void Update()
     {
