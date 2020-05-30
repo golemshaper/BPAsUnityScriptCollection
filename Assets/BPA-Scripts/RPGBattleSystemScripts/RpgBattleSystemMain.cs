@@ -68,11 +68,11 @@ namespace RPG.BPA
         public StringWriter previousPromptDisplay;
         [Header("Game Data")]
         public TextAsset EnemyStatDefinitions;
-        public IniGeneralUse enemyStatsData;
+        public IniGeneralUse actorStatsData;
         public TextAsset battleMessages;
         public TextAsset skillDefinitions;
         public IniGeneralUse skillData;
-
+        public RPGSkillParser skillsParserRealSkills = new RPGSkillParser();
         public CommaSeperatedValueParser battleMessage_csv= new CommaSeperatedValueParser();
 
         public static RpgBattleSystemMain instance;
@@ -97,13 +97,17 @@ namespace RPG.BPA
         {
             instance = this;
             //parse text data:
-            enemyStatsData.MemoryFromIniString(EnemyStatDefinitions.text);
+            actorStatsData.MemoryFromIniString(EnemyStatDefinitions.text);
             battleMessage_csv.Parse(battleMessages.text);
+            //--skill data:
             skillData.MemoryFromIniString(skillDefinitions.text);
+            skillsParserRealSkills.ParseSkillsFromData(skillDefinitions.text);
+            //--
 
             //initialize default hero party. will be overriden by the party menu probably.
             //this is really only being calleed here right now as a test. remove later:
             MockData();
+            //^-mock data only
         }
         public int GetHeroIndex(string name)
         {
@@ -125,7 +129,7 @@ namespace RPG.BPA
         
             //-------------------------------------------------------------------------------------------
             //load the hero stats so that you can set the enemy to a matching level for this mock data:
-            heroParty[0].LoadStatsFromSaveFile(enemyStatsData);
+            heroParty[0].LoadStatsFromSaveFile(actorStatsData);
             enemyParty[0].stats.lvl = 1;
             //-------------------------------------------------------------------------------------------
             //-------------------------------------------------------
@@ -138,8 +142,6 @@ namespace RPG.BPA
             SetHeroPartyList(heroParty);
             SetEnemyParty(enemyParty);
 
-           
-
             StartBattle();
         }
         //Call when you create a new party layout.
@@ -148,7 +150,8 @@ namespace RPG.BPA
             heroParty = setHeroParty;
             foreach (var a in heroParty)
             {
-                a.LoadStatsFromSaveFile(enemyStatsData);
+                a.LoadStatsFromSaveFile(actorStatsData);
+                a.LoadSkills(actorStatsData);
             }
         }
         //Call before start battle!
@@ -158,7 +161,8 @@ namespace RPG.BPA
             foreach(var a in enemyParty)
             {
                 a.useAI=true; //enemies use AI.
-                a.LoadStatsFromStatsFile(enemyStatsData);
+                a.LoadStatsFromStatsFile(actorStatsData);
+                a.LoadSkills(actorStatsData);
             }
         }
         public void StartBattle()
@@ -252,7 +256,7 @@ namespace RPG.BPA
             if(Test2)
             {
                 Test2 = false;
-                enemyParty[0].stats=enemyParty[0].LerpStats(enemyStatsData, enemyParty[0].name, (enemyParty[0].name + "*High"), test2Data);
+                enemyParty[0].stats=enemyParty[0].LerpStats(actorStatsData, enemyParty[0].name, (enemyParty[0].name + "*High"), test2Data);
             }
             if(RESET_BATTLE_TEST)
             {
@@ -460,7 +464,31 @@ namespace RPG.BPA
         public bool useAI = false;
 
         public List<Skill> skills= new List<Skill>();
+        public void LoadSkills(IniGeneralUse iniStatsHolder)
+        {
+            //TODO clear skill list for now. in the future try not to remove items that are already created, and instead only add new names to the list to avoid garbage collection.
+            //still it's not such a big deal for now...
+          
+            skills.Clear();
+            string skillsAsString = string.Empty;
+            skillsAsString = IniGameMemory.instance.GetDataString(name,"skills",string.Empty);
+            if(skillsAsString==string.Empty)
+            {
+                //default to a single attack if no skills found. change it to some other skill. make it unique so that you know it's not supposed to be used, but
+                //make it functional so that the game never breaks... (NOT DONE YET)
+                iniStatsHolder.GetDataString(name,"skills", "Hard Slash");
+            }
+            string[] skillNamesList = skillsAsString.Split(",".ToCharArray(),StringSplitOptions.RemoveEmptyEntries);
 
+            foreach(string skillName in skillNamesList)
+            {
+                //TODO: Load skill from skill list!
+                Skill nSkill=null;
+                RpgBattleSystemMain.instance.skillsParserRealSkills.skillLookup.TryGetValue(skillName,out nSkill);
+                if (nSkill == null) Debug.Log("Skill does not exist:" + skillName);
+                if(nSkill!=null) skills.Add(nSkill);
+            }
+        }
         RPGMenuCommunication myMenuInterface;
         public void SetMenuController(RPGMenuCommunication menu)
         {
@@ -993,7 +1021,7 @@ namespace RPG.BPA
             foreach (RPGActor target in targets)
             {
                 if (target.stats.hp <= 0) continue;//skip dead actors!
-                msg = String.Format(getMessage, myActor.displayName, target.displayName);
+                msg = String.Format(getMessage, myActor.displayName, target.displayName,skillName);
                 RpgBattleSystemMain.instance.CreatAction(msg, 1f, null, null);
 
                 int attackPower = (myActor.stats.GetAttack() + attackOrWisdomStat) * multiplier;

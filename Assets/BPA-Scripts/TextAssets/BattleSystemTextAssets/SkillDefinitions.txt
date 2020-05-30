@@ -1,3 +1,35 @@
+[Hard Slash]
+	type=Attack
+	affinity=None
+	str=1
+	multiplier=1
+	animation=attack
+	battleStrings=AttacksMsg
+	battleStringsCritical=AttacksMsg
+[Double Slash]
+	type=Attack
+	affinity=None
+	str=1
+	multiplier=1
+	animation=attack
+	battleStrings=AttacksMsg
+	battleStringsCritical=AttacksMsg
+[Cross Slash]
+	type=Attack
+	affinity=None
+	str=1
+	multiplier=1
+	animation=attack
+	battleStrings=AttacksMsg
+	battleStringsCritical=AttacksMsg
+[Spiral Thrust]
+	type=Attack
+	affinity=None
+	str=1
+	multiplier=1
+	animation=attack
+	battleStrings=AttacksMsg
+	battleStringsCritical=AttacksMsg
 [Hard Strike]
 	type=Attack
 	affinity=None

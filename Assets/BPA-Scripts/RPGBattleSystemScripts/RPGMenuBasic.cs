@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using RPG.BPA;
 using RPG.BPA.MENU;
+using TMPro;
 
 public class RPGMenuBasic : MonoBehaviour
 {
@@ -16,11 +17,15 @@ public class RPGMenuBasic : MonoBehaviour
     public List<string> skillStrings = new List<string>();
 
     public bool debugAwaitingInputMSG = true;
+
+    public SimpleMenu simpleMenuDisplay;
+    public SimpleMenuSlot slotTemplate;
     // Start is called before the first frame update
     void Start()
     {
         //TODO: INITIALIZE ON BATTLEMODE START INSTEAD!! 
         menuInterface.Initialize(MyActor);
+
     }
     bool limitOnce=false;
     public bool TEST;
@@ -41,6 +46,7 @@ public class RPGMenuBasic : MonoBehaviour
     {
         if (menuInterface.GetMenuIsActive() == false)
         {
+            //menu not active, ignore update loop...
             limitOnce = false;
             return;
         }
@@ -52,6 +58,11 @@ public class RPGMenuBasic : MonoBehaviour
             {
                 RpgBattleSystemMain.instance.WriteToPrompt("Awaiting input...");
             }
+            //menu pops open...
+
+            //test skill draw for now...
+            DrawSkillsMenu();
+            //TODO: Make a state machine or something...
         }
       
         //MENU CODE:
@@ -59,11 +70,53 @@ public class RPGMenuBasic : MonoBehaviour
        if(TEST)
         {
             TEST = false;
-            //attack all with default skill for now:
-            menuInterface.SetSkill(menuInterface.GetSkillList()[0]);
+            //select using cursor index of simple menu
+            menuInterface.SetSkill(menuInterface.GetSkillList()[simpleMenuDisplay.cursorIndex]);
             menuInterface.SetTargets(menuInterface.enemyTargets);
 
 
         }
+    }
+    
+    void DrawSkillsMenu()
+    {
+        //return all to the pool
+        oldSlots.AddRange(simpleMenuDisplay.menuSlots);
+        foreach(var s in oldSlots)
+        {
+            s.gameObject.SetActive(false);
+        }
+        simpleMenuDisplay.menuSlots.Clear();
+       
+        Vector3 firstSlotPos = slotTemplate.transform.position;
+        Vector3 offsetByAmount = new Vector3(0, -75f, 0f);
+        List<Skill> skillsList = menuInterface.GetSkillList();
+
+        for (int i = 0; i < skillsList.Count; i++)
+        {
+            SimpleMenuSlot slotGFX = CreateOrRecycleSlot();
+            slotGFX.transform.position = firstSlotPos+(offsetByAmount * i);
+           
+            simpleMenuDisplay.menuSlots.Add(slotGFX);
+            slotGFX.GetComponent<TextMeshProUGUI>().SetText(skillsList[i].skillName);
+            slotGFX.gameObject.SetActive(true);
+        }
+    }
+    //old slot becomes like an object pool
+    List<SimpleMenuSlot> oldSlots= new List<SimpleMenuSlot>();
+    SimpleMenuSlot CreateOrRecycleSlot()
+    {
+        SimpleMenuSlot nSlot=null;
+        if(oldSlots.Count>0)
+        {
+            nSlot = oldSlots[0];
+            oldSlots.Remove(nSlot);
+        }
+      
+        if (oldSlots == null)
+        {
+            nSlot= Instantiate(slotTemplate) as SimpleMenuSlot;
+        }
+        return nSlot;
     }
 }

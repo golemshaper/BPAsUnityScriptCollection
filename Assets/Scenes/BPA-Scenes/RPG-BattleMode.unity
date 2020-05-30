@@ -390,7 +390,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1045618774}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -593,7 +593,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   comments:
   - "you need these for input \nand for saving/loading\n"
---- !u!1 &737540755
+--- !u!1 &668371791
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -601,55 +601,55 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 737540756}
-  - component: {fileID: 737540758}
-  - component: {fileID: 737540757}
+  - component: {fileID: 668371792}
+  - component: {fileID: 668371794}
+  - component: {fileID: 668371793}
   m_Layer: 5
-  m_Name: CURSOR
+  m_Name: Cursor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &737540756
+--- !u!224 &668371792
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 737540755}
+  m_GameObject: {fileID: 668371791}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1067323059}
-  m_RootOrder: 2
+  m_Father: {fileID: 1045618774}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 459.49, y: -166.88}
-  m_SizeDelta: {x: 46.045105, y: 49.02704}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 2, y: 246.99994}
+  m_SizeDelta: {x: 456.5116, y: 54.522156}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &737540757
+--- !u!114 &668371793
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 737540755}
+  m_GameObject: {fileID: 668371791}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 1, b: 0.67830324, a: 0.6392157}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: eb6760bf7a195364880671dbcfc34b71, type: 3}
-  m_Type: 1
+  m_Sprite: {fileID: 0}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -658,13 +658,13 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!222 &737540758
+--- !u!222 &668371794
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 737540755}
+  m_GameObject: {fileID: 668371791}
   m_CullTransparentMesh: 0
 --- !u!1 &745291306
 GameObject:
@@ -771,7 +771,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1045618774}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -943,7 +943,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1045618774}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -1113,6 +1113,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 668371792}
   - {fileID: 337765456}
   - {fileID: 1994130283}
   - {fileID: 861756592}
@@ -1174,6 +1175,7 @@ GameObject:
   - component: {fileID: 1067323061}
   - component: {fileID: 1067323060}
   - component: {fileID: 1067323062}
+  - component: {fileID: 1067323063}
   m_Layer: 5
   m_Name: Menu.RPG
   m_TagString: Untagged
@@ -1194,7 +1196,6 @@ RectTransform:
   m_Children:
   - {fileID: 1045618774}
   - {fileID: 745291307}
-  - {fileID: 737540756}
   m_Father: {fileID: 1836801200}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1261,12 +1262,12 @@ MonoBehaviour:
   - {fileID: 868296116}
   - {fileID: 1452925641}
   cursorIndex: 0
-  cursor: {fileID: 737540756}
+  cursor: {fileID: 668371792}
   cursorOffset: {x: 0, y: 0, z: 0}
   x: 0
   y: 1
   z: 0
-  cursorMoveType: 0
+  cursorMoveType: 1
   allowXMove: 0
   allowYMove: 1
   dpadOnly: 0
@@ -1274,6 +1275,24 @@ MonoBehaviour:
   ticsTillFastScroll: 2
   useLocalPosition: 0
   selectButton: 1
+--- !u!114 &1067323063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1067323058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 224cbbac7880d0d4084e142c00fa420e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MyActor: Hero
+  skillStrings: []
+  debugAwaitingInputMSG: 1
+  simpleMenuDisplay: {fileID: 1067323062}
+  slotTemplate: {fileID: 1994130286}
+  TEST: 0
 --- !u!1 &1235970440
 GameObject:
   m_ObjectHideFlags: 0
@@ -1417,7 +1436,7 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 0
   m_pageToDisplay: 1
-  m_margin: {x: -107.79773, y: 0, z: 0, w: 0}
+  m_margin: {x: -268.0703, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1235970443}
     characterCount: 3
@@ -1451,53 +1470,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1235970440}
   m_CullTransparentMesh: 0
---- !u!1 &1359589617
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1359589618}
-  - component: {fileID: 1359589619}
-  m_Layer: 0
-  m_Name: BattleMenu.1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1359589618
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1359589617}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1529831232}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1359589619
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1359589617}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 224cbbac7880d0d4084e142c00fa420e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MyActor: Hero
-  skillStrings: []
-  debugAwaitingInputMSG: 1
-  TEST: 0
 --- !u!1 &1371786590
 GameObject:
   m_ObjectHideFlags: 0
@@ -1620,7 +1592,7 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 0
   m_pageToDisplay: 1
-  m_margin: {x: -107.79773, y: 0, z: 0, w: 0}
+  m_margin: {x: -293.92078, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1371786592}
     characterCount: 3
@@ -1706,7 +1678,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1045618774}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -1884,12 +1856,14 @@ MonoBehaviour:
   previousPromptDisplay: {fileID: 1235970442}
   EnemyStatDefinitions: {fileID: 4900000, guid: 12fcc14685605fa4a85ca2053102d2f8,
     type: 3}
-  enemyStatsData:
+  actorStatsData:
     groups: []
   battleMessages: {fileID: 4900000, guid: 74b0c94c9e06a034296f5862544f095d, type: 3}
   skillDefinitions: {fileID: 4900000, guid: de4104be55c161841a8f3c25b9c11352, type: 3}
   skillData:
     groups: []
+  skillsParserRealSkills:
+    skills: []
   battleType: 0
   curTurn: 0
   heroParty:
@@ -1963,7 +1937,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1359589618}
   - {fileID: 1836801200}
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -2062,7 +2035,7 @@ RectTransform:
   - {fileID: 1235970441}
   - {fileID: 1067323059}
   m_Father: {fileID: 1529831232}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2258,7 +2231,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1045618774}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}

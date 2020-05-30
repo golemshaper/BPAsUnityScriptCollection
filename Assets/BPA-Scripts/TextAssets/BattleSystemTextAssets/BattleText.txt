@@ -1,6 +1,6 @@
 Group,English
 EnemyAppears,{0} draws near!
-AttacksMsg,{0} attacks {1}!
+AttacksMsg,{0} attacks {1} with {2}!
 DamageMsg,{0} takes {1} DMG!
 CriticalDamageMsg,{0} takes {1} Critical DMG!
 Defeated,{0} has fallen!

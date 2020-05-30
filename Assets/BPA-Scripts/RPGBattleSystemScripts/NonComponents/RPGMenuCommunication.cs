@@ -51,8 +51,8 @@ namespace RPG.BPA.MENU
             myActor = RpgBattleSystemMain.instance.heroParty[index];
             myActor.SetMenuController(this);
             enemyTargets = RpgBattleSystemMain.instance.enemyParty;
-
-            if(availibleActions.Count<=0)
+            availibleActions = myActor.skills;
+            if (availibleActions.Count<=0)
             {
                 availibleActions.Add(new AttackActionStd("Debug Attack"));
             }
