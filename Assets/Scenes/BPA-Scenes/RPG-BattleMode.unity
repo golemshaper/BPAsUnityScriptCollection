@@ -1253,6 +1253,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   driveByMaster: {fileID: 0}
+  neverUseUpdate: 0
   disableOnClose: 1
   enableOnOpen: 1
   enableBackButton: 1
@@ -2157,10 +2158,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MyActor: Hero
-  skillStrings: []
+  skillsLoaded_DebugView: []
   debugAwaitingInputMSG: 1
   simpleMenuDisplay: {fileID: 1067323062}
   slotTemplate: {fileID: 1994130286}
+  debugState: -1
   TEST: 0
 --- !u!1 &1990759569
 GameObject:

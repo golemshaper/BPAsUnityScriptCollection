@@ -32,18 +32,22 @@ public class ScaleToSizeOnEnable : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        OpenUpdate();
+    }
+    void OpenUpdate()
+    {
         if (!allowUpdate) return;
-        progress += speed*Time.deltaTime;
+        progress += speed * Time.deltaTime;
         switch (interpolation)
         {
             case Interpolation.lerp:
-                myTransform.localScale = Vector3.Lerp(startSize,endSize,progress);
+                myTransform.localScale = Vector3.Lerp(startSize, endSize, progress);
                 break;
             case Interpolation.spring:
                 myTransform.localScale = GameMath.Spring(startSize, endSize, progress);
                 break;
         }
-        if(progress>=1)
+        if (progress >= 1)
         {
             myTransform.localScale = endSize;
             allowUpdate = false;

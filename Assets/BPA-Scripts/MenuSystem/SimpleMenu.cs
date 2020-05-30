@@ -10,6 +10,7 @@ public class SimpleMenu : MonoBehaviour
      */
     [Header("Main Settings")]
     public SimpleMenuMaster driveByMaster;
+    public bool neverUseUpdate;
     public bool disableOnClose=true;
     public bool enableOnOpen=true;
     public bool enableBackButton = true;
@@ -62,6 +63,7 @@ public class SimpleMenu : MonoBehaviour
     }
     private void Update()
     {
+        if (neverUseUpdate) return;
         if(driveByMaster==null)
         {
             DoUpdate();
