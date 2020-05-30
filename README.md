@@ -1,5 +1,6 @@
 # BPAsUnityScriptCollection
 A collection of useful game scripts for unity by me
+If used, please credit me in your game :)
 
 Highlights include:
 
