@@ -298,7 +298,7 @@ HELLO.WORLD.YES
         string nameOfSpeaker = "";
         foreach (string row in columns)
         {
-            //Data layout: TAG	English Name	English String	Comments	Special Code
+            //Data layout: TAG(Group)	English Name	English String	Comments	Special Code
 
             string[] rowData = row.Split("\t".ToCharArray());
 

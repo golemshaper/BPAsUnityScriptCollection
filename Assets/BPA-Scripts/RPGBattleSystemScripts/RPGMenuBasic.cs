@@ -25,7 +25,8 @@ public class RPGMenuBasic : MonoBehaviour
     {
         //TODO: INITIALIZE ON BATTLEMODE START INSTEAD!! 
         menuInterface.Initialize(MyActor);
-
+        simpleMenuDisplay.gameObject.SetActive(false);
+        
     }
     bool limitOnce=false;
     public bool TEST;
@@ -91,7 +92,10 @@ public class RPGMenuBasic : MonoBehaviour
         Vector3 firstSlotPos = slotTemplate.transform.position;
         Vector3 offsetByAmount = new Vector3(0, -75f, 0f);
         List<Skill> skillsList = menuInterface.GetSkillList();
-
+        /*
+         * TODO: Make this more generic so you can re-use for the enemy targets list.
+         * also, scale the backing window to fit the number of SlotNodes and nothing more
+         */
         for (int i = 0; i < skillsList.Count; i++)
         {
             SimpleMenuSlot slotGFX = CreateOrRecycleSlot();
@@ -101,6 +105,7 @@ public class RPGMenuBasic : MonoBehaviour
             slotGFX.GetComponent<TextMeshProUGUI>().SetText(skillsList[i].skillName);
             slotGFX.gameObject.SetActive(true);
         }
+        simpleMenuDisplay.gameObject.SetActive(true);
     }
     //old slot becomes like an object pool
     List<SimpleMenuSlot> oldSlots= new List<SimpleMenuSlot>();
