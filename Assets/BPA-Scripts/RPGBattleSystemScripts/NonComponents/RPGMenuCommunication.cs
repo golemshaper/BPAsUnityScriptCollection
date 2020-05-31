@@ -11,6 +11,7 @@ namespace RPG.BPA.MENU
         List<Skill> availibleActions = new List<Skill>();
         public List<RPGActor> enemyTargets = new List<RPGActor>();
         public List<RPGActor> heroTargets = new List<RPGActor>();
+        public List<RPGActor> availibleTargets = new List<RPGActor>();
 
         public Skill skillToPerform = null;
         public List<RPGActor> targetsToHit = new List<RPGActor>();
@@ -30,10 +31,23 @@ namespace RPG.BPA.MENU
         }
         public List<string> GetSkillListAsStringList()
         {
+   
             List<string> result = new List<string>();
             foreach(Skill s in availibleActions)
             {
                 result.Add(s.skillName);
+            }
+            return result;
+        }
+        public List<string> GetTargetListAsStringList(Skill selectedSkill)
+        {
+            //~~
+            //TODO: assign the target type to availibleAc tions!
+            //~~
+            List<string> result = new List<string>();
+            foreach (RPGActor s in availibleTargets)
+            {
+                result.Add(s.displayName);
             }
             return result;
         }
@@ -51,6 +65,15 @@ namespace RPG.BPA.MENU
             myActor = RpgBattleSystemMain.instance.heroParty[index];
             myActor.SetMenuController(this);
             enemyTargets = RpgBattleSystemMain.instance.enemyParty;
+            if(myActor.isInParty)
+            {
+                //is a hero?? you may need overrides for guests, etc.
+                availibleTargets = enemyTargets;
+            }
+            else
+            {
+                availibleTargets = enemyTargets;
+            }
             availibleActions = myActor.skills;
             if (availibleActions.Count<=0)
             {

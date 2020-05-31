@@ -456,6 +456,7 @@ namespace RPG.BPA
           */
         public string name; //name used internally, like in the save file
         public string displayName; //name displayed for current language
+        public string alphabetPlacementAppend = string.Empty; //gets added for each duplicate of an enemy of that type. (Slime A, Slime B, ETC) (NOT IMPLEMENTED YET!)
         public StatsPage stats;
         public bool isInParty=true;
         public bool autoLevel = false;

@@ -22,9 +22,13 @@ public class RPGMenuBasic : MonoBehaviour
     public SimpleMenu simpleMenuDisplay;
     public SimpleMenuSlot slotTemplate;
     //consider driving the menu with the state machine...
-    enum MenuState {inactive,selectSkill,selectTarget};
+    enum MenuState {inactive,selectSkill,selectTarget,selectAllTargets};
     public AckkStateMachine sm = new AckkStateMachine();
     public int debugState = -1;
+
+    int skillCursorMemory = 0;
+    int targetCursorMemory= 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,6 +38,7 @@ public class RPGMenuBasic : MonoBehaviour
         simpleMenuDisplay.gameObject.SetActive(false);
         //-----BIND ACTIONS---
         sm.LinkStates(MenuState.selectSkill,()=>UpdateSkillsMenu(),()=>OnEnterSkillMenu());
+        sm.LinkStates(MenuState.selectTarget,()=>TargetSelectUpdate(),()=>OnEnterTargetSelect());
         sm.LinkOnEnterState(MenuState.inactive,()=> OnEnterInactiveState());
         sm.SetState(MenuState.inactive);
     }
@@ -73,7 +78,8 @@ public class RPGMenuBasic : MonoBehaviour
         }
         sm.UpdateTick();
     }
-
+    //. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+    //__SKILL MENU__
     void OnEnterSkillMenu()
     {
         skillsLoaded_DebugView = menuInterface.GetSkillListAsStringList();
@@ -81,15 +87,31 @@ public class RPGMenuBasic : MonoBehaviour
         {
             RpgBattleSystemMain.instance.WriteToPrompt("Awaiting input...");
         }
-     
-         //menu pops open...
-        delayInput = 0.2f;
-        DrawSkillsMenu();
 
-        //TODO: Make a state machine or something...
+        //menu pops open...
+        delayInput = 0.2f;
+        //DrawSkillsMenu();
+        DrawMenuGeneral(menuInterface.GetSkillListAsStringList());
+        //remember in current menu!
+        skillCursorMemory = ClampToMenuSize(skillCursorMemory);
+        simpleMenuDisplay.cursorIndex = skillCursorMemory;
+        //remember in current menu!
+
     }
     void UpdateSkillsMenu()
     {
+        if (sm.TimeInState > 0.2f)
+        {
+            if (simpleMenuDisplay.gameObject.activeSelf == false)
+            {
+                simpleMenuDisplay.gameObject.SetActive(true);
+                //return early, but still counts as part of the delay.
+                delayInput -= Time.deltaTime;
+                return;
+            }
+           
+        }
+
         //Ignore input for time...
         if (delayInput > 0f)
         {
@@ -98,44 +120,116 @@ public class RPGMenuBasic : MonoBehaviour
         }
         //Call menu update:
         simpleMenuDisplay.DoUpdate();
-
+        skillCursorMemory = simpleMenuDisplay.cursorIndex;
         //UPDATE:
         if (PlayerInput.instance.GetFire2_A())
         {
             //select using cursor index of simple menu
             menuInterface.SetSkill(menuInterface.GetSkillList()[simpleMenuDisplay.cursorIndex]);
-            menuInterface.SetTargets(menuInterface.enemyTargets);
             //TODO: Actually, go to the target select menu instead of the inactive state, but I'll do this for now...
-            sm.SetState(MenuState.inactive);
+            //target select mode should be dictated by skill selected!
+            //define in skill definitions file!
+            sm.SetState(MenuState.selectTarget);
+            simpleMenuDisplay.gameObject.SetActive(false);
+            //NOTE: THE TYPE OF TARGET THAT YOU CAN SELECT SHOULD BE DEFINED PER SKILL!
+            //HEALING SPELLS SHOULD TARGET HERO PARTY, BUT IF YOU WANT TO MAKE A GAME WHERE 
+            //YOU CAN HURT OR HEAL ANYTHING, YOU SHOULD BE ABLE TO WITHOUT MODDING THE ENGINE!
         }
 
     }
+    //__SKILL MENU__
+    //. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+    //__TARGET MENU__
+    //. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+
+    void OnEnterTargetSelect()
+    {
+        skillsLoaded_DebugView = menuInterface.GetSkillListAsStringList();
+        if (debugAwaitingInputMSG)
+        {
+            RpgBattleSystemMain.instance.WriteToPrompt("Awaiting input...");
+        }
+
+
+
+        //delay for a bit
+        delayInput = 0.2f;
+        //menu pops open...
+        DrawMenuGeneral(menuInterface.GetTargetListAsStringList(menuInterface.skillToPerform));
+        //remember in current menu!
+        targetCursorMemory = ClampToMenuSize(targetCursorMemory);
+        simpleMenuDisplay.cursorIndex = targetCursorMemory;
+        //remember in current menu!
+    }
+    void TargetSelectUpdate()
+    {
+        if(sm.TimeInState>0.2f)
+        {
+            if (simpleMenuDisplay.gameObject.activeSelf==false)
+            {
+                simpleMenuDisplay.gameObject.SetActive(true);
+                //return early, but still counts as part of the delay.
+                delayInput -= Time.deltaTime;
+                return;
+            }
+        }
+        //Ignore input for time...
+        if (delayInput > 0f)
+        {
+            delayInput -= Time.deltaTime;
+            return;
+        }
+        //Call menu update:
+        simpleMenuDisplay.DoUpdate();
+        targetCursorMemory = simpleMenuDisplay.cursorIndex;
+        //TODO: Add a back button!
+
+        //UPDATE:
+        if (PlayerInput.instance.GetFire2_A())
+        {
+            //select using cursor index of simple menu
+            menuInterface.SetTargets(menuInterface.enemyTargets);
+            //TODO: Actually, go to the target select menu instead of the inactive state, but I'll do this for now...
+            sm.SetState(MenuState.inactive);
+            //NOTE: THE TYPE OF TARGET THAT YOU CAN SELECT SHOULD BE DEFINED PER SKILL!
+            //HEALING SPELLS SHOULD TARGET HERO PARTY, BUT IF YOU WANT TO MAKE A GAME WHERE 
+            //YOU CAN HURT OR HEAL ANYTHING, YOU SHOULD BE ABLE TO WITHOUT MODDING THE ENGINE!
+        }
+    }
+    //__TARGET MENU__
+    //. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
 
     float delayInput = 0f;
-    void DrawSkillsMenu()
+
+
+
+    int ClampToMenuSize(int cursorIndex)
+    {
+        if (cursorIndex > simpleMenuDisplay.menuSlots.Count - 1) cursorIndex = 0;
+        if (cursorIndex < 0) cursorIndex = simpleMenuDisplay.menuSlots.Count - 1;
+        return cursorIndex;
+    }
+    void DrawMenuGeneral(List<string> listToDraw)
     {
         //return all to the pool
         oldSlots.AddRange(simpleMenuDisplay.menuSlots);
-        foreach(var s in oldSlots)
+        foreach (var s in oldSlots)
         {
             s.gameObject.SetActive(false);
         }
         simpleMenuDisplay.menuSlots.Clear();
-       
+
         Vector3 firstSlotPos = slotTemplate.transform.position;
         Vector3 offsetByAmount = new Vector3(0, -75f, 0f);
-        List<Skill> skillsList = menuInterface.GetSkillList();
-        /*
-         * TODO: Make this more generic so you can re-use for the enemy targets list.
-         * also, scale the backing window to fit the number of SlotNodes and nothing more
-         */
-        for (int i = 0; i < skillsList.Count; i++)
+        slotTemplate.gameObject.SetActive(false); //MAKE SURE SLOT TEMPLATE IS NOT PART OF THE MENU SLOTS< OR THE INITIAL POSITION WILL JUMP!
+        for (int i = 0; i < listToDraw.Count; i++)
         {
             SimpleMenuSlot slotGFX = CreateOrRecycleSlot();
-            slotGFX.transform.position = firstSlotPos+(offsetByAmount * i);
-           
+            slotGFX.transform.parent = slotTemplate.transform.parent;
+            slotGFX.transform.position = firstSlotPos + (offsetByAmount * i);
+
             simpleMenuDisplay.menuSlots.Add(slotGFX);
-            slotGFX.GetComponent<TextMeshProUGUI>().SetText(skillsList[i].skillName);
+            slotGFX.GetComponent<TextMeshProUGUI>().SetText(listToDraw[i]);
             slotGFX.gameObject.SetActive(true);
         }
         simpleMenuDisplay.gameObject.SetActive(true);
@@ -149,12 +243,10 @@ public class RPGMenuBasic : MonoBehaviour
         {
             nSlot = oldSlots[0];
             oldSlots.Remove(nSlot);
+            return nSlot;
         }
-      
-        if (oldSlots == null)
-        {
-            nSlot= Instantiate(slotTemplate) as SimpleMenuSlot;
-        }
+        
+        nSlot= Instantiate(slotTemplate) as SimpleMenuSlot;
         return nSlot;
     }
 }

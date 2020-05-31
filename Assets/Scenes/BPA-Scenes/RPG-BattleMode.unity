@@ -1258,7 +1258,6 @@ MonoBehaviour:
   enableOnOpen: 1
   enableBackButton: 1
   menuSlots:
-  - {fileID: 1994130286}
   - {fileID: 861756595}
   - {fileID: 868296116}
   - {fileID: 1452925641}
@@ -1869,6 +1868,7 @@ MonoBehaviour:
   heroParty:
   - name: Hero
     displayName: 
+    alphabetPlacementAppend: 
     stats:
       lvl: 0
       hpMax: 0
@@ -1887,6 +1887,7 @@ MonoBehaviour:
     DEBUG_INFO_HITS_TAKEN: 0
   - name: Heroine
     displayName: 
+    alphabetPlacementAppend: 
     stats:
       lvl: 0
       hpMax: 0
@@ -1906,6 +1907,7 @@ MonoBehaviour:
   enemyParty:
   - name: Slime
     displayName: 
+    alphabetPlacementAppend: 
     stats:
       lvl: 0
       hpMax: 0
@@ -2269,12 +2271,12 @@ GameObject:
   - component: {fileID: 1994130284}
   - component: {fileID: 1994130286}
   m_Layer: 5
-  m_Name: PromptDisplay (1)
+  m_Name: SlotTemplate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1994130283
 RectTransform:
   m_ObjectHideFlags: 0
