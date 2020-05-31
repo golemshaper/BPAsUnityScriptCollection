@@ -28,7 +28,14 @@ public class RPGMenuBasic : MonoBehaviour
 
     int skillCursorMemory = 0;
     int targetCursorMemory= 0;
-
+    public bool GetConfirm()
+    {
+        return PlayerInput.instance.GetFire2_A();
+    }
+    public bool GetBack()
+    {
+        return PlayerInput.instance.GetFire1_B();
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -122,7 +129,7 @@ public class RPGMenuBasic : MonoBehaviour
         simpleMenuDisplay.DoUpdate();
         skillCursorMemory = simpleMenuDisplay.cursorIndex;
         //UPDATE:
-        if (PlayerInput.instance.GetFire2_A())
+        if (GetConfirm())
         {
             //select using cursor index of simple menu
             menuInterface.SetSkill(menuInterface.GetSkillList()[simpleMenuDisplay.cursorIndex]);
@@ -185,7 +192,14 @@ public class RPGMenuBasic : MonoBehaviour
         //TODO: Add a back button!
 
         //UPDATE:
-        if (PlayerInput.instance.GetFire2_A())
+        if(GetBack())
+        {
+            //back button pressed
+            sm.SetState(MenuState.selectSkill);
+            simpleMenuDisplay.gameObject.SetActive(true);
+            return;
+        }
+        if (GetConfirm())
         {
             //select using cursor index of simple menu
             menuInterface.SetTargets(menuInterface.enemyTargets);
@@ -195,6 +209,7 @@ public class RPGMenuBasic : MonoBehaviour
             //HEALING SPELLS SHOULD TARGET HERO PARTY, BUT IF YOU WANT TO MAKE A GAME WHERE 
             //YOU CAN HURT OR HEAL ANYTHING, YOU SHOULD BE ABLE TO WITHOUT MODDING THE ENGINE!
         }
+        
     }
     //__TARGET MENU__
     //. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 

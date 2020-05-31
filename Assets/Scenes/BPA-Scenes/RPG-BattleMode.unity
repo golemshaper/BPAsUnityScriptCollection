@@ -593,6 +593,61 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   comments:
   - "you need these for input \nand for saving/loading\n"
+--- !u!1 &435264217
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 435264218}
+  - component: {fileID: 435264219}
+  m_Layer: 5
+  m_Name: Menu.RPG(Heroine)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &435264218
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 435264217}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1836801200}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 50, y: -49.999985}
+  m_SizeDelta: {x: 495.51505, y: 117.8519}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &435264219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 435264217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 224cbbac7880d0d4084e142c00fa420e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MyActor: Heroine
+  skillsLoaded_DebugView: []
+  debugAwaitingInputMSG: 1
+  simpleMenuDisplay: {fileID: 1067323062}
+  slotTemplate: {fileID: 1994130286}
+  debugState: -1
+  TEST: 0
 --- !u!1 &668371791
 GameObject:
   m_ObjectHideFlags: 0
@@ -1177,7 +1232,7 @@ GameObject:
   - component: {fileID: 1067323062}
   - component: {fileID: 1067323063}
   m_Layer: 5
-  m_Name: SimpleMenu
+  m_Name: SimpleMenu (one for all)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1196,12 +1251,12 @@ RectTransform:
   m_Children:
   - {fileID: 1045618774}
   - {fileID: 745291307}
-  m_Father: {fileID: 1964465071}
-  m_RootOrder: 0
+  m_Father: {fileID: 1836801200}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 475.2575, y: -101.12596}
+  m_AnchoredPosition: {x: 277.5, y: -92.2}
   m_SizeDelta: {x: 495.51505, y: 117.8519}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1067323060
@@ -2036,6 +2091,8 @@ RectTransform:
   - {fileID: 1371786591}
   - {fileID: 1235970441}
   - {fileID: 1964465071}
+  - {fileID: 435264218}
+  - {fileID: 1067323059}
   m_Father: {fileID: 1529831232}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2121,7 +2178,7 @@ GameObject:
   - component: {fileID: 1964465071}
   - component: {fileID: 1964465072}
   m_Layer: 5
-  m_Name: Menu.RPG
+  m_Name: Menu.RPG(Hero)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2137,8 +2194,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1067323059}
+  m_Children: []
   m_Father: {fileID: 1836801200}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2276,7 +2332,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1994130283
 RectTransform:
   m_ObjectHideFlags: 0
