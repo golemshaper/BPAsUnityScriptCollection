@@ -443,8 +443,8 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 64
-  m_fontSizeBase: 64
+  m_fontSize: 32
+  m_fontSizeBase: 32
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -621,12 +621,12 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1836801200}
-  m_RootOrder: 3
+  m_Father: {fileID: 1529831232}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: -49.999985}
+  m_AnchoredPosition: {x: 50, y: 1030}
   m_SizeDelta: {x: 495.51505, y: 117.8519}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &435264219
@@ -643,9 +643,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MyActor: Heroine
   skillsLoaded_DebugView: []
-  debugAwaitingInputMSG: 1
+  debugAwaitingInputMSG: 0
   simpleMenuDisplay: {fileID: 1067323062}
   slotTemplate: {fileID: 1994130286}
+  menuHeaderText: {fileID: 337765457}
   debugState: -1
   TEST: 0
 --- !u!1 &668371791
@@ -1252,7 +1253,7 @@ RectTransform:
   - {fileID: 1045618774}
   - {fileID: 745291307}
   m_Father: {fileID: 1836801200}
-  m_RootOrder: 4
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -1452,8 +1453,8 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 80
-  m_fontSizeBase: 80
+  m_fontSize: 40
+  m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1559,7 +1560,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -602.3, y: -170.4}
+  m_AnchoredPosition: {x: -602.3, y: -90}
   m_SizeDelta: {x: 851.72015, y: 199.43808}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1371786592
@@ -1608,8 +1609,8 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 80
-  m_fontSizeBase: 80
+  m_fontSize: 40
+  m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1979,6 +1980,25 @@ MonoBehaviour:
     useAI: 1
     skills: []
     DEBUG_INFO_HITS_TAKEN: 0
+  - name: Skeleton
+    displayName: 
+    alphabetPlacementAppend: 
+    stats:
+      lvl: 0
+      hpMax: 0
+      hp: 0
+      mpMax: 0
+      mp: 0
+      str: 0
+      def: 0
+      spd: 0
+      wis: 0
+      luk: 0
+    isInParty: 0
+    autoLevel: 1
+    useAI: 1
+    skills: []
+    DEBUG_INFO_HITS_TAKEN: 0
   AllActors: []
   battleLog: []
   actionQueue: []
@@ -1994,6 +2014,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 435264218}
+  - {fileID: 1964465071}
   - {fileID: 1836801200}
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -2090,11 +2112,9 @@ RectTransform:
   m_Children:
   - {fileID: 1371786591}
   - {fileID: 1235970441}
-  - {fileID: 1964465071}
-  - {fileID: 435264218}
   - {fileID: 1067323059}
   m_Father: {fileID: 1529831232}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2195,12 +2215,12 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1836801200}
-  m_RootOrder: 2
+  m_Father: {fileID: 1529831232}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: -49.999985}
+  m_AnchoredPosition: {x: 50, y: 1030}
   m_SizeDelta: {x: 495.51505, y: 117.8519}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1964465072
@@ -2217,9 +2237,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MyActor: Hero
   skillsLoaded_DebugView: []
-  debugAwaitingInputMSG: 1
+  debugAwaitingInputMSG: 0
   simpleMenuDisplay: {fileID: 1067323062}
   slotTemplate: {fileID: 1994130286}
+  menuHeaderText: {fileID: 337765457}
   debugState: -1
   TEST: 0
 --- !u!1 &1990759569

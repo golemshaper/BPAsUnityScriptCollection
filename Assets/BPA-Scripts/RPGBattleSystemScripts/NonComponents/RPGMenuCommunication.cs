@@ -39,8 +39,9 @@ namespace RPG.BPA.MENU
             }
             return result;
         }
-        public List<string> GetTargetListAsStringList(Skill selectedSkill)
+        public List<string> GetAttackTargetListAsStringList(Skill selectedSkill)
         {
+            CreateAttackTargetsList(false);
             //~~
             //TODO: assign the target type to availibleAc tions!
             //~~
@@ -65,7 +66,17 @@ namespace RPG.BPA.MENU
             myActor = RpgBattleSystemMain.instance.heroParty[index];
             myActor.SetMenuController(this);
             enemyTargets = RpgBattleSystemMain.instance.enemyParty;
-            if(myActor.isInParty)
+            CreateAttackTargetsList(false);
+            //skills you can perform
+            availibleActions = myActor.skills;
+            if (availibleActions.Count<=0)
+            {
+                availibleActions.Add(new AttackActionStd("Debug Attack"));
+            }
+        }
+        public void CreateAttackTargetsList(bool includeDeadActors)
+        {
+            if (myActor.isInParty)
             {
                 //is a hero?? you may need overrides for guests, etc.
                 availibleTargets = enemyTargets;
@@ -74,10 +85,18 @@ namespace RPG.BPA.MENU
             {
                 availibleTargets = enemyTargets;
             }
-            availibleActions = myActor.skills;
-            if (availibleActions.Count<=0)
+            if(includeDeadActors)
             {
-                availibleActions.Add(new AttackActionStd("Debug Attack"));
+                //no need to prune dead actors
+                return;
+            }
+            //prune dead actors...
+            foreach(RPGActor a in availibleTargets.ToArray())
+            {
+                if(a.stats.hp <= 0)
+                {
+                    availibleTargets.Remove(a);
+                }
             }
         }
         public void PullAvailibleActions()
@@ -87,6 +106,12 @@ namespace RPG.BPA.MENU
         public void SetTargets(List<RPGActor> nTargets)
         {
             targetsToHit = nTargets;
+        }
+        public void SetTargets(RPGActor nTargets)
+        {
+            var singleTarget = new List<RPGActor>();
+            singleTarget.Add(nTargets);
+            targetsToHit = singleTarget;
         }
         public void SetSkill(Skill nSkill)
         {
@@ -113,6 +138,9 @@ namespace RPG.BPA.MENU
             skillToPerform.SetTargets(targetsToHit);
             skillToPerform.myActor = GetMyActor();
             skillToPerform.OnStartOfAction();
+            //clean up
+            targetsToHit.Clear();
+            skillToPerform = null;
         }
         /// <summary>
         /// Call after use!

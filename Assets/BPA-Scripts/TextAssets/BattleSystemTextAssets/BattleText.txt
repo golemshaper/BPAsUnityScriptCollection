@@ -8,3 +8,5 @@ DefeatedHero,{0} has fallen!
 HeroPartyWins,Victory!
 EnemyPartyWins,Game Over
 DoesNothing,{0} is afraid to move!
+SkillsMenuHeader,{0}->{1}
+Target,Target

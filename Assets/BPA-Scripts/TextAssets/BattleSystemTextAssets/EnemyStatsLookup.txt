@@ -45,8 +45,18 @@
 [Slime]
 	lvl=1
 	autoLevel=true
-	hitsToKillMe=3
+	hitsToKillMe=2
 	hitsToKillPlayer=6
+	assumePlayerPartySize=1
+	speedMin=10
+	speedMax=30
+	luckMin=10
+	luckMax=30
+[Skeleton]
+	lvl=1
+	autoLevel=true
+	hitsToKillMe=3
+	hitsToKillPlayer=4
 	assumePlayerPartySize=1
 	speedMin=10
 	speedMax=30

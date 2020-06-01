@@ -7,6 +7,8 @@ using TMPro;
 
 public class RPGMenuBasic : MonoBehaviour
 {
+    private const string skillMenuHeader = "SkillsMenuHeader";
+
     //Write as many menus as you like.
     //use this method of communicating
     //this will make it easier change the game style (I hope)
@@ -21,6 +23,7 @@ public class RPGMenuBasic : MonoBehaviour
     [Header("Simple Menu interface")]
     public SimpleMenu simpleMenuDisplay;
     public SimpleMenuSlot slotTemplate;
+    public TextMeshProUGUI menuHeaderText;
     //consider driving the menu with the state machine...
     enum MenuState {inactive,selectSkill,selectTarget,selectAllTargets};
     public AckkStateMachine sm = new AckkStateMachine();
@@ -86,10 +89,17 @@ public class RPGMenuBasic : MonoBehaviour
         sm.UpdateTick();
     }
     //. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+    void DrawSkillMenuHeaderTitle()
+    {
+        if (menuHeaderText != null) menuHeaderText.text = string.Format(RpgBattleSystemMain.instance.battleMessage_csv.GetCSVData(skillMenuHeader),
+       menuInterface.GetMyActor().displayName, "Skills");
+        //TODO: Replace the string "Skills" with the currently equipped+selected weapon name. multiple weapons can be equipped and skills will be filtered by weapon type (not implemented yet)
+        skillsLoaded_DebugView = menuInterface.GetSkillListAsStringList();
+    }
     //__SKILL MENU__
     void OnEnterSkillMenu()
     {
-        skillsLoaded_DebugView = menuInterface.GetSkillListAsStringList();
+        DrawSkillMenuHeaderTitle();
         if (debugAwaitingInputMSG)
         {
             RpgBattleSystemMain.instance.WriteToPrompt("Awaiting input...");
@@ -107,6 +117,7 @@ public class RPGMenuBasic : MonoBehaviour
     }
     void UpdateSkillsMenu()
     {
+        //------------------
         if (sm.TimeInState > 0.2f)
         {
             if (simpleMenuDisplay.gameObject.activeSelf == false)
@@ -118,7 +129,6 @@ public class RPGMenuBasic : MonoBehaviour
             }
            
         }
-
         //Ignore input for time...
         if (delayInput > 0f)
         {
@@ -128,7 +138,13 @@ public class RPGMenuBasic : MonoBehaviour
         //Call menu update:
         simpleMenuDisplay.DoUpdate();
         skillCursorMemory = simpleMenuDisplay.cursorIndex;
+        //------------------
         //UPDATE:
+
+
+        //TODO: Make it so you can press left/right to select a different weapon, causing new skills to be drawn. 
+        //(reset cursor memory if you do that, or make a new memory int for each weapon type
+
         if (GetConfirm())
         {
             //select using cursor index of simple menu
@@ -148,7 +164,14 @@ public class RPGMenuBasic : MonoBehaviour
     //. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
     //__TARGET MENU__
     //. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+    void DrawTargetMenuHeaderTitle()
+    {
+        // 'Target' is a string that says Target in english. you can make it something else in another language...
 
+        if (menuHeaderText != null) menuHeaderText.text = string.Format(RpgBattleSystemMain.instance.battleMessage_csv.GetCSVData(skillMenuHeader),
+        menuInterface.skillToPerform.skillName,RpgBattleSystemMain.instance.battleMessage_csv.GetCSVData("Target"));
+        skillsLoaded_DebugView = menuInterface.GetSkillListAsStringList();
+    }
     void OnEnterTargetSelect()
     {
         skillsLoaded_DebugView = menuInterface.GetSkillListAsStringList();
@@ -156,13 +179,13 @@ public class RPGMenuBasic : MonoBehaviour
         {
             RpgBattleSystemMain.instance.WriteToPrompt("Awaiting input...");
         }
-
+        DrawTargetMenuHeaderTitle();
 
 
         //delay for a bit
         delayInput = 0.2f;
         //menu pops open...
-        DrawMenuGeneral(menuInterface.GetTargetListAsStringList(menuInterface.skillToPerform));
+        DrawMenuGeneral(menuInterface.GetAttackTargetListAsStringList(menuInterface.skillToPerform));
         //remember in current menu!
         targetCursorMemory = ClampToMenuSize(targetCursorMemory);
         simpleMenuDisplay.cursorIndex = targetCursorMemory;
@@ -196,13 +219,14 @@ public class RPGMenuBasic : MonoBehaviour
         {
             //back button pressed
             sm.SetState(MenuState.selectSkill);
-            simpleMenuDisplay.gameObject.SetActive(true);
+            //turn off menu so it uses the open effect again...
+            simpleMenuDisplay.gameObject.SetActive(false);
             return;
         }
         if (GetConfirm())
         {
             //select using cursor index of simple menu
-            menuInterface.SetTargets(menuInterface.enemyTargets);
+            menuInterface.SetTargets(menuInterface.availibleTargets[simpleMenuDisplay.cursorIndex]);
             //TODO: Actually, go to the target select menu instead of the inactive state, but I'll do this for now...
             sm.SetState(MenuState.inactive);
             //NOTE: THE TYPE OF TARGET THAT YOU CAN SELECT SHOULD BE DEFINED PER SKILL!

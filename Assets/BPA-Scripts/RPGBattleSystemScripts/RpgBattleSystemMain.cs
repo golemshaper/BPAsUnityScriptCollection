@@ -920,7 +920,11 @@ namespace RPG.BPA
     [System.Serializable]
     public class Skill
     {
+        /// <summary>
+        /// Skill name will be localized. use actualInternalName to get the group name! (which is not the same as the overriden name as of now, and may never be)
+        /// </summary>
         public string skillName;
+        public string actualInternalName;
         [NonSerialized]
         public RPGActor myActor;
         [NonSerialized]
@@ -937,11 +941,18 @@ namespace RPG.BPA
         }
         public virtual void OnStartOfAction()
         {
-
+            
+        }
+        string LocalizeSkillName(string stringToLocalize)
+        {
+            //if you want a list of skill names, and their equivilent in another language use the csv parser, and get the desired language and return results here.
+            //this is not implimented yet, but when you need it it'll be here...
+            return stringToLocalize;
         }
         public virtual void ParseFromGroup(GroupData createFromGroup)
         {
-            skillName = createFromGroup.GetValueIgnoreCase("nameOverride", createFromGroup.name);
+            skillName = LocalizeSkillName(createFromGroup.GetValueIgnoreCase("nameOverride", createFromGroup.name));
+            actualInternalName = createFromGroup.name; //never localized
             string elementalAttribute = createFromGroup.GetValueIgnoreCase( "affinity", "none");
             this.affinity.SetupMap();
             this.affinity.SetMyAffinity(elementalAttribute);
