@@ -83,6 +83,7 @@ namespace RPG.BPA
         //Use this to require all player input before turns play out!
         public bool decideActionsFirst = false;
         List<RPGMenuCommunication> menusInputQueueList = new List<RPGMenuCommunication>();
+        List<RPGMenuCommunication> menuHistoryQueue = new List<RPGMenuCommunication>();
         //...
         [Header("Current Data")]
         public int curTurn = 0;
@@ -174,13 +175,14 @@ namespace RPG.BPA
         }
         void FillMenuInputQueue()
         {
+            menuHistoryQueue.Clear();
             menusInputQueueList.Clear();
             foreach (RPGActor a in heroParty)
             {
                 if (a.stats.hp <= 0) continue; //skip if dead...
                 menusInputQueueList.Add(a.GetMenuInterface());
             }
-            debug_MENU_SIZE = menusInputQueueList.Count;
+          
             Debug.Log("Full up menu");
         }
         public void StartBattle()
@@ -367,12 +369,27 @@ namespace RPG.BPA
         bool actorTurnLimitOnce=false;
 
 
+        //============================================================================
+        //MENU INPUT:
+        //. . . . . . 
        // int limitOnceMenuInputCheck = -1;
         public int debug_MENU_SIZE;
         bool limitOncePerMenu = false;
-        bool HasMenusThatNeedInput()
+        bool nnnnnnnDebug = false;
+        bool HasMenusThatNeedInputPlusUpdate()
         {
-          
+            debug_MENU_SIZE = menusInputQueueList.Count;
+            if (requestGoBackToPreviousMenu)
+            {
+                DoGoBackToPreviousMenu();
+                requestGoBackToPreviousMenu = false;
+                limitOncePerMenu = false;
+
+                //skip frame:
+                return false;
+            }
+
+            //Sorry that this function also changes state... maybe I'll split it in to two, but it's fine for now, just keep it in mind
             //GET ALL INPUT AT ONCE!
             if (menusInputQueueList.Count > 0)
             {
@@ -390,6 +407,7 @@ namespace RPG.BPA
                 if(menusInputQueueList[0].IsReadyToUseSkill())
                 {
                     //successful input given, remove it from the list and get ready for the next one
+                    menuHistoryQueue.Add(menusInputQueueList[0]);
                     menusInputQueueList.Remove(menusInputQueueList[0]);
                     limitOncePerMenu = false;
                     return false;
@@ -400,6 +418,43 @@ namespace RPG.BPA
             //only return true when you have no input left to give
             return true;
         }
+        public bool GoBackToPreviousMenu()
+        {
+            if(decideActionsFirst==false)
+            {
+                //can't go back if you do actions per turn
+                return false;
+            }
+            if(menuHistoryQueue.Count<=0)
+            {
+                //no history, play error sound in the menu code...
+                return false;
+            }
+            //will be dealt with next tick
+            requestGoBackToPreviousMenu = true;
+            return true;
+        }
+        private void DoGoBackToPreviousMenu()
+        {
+            menusInputQueueList[0].Terminate(); // erease input and call terminate event to talk to graphical menu representation.
+            menusInputQueueList[0].SetMenuIsActive(false);
+            /*  List<RPGMenuCommunication> nList = new List<RPGMenuCommunication>();
+              nList.Add(menuHistoryQueue[menuHistoryQueue.Count-1]);
+              menuHistoryQueue.Remove(menuHistoryQueue[0]);
+              nList.AddRange(menusInputQueueList);
+              menusInputQueueList = nList;*/
+            menusInputQueueList.Insert(0,menuHistoryQueue[menuHistoryQueue.Count - 1]);
+            menuHistoryQueue[menuHistoryQueue.Count - 1].Terminate();
+            menuHistoryQueue.Remove(menuHistoryQueue[menuHistoryQueue.Count - 1]);
+            Debug.Log("fuck, go back to"+ menusInputQueueList[0].GetMyActor().name);
+
+        }
+        private bool requestGoBackToPreviousMenu = false;
+        
+        //...
+        //==================================================================================================================
+
+
         void TurnBasedUpdate()
         {
 
@@ -409,7 +464,7 @@ namespace RPG.BPA
             //. . . . . 
             if(decideActionsFirst)
             {
-                if (HasMenusThatNeedInput() == false)
+                if (HasMenusThatNeedInputPlusUpdate() == false)
                 {
                     //returns true if no input left to give
                   

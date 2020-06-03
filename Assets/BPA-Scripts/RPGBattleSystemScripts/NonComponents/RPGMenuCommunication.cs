@@ -15,7 +15,7 @@ namespace RPG.BPA.MENU
 
         public Skill skillToPerform = null;
         public List<RPGActor> targetsToHit = new List<RPGActor>();
-
+        public System.Action onTerminate;
         bool menuActive = false;
         public void SetMenuIsActive(bool status)
         {
@@ -24,6 +24,16 @@ namespace RPG.BPA.MENU
         public bool GetMenuIsActive()
         {
             return menuActive;
+        }
+        public void Terminate()
+        {
+            //called when you need to go back in history and terminate the menu early.
+            //subscribe to onTerminate to clear any menu drawing that you need to clear.
+            targetsToHit.Clear();
+            skillToPerform = null;
+
+            SetMenuIsActive(false);
+            if(onTerminate!=null)onTerminate();
         }
         public List<Skill> GetSkillList()
         {

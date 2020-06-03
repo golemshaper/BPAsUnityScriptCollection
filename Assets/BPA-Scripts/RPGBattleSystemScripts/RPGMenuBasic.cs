@@ -46,10 +46,15 @@ public class RPGMenuBasic : MonoBehaviour
         menuInterface.Initialize(MyActor);
         simpleMenuDisplay.neverUseUpdate = true; //we'll control the update in this class...
         simpleMenuDisplay.gameObject.SetActive(false);
+        menuInterface.onTerminate += OnTerminateMenuEarly;
         //-----BIND ACTIONS---
         sm.LinkStates(MenuState.selectSkill,()=>UpdateSkillsMenu(),()=>OnEnterSkillMenu());
         sm.LinkStates(MenuState.selectTarget,()=>TargetSelectUpdate(),()=>OnEnterTargetSelect());
         sm.LinkOnEnterState(MenuState.inactive,()=> OnEnterInactiveState());
+        sm.SetState(MenuState.inactive);
+    }
+    void OnTerminateMenuEarly()
+    {
         sm.SetState(MenuState.inactive);
     }
     void OnEnterInactiveState()
@@ -96,6 +101,7 @@ public class RPGMenuBasic : MonoBehaviour
         //TODO: Replace the string "Skills" with the currently equipped+selected weapon name. multiple weapons can be equipped and skills will be filtered by weapon type (not implemented yet)
         skillsLoaded_DebugView = menuInterface.GetSkillListAsStringList();
     }
+
     //__SKILL MENU__
     void OnEnterSkillMenu()
     {
@@ -144,7 +150,17 @@ public class RPGMenuBasic : MonoBehaviour
 
         //TODO: Make it so you can press left/right to select a different weapon, causing new skills to be drawn. 
         //(reset cursor memory if you do that, or make a new memory int for each weapon type
-
+        if(GetBack())
+        {
+            //TODO!
+            // now I need an option to go back if you want to cancel all of the commands!
+            //you'll need to add the previous menu to RpgBattleSystemMain.instance.menusInputQueueList!!
+            bool success=  RpgBattleSystemMain.instance.GoBackToPreviousMenu();
+            if(success==false)
+            {
+                //TODO: Play error sound.
+            }
+        }
         if (GetConfirm())
         {
             //select using cursor index of simple menu
