@@ -437,7 +437,7 @@ namespace RPG.BPA
         private void DoGoBackToPreviousMenu()
         {
             menusInputQueueList[0].Terminate(); // erease input and call terminate event to talk to graphical menu representation.
-            menusInputQueueList[0].SetMenuIsActive(false);
+          
             /*  List<RPGMenuCommunication> nList = new List<RPGMenuCommunication>();
               nList.Add(menuHistoryQueue[menuHistoryQueue.Count-1]);
               menuHistoryQueue.Remove(menuHistoryQueue[0]);
