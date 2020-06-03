@@ -79,13 +79,20 @@ namespace RPG.BPA
         public enum BattleType { TurnBased, ATB, MultiTurnSpeedBased };
         [Header("Settings")]
         public BattleType battleType = BattleType.TurnBased;
+        //...
+        //Use this to require all player input before turns play out!
+        public bool decideActionsFirst = false;
+        List<RPGMenuCommunication> menusInputQueueList = new List<RPGMenuCommunication>();
+        //...
         [Header("Current Data")]
         public int curTurn = 0;
 
         public List<RPGActor> heroParty = new List<RPGActor>();
         public List<RPGActor> enemyParty = new List<RPGActor>();
-
         public List<RPGActor> AllActors = new List<RPGActor>();
+
+
+
         public List<string> battleLog= new List<string>();
         string battlePrompt=string.Empty;
         //ACTIONS TO PERFORM
@@ -165,13 +172,24 @@ namespace RPG.BPA
                 a.LoadSkills(actorStatsData);
             }
         }
+        void FillMenuInputQueue()
+        {
+            menusInputQueueList.Clear();
+            foreach (RPGActor a in heroParty)
+            {
+                if (a.stats.hp <= 0) continue; //skip if dead...
+                menusInputQueueList.Add(a.GetMenuInterface());
+            }
+            debug_MENU_SIZE = menusInputQueueList.Count;
+            Debug.Log("Full up menu");
+        }
         public void StartBattle()
         {
             //clear last battle log.
             battleLog.Clear();
             curTurn = 0;
             AllActors.Clear();
-
+        
             //setup default AI targets...
             foreach (RPGActor a in heroParty)
             {
@@ -198,7 +216,12 @@ namespace RPG.BPA
             //Non-Linq sort by speed:
             AllActors.Sort((y,x) => x.stats.spd.CompareTo(y.stats.spd));
 
-
+            //FILL UP MENU QUEUE FIRST!
+            if (decideActionsFirst)
+            {
+                CreateAction(string.Empty,0f,() => FillMenuInputQueue(),null);
+               
+            }
             allowUpdate = true;
         }
         public void EndBattle()
@@ -212,15 +235,15 @@ namespace RPG.BPA
             //populate target menus
             //TODO: 
         }
-        public void CreatAction(string message)
+        public void CreateAction(string message)
         {
-            CreatAction(message,  1f);
+            CreateAction(message,  1f);
         }
-        public void CreatAction(string message, float forTime)
+        public void CreateAction(string message, float forTime)
         {
-            CreatAction(message, forTime, null, null);
+            CreateAction(message, forTime, null, null);
         }
-        public void CreatAction(string message, float delay, Action nAction,Action endAction)
+        public void CreateAction(string message, float delay, Action nAction,Action endAction)
         {
             if (actionPool.Count > 0)
             {
@@ -236,7 +259,18 @@ namespace RPG.BPA
         public void EndTurn()
         {
             curTurn++;
-            if (curTurn >= AllActors.Count) curTurn = 0;
+            if (curTurn >= AllActors.Count)
+            {
+                if (decideActionsFirst)
+                {
+                    //require all player input again. start of a new battle phase!
+                    //if you want to track battle phases, do it here!
+                    FillMenuInputQueue();
+                }
+
+                curTurn = 0;
+            }
+
             actorTurnLimitOnce = false;
         }
         public void ConsumeAction()
@@ -251,7 +285,7 @@ namespace RPG.BPA
             if(Test1)
             {
                 Test1 = false;
-                CreatAction("Test #1:" + curTurn, 1f, null,null);
+                CreateAction("Test #1:" + curTurn, 1f, null,null);
             }
             if(Test2)
             {
@@ -289,7 +323,7 @@ namespace RPG.BPA
             }
             if(heroPartyDead)
             {
-                CreatAction(battleMessage_csv.GetCSVData("EnemyPartyWins"), 0.5f, null, () => EndBattle());
+                CreateAction(battleMessage_csv.GetCSVData("EnemyPartyWins"), 0.5f, null, () => EndBattle());
                 //Defeat!
                 EndBattle();
                 return;
@@ -305,7 +339,7 @@ namespace RPG.BPA
             }
             if(enemyPartyDead)
             {
-                CreatAction(battleMessage_csv.GetCSVData("HeroPartyWins"),0.5f,null, ()=>EndBattle());
+                CreateAction(battleMessage_csv.GetCSVData("HeroPartyWins"),0.5f,null, ()=>EndBattle());
                 
                 //Victory!
                 return;
@@ -328,18 +362,72 @@ namespace RPG.BPA
         //create a new action that displays txt to the player
         public void WriteToPrompt(string input)
         {
-            CreatAction(input, 1f, null,null);
+            CreateAction(input, 1f, null,null);
         }
         bool actorTurnLimitOnce=false;
+
+
+       // int limitOnceMenuInputCheck = -1;
+        public int debug_MENU_SIZE;
+        bool limitOncePerMenu = false;
+        bool HasMenusThatNeedInput()
+        {
+          
+            //GET ALL INPUT AT ONCE!
+            if (menusInputQueueList.Count > 0)
+            {
+               if(limitOncePerMenu==false)
+                {
+                    if(menusInputQueueList[0]==null)
+                    {
+                        //probably uses AI, remove it and move on...
+                        menusInputQueueList.Remove(menusInputQueueList[0]);
+                        return false;  
+                    }
+                    limitOncePerMenu = true;
+                    menusInputQueueList[0].SetMenuIsActive(true);
+                }
+                if(menusInputQueueList[0].IsReadyToUseSkill())
+                {
+                    //successful input given, remove it from the list and get ready for the next one
+                    menusInputQueueList.Remove(menusInputQueueList[0]);
+                    limitOncePerMenu = false;
+                    return false;
+                }
+
+                return false;
+            }
+            //only return true when you have no input left to give
+            return true;
+        }
         void TurnBasedUpdate()
         {
 
-           /*
-            * So what I want to do is do all of the player input first, and then go through all of the players turns, 
-            * and then when you loop back to the begnning, get all input again.
-            * 
-            * 
-            */
+
+            //---------------------------------------------------------------------------------------------------------
+            //MENU INPUT
+            //. . . . . 
+            if(decideActionsFirst)
+            {
+                if (HasMenusThatNeedInput() == false)
+                {
+                    //returns true if no input left to give
+                  
+                    return;
+                }
+            }
+
+            //---------------------------------------------------------------------------------------------------------
+            /*
+             * So what I want to do is do all of the player input first, and then go through all of the players turns, 
+             * and then when you loop back to the begnning, get all input again.
+             * 
+             * maybe use a state machine for the turn based version.
+             * 
+             * or if it's in turn based mode just return until you have no more characters to give input to.
+             * in atb mode, just keep the battle update running and have the menu pop open whenever the atb is ready.
+             * 
+             */
             //TODO: Define a battle update loop here.
             if (actionQueue.Count > 0)
             {
@@ -495,7 +583,10 @@ namespace RPG.BPA
         {
             myMenuInterface = menu;
         }
-
+        public RPGMenuCommunication GetMenuInterface()
+        {
+            return myMenuInterface;
+        }
         public int DEBUG_INFO_HITS_TAKEN=0;
         public int Damage(int damageAmount)
         {
@@ -517,7 +608,7 @@ namespace RPG.BPA
             if(stats.hp<=0)
             {
                 string deathMsg =String.Format (RpgBattleSystemMain.instance.battleMessage_csv.GetCSVData("Defeated"),displayName);
-                RpgBattleSystemMain.instance.CreatAction(deathMsg);
+                RpgBattleSystemMain.instance.CreateAction(deathMsg);
                 RpgBattleSystemMain.instance.CheckForVictoryOrDefeat();
             }
             //TODO: Play death animation here!
@@ -547,7 +638,7 @@ namespace RPG.BPA
                 ai.DoAction(this);
                 return;
             }
-            else
+            else if(RpgBattleSystemMain.instance.decideActionsFirst==false) //only do if you don't decide all actions at once
             {
                 //only do this if you aren't confused, otherwise use AI, but set targets to hero party...
                 //or maybe chose a random skill, chose a random target, and use it! even allow item consumption maybe.
@@ -1034,7 +1125,7 @@ namespace RPG.BPA
             {
                 if (target.stats.hp <= 0) continue;//skip dead actors!
                 msg = String.Format(getMessage, myActor.displayName, target.displayName,skillName);
-                RpgBattleSystemMain.instance.CreatAction(msg, 1f, null, null);
+                RpgBattleSystemMain.instance.CreateAction(msg, 1f, null, null);
 
                 int attackPower = (myActor.stats.GetAttack() + attackOrWisdomStat) * multiplier;
                 //Critical attack!
@@ -1063,7 +1154,7 @@ namespace RPG.BPA
 
                 }
               
-                RpgBattleSystemMain.instance.CreatAction(msg, 1f, null, null);
+                RpgBattleSystemMain.instance.CreateAction(msg, 1f, null, null);
                 //Deal with death here!
                 //I'm only doing this in the skill code so the message is in the correct order.
                 target.CheckIfDeadAuto();
@@ -1071,7 +1162,7 @@ namespace RPG.BPA
             }
             //----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----
             //END THE TURN:
-            RpgBattleSystemMain.instance.CreatAction(string.Empty, 0f, null, endTurn);
+            RpgBattleSystemMain.instance.CreateAction(string.Empty, 0f, null, endTurn);
             //END THE TURN ^
         }
         public void SkillsFromGroup(string group)

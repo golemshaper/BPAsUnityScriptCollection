@@ -1920,6 +1920,7 @@ MonoBehaviour:
   skillsParserRealSkills:
     skills: []
   battleType: 0
+  decideActionsFirst: 1
   curTurn: 0
   heroParty:
   - name: Hero
