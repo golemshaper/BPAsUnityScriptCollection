@@ -438,15 +438,9 @@ namespace RPG.BPA
         {
             menusInputQueueList[0].Terminate(); // erease input and call terminate event to talk to graphical menu representation.
           
-            /*  List<RPGMenuCommunication> nList = new List<RPGMenuCommunication>();
-              nList.Add(menuHistoryQueue[menuHistoryQueue.Count-1]);
-              menuHistoryQueue.Remove(menuHistoryQueue[0]);
-              nList.AddRange(menusInputQueueList);
-              menusInputQueueList = nList;*/
             menusInputQueueList.Insert(0,menuHistoryQueue[menuHistoryQueue.Count - 1]);
             menuHistoryQueue[menuHistoryQueue.Count - 1].Terminate();
             menuHistoryQueue.Remove(menuHistoryQueue[menuHistoryQueue.Count - 1]);
-            Debug.Log("fuck, go back to"+ menusInputQueueList[0].GetMyActor().name);
 
         }
         private bool requestGoBackToPreviousMenu = false;
