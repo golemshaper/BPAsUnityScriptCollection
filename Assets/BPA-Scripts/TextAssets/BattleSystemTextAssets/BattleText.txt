@@ -1,6 +1,7 @@
 Group,English
 EnemyAppears,{0} draws near!
-AttacksMsg,{0} attacks {1} with {2}!
+AttacksMsg,{0} attacks!
+AttacksMsgDetailed,{0} attacks {1} with {2}!
 DamageMsg,{0} takes {1} DMG!
 CriticalDamageMsg,{0} takes {1} Critical DMG!
 Defeated,{0} has fallen!
@@ -10,3 +11,4 @@ EnemyPartyWins,Game Over
 DoesNothing,{0} is afraid to move!
 SkillsMenuHeader,{0}->{1}
 Target,Target
+HP,HP:

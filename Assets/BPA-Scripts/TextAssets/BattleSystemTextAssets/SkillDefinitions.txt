@@ -25,8 +25,8 @@
 [Spiral Thrust]
 	type=Attack
 	affinity=None
-	str=1
-	multiplier=1
+	str=8
+	multiplier=6
 	animation=attack
 	battleStrings=AttacksMsg
 	battleStringsCritical=AttacksMsg

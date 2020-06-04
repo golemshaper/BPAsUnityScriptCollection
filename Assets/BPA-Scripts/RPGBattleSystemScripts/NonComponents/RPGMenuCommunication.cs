@@ -75,7 +75,7 @@ namespace RPG.BPA.MENU
         {
             myActor = RpgBattleSystemMain.instance.heroParty[index];
             myActor.SetMenuController(this);
-            enemyTargets = RpgBattleSystemMain.instance.enemyParty;
+            enemyTargets = CloneList(RpgBattleSystemMain.instance.enemyParty);
             CreateAttackTargetsList(false);
             //skills you can perform
             availibleActions = myActor.skills;
@@ -83,6 +83,15 @@ namespace RPG.BPA.MENU
             {
                 availibleActions.Add(new AttackActionStd("Debug Attack"));
             }
+        }
+        public List<RPGActor> CloneList(List<RPGActor> listToClone)
+        {
+            List<RPGActor> nList = new List<RPGActor>();
+            foreach(var e in listToClone)
+            {
+                nList.Add(e);
+            }
+            return nList;
         }
         public void CreateAttackTargetsList(bool includeDeadActors)
         {
@@ -103,7 +112,7 @@ namespace RPG.BPA.MENU
             //prune dead actors...
             foreach(RPGActor a in availibleTargets.ToArray())
             {
-                if(a.stats.hp <= 0)
+                if(a.IsDeadOrWillBeDead())
                 {
                     availibleTargets.Remove(a);
                 }

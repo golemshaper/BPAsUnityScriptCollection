@@ -91,7 +91,7 @@ namespace RPG.BPA
         public List<RPGActor> heroParty = new List<RPGActor>();
         public List<RPGActor> enemyParty = new List<RPGActor>();
         public List<RPGActor> AllActors = new List<RPGActor>();
-
+        public float battleSpeed = 1f;
 
 
         public List<string> battleLog= new List<string>();
@@ -314,6 +314,7 @@ namespace RPG.BPA
         }
         public void CheckForVictoryOrDefeat()
         {
+            Debug.Log("Checking victory...");
             bool heroPartyDead = true;
             foreach(RPGActor a in heroParty)
             {
@@ -455,8 +456,8 @@ namespace RPG.BPA
 
             //---------------------------------------------------------------------------------------------------------
             //MENU INPUT
-            //. . . . . 
-            if(decideActionsFirst)
+            //. . . . . finish action queue before starting this phase
+            if(decideActionsFirst && actionQueue.Count==0)
             {
                 if (HasMenusThatNeedInputPlusUpdate() == false)
                 {
@@ -555,7 +556,7 @@ namespace RPG.BPA
             }
             //by default when they delay ends, the turn is over.
             //this could be replaced with when an animation ends, or delay could just be set to the time it takes for an animation to finish.
-            delay -= Time.deltaTime;
+            delay -= RpgBattleSystemMain.instance.battleSpeed *Time.deltaTime;
             if(delay<=0)
             {
                 ConsumeMessage();
@@ -602,6 +603,7 @@ namespace RPG.BPA
         public bool useAI = false;
 
         public List<Skill> skills= new List<Skill>();
+        public System.Action onHpChangedEvents;
         public void LoadSkills(IniGeneralUse iniStatsHolder)
         {
             //TODO clear skill list for now. in the future try not to remove items that are already created, and instead only add new names to the list to avoid garbage collection.
@@ -636,25 +638,48 @@ namespace RPG.BPA
         {
             return myMenuInterface;
         }
-        public int DEBUG_INFO_HITS_TAKEN=0;
-        public int Damage(int damageAmount)
+        /// <summary>
+        /// This will not damage the actor! it will only pre-calculate the damage. apply the damage when drawing the message about taking the damage!
+        /// </summary>
+        /// <param name="damageAmount"></param>
+        /// <returns></returns>
+        public int DamageCalculation(int damageAmount)
         {
             int totalDamage = damageAmount -= (stats.GetDefence()/2);
-            stats.hp -= totalDamage;
-            if(totalDamage<=0)
+            if (totalDamage<=0)
             {
                 totalDamage = GameMath.GetRandomInt(0, 1);
             }
-            if (stats.hp <= 0) stats.hp = 0;
-            DEBUG_INFO_HITS_TAKEN++;
+            preCalculateDamage = totalDamage;
+            
             return totalDamage;
+        }
+        int preCalculateDamage = 0;
+        /// <summary>
+        /// Make damage real
+        /// </summary>
+        public void ApplyDamage()
+        {
+            stats.hp -= preCalculateDamage;
+            if (stats.hp <= 0) stats.hp = 0;
+            preCalculateDamage = 0;//set to zero for saftey
+            if (onHpChangedEvents != null)
+            {
+                onHpChangedEvents();
+            }
+            CheckIfDeadAuto();
+        }
+        public bool IsDeadOrWillBeDead()
+        {
+            if (stats.hp-preCalculateDamage<=0)return true;
+            return false;
         }
         /// <summary>
         /// Call this after damaging. The attack skill is responsible for this just so that messages are in the correct order and not tied to a weird timing mechanism.
         /// </summary>
         public void CheckIfDeadAuto()
         {
-            if(stats.hp<=0)
+            if(IsDeadOrWillBeDead())
             {
                 string deathMsg =String.Format (RpgBattleSystemMain.instance.battleMessage_csv.GetCSVData("Defeated"),displayName);
                 RpgBattleSystemMain.instance.CreateAction(deathMsg);
@@ -922,14 +947,9 @@ namespace RPG.BPA
 
         public void LoadStatsFromSaveFile(IniGeneralUse fallbackIni)
         {
-
-            //INITIALIZE HITS TAKEN:
-            DEBUG_INFO_HITS_TAKEN = 0;
-
             //TODO: Consider wrapping the party stats group with a prefix for saving and loading...
             //Example:
             //[Party.Hero] instead of [Hero]
-
 
 
             //unlike the enemy stats, this uses the main save file.
@@ -1034,7 +1054,7 @@ namespace RPG.BPA
         private List<RPGActor> targets= new List<RPGActor>();
         [NonSerialized]
         private Skill attack = new AttackActionStd();
-        
+
         public void SetTargets(List<RPGActor> nTargets)
         {
             targets=nTargets;
@@ -1108,6 +1128,7 @@ namespace RPG.BPA
         public Action DoOnStartOfAction;
         public Action DoEndOfAction;
         public bool isPhysicalAttack = true;
+        public bool useVerboseMessage = false;
         public AttackActionStd()
         {
 
@@ -1158,7 +1179,8 @@ namespace RPG.BPA
             if(DoOnStartOfAction!=null)DoOnStartOfAction();
             //STRINGS:
             //{hero} attacks! message
-            string getMessage = RpgBattleSystemMain.instance.battleMessage_csv.GetCSVData("AttacksMsg");
+            string attacksMessageLight = RpgBattleSystemMain.instance.battleMessage_csv.GetCSVData("AttacksMsg");
+            string attacksMessageVerbose = RpgBattleSystemMain.instance.battleMessage_csv.GetCSVData("AttacksMsgDetailed");
             string msg = string.Empty;
             //{Slime} takes, {25} DMG!
             string normalHit = RpgBattleSystemMain.instance.battleMessage_csv.GetCSVData("DamageMsg");
@@ -1167,14 +1189,33 @@ namespace RPG.BPA
             //Setup for end of turn:
             Action endTurn = () => RpgBattleSystemMain.instance.EndTurn();
             if(DoEndOfAction!=null) endTurn += DoEndOfAction; //do end turn and any animation cleanup or anything like that here.
-
+            
             //----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----
-           
+       
+            bool limitFirstMessageUse = false;
             foreach (RPGActor target in targets)
             {
-                if (target.stats.hp <= 0) continue;//skip dead actors!
-                msg = String.Format(getMessage, myActor.displayName, target.displayName,skillName);
-                RpgBattleSystemMain.instance.CreateAction(msg, 1f, null, null);
+                //_______________________________________________________________________________________________
+
+                if (target.IsDeadOrWillBeDead()) continue;//skip dead actors!
+                //_______________________________________________________________________________________________
+                if(useVerboseMessage)
+                {
+                    msg = String.Format(attacksMessageVerbose, myActor.displayName, target.displayName,skillName);
+                    RpgBattleSystemMain.instance.CreateAction(msg, 1f, null, null);
+                }
+                else
+                {
+                //alternativly, just display the skill name
+                    if (limitFirstMessageUse == false)
+                    {
+                        msg = String.Format(attacksMessageLight, myActor.displayName);
+                        RpgBattleSystemMain.instance.CreateAction(msg, 1f, null, null);
+                        limitFirstMessageUse = true;
+                    }
+                }
+                //_______________________________________________________________________________________________
+
 
                 int attackPower = (myActor.stats.GetAttack() + attackOrWisdomStat) * multiplier;
                 //Critical attack!
@@ -1190,7 +1231,7 @@ namespace RPG.BPA
                 }
                 
                 //TODO: Calculate criticals here! if critical, use a crit message instead!
-                int damageResult = target.Damage(attackPower);
+                int damageResult = target.DamageCalculation(attackPower);
 
                 // Calc attack power and damage here. if you want shields to give a chance of deflecting, put that here!
                 if (useCritical)
@@ -1202,11 +1243,11 @@ namespace RPG.BPA
                     msg = String.Format(normalHit, target.displayName, damageResult.ToString());
 
                 }
-              
-                RpgBattleSystemMain.instance.CreateAction(msg, 1f, null, null);
+                //send message, and apply damage!
+                RpgBattleSystemMain.instance.CreateAction(msg, 1f, null, ()=>target.ApplyDamage());
                 //Deal with death here!
                 //I'm only doing this in the skill code so the message is in the correct order.
-                target.CheckIfDeadAuto();
+                
                 //
             }
             //----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----
