@@ -16,6 +16,7 @@ public class RpgBattleStatDisplay : MonoBehaviour
     public bool useIndexToConnectActor;
     public TextMeshProUGUI nameDisplay;
     public RollingNumberDisplay rollingNumberDisplay;
+    public HealthBar barDisplay;
     RPGActor myActor;
     RpgBattleSystemMain rpg;
 
@@ -46,13 +47,24 @@ public class RpgBattleStatDisplay : MonoBehaviour
         myActor = rpg.heroParty[index];
         myActor.onHpChangedEvents += HpChanged;
         nameDisplay.text = myActor.displayName;
+
         //setup rolling number effect:
+        ConfigureRollingNumber();
+        ConfigureLifeBar();
+    }
+    void ConfigureLifeBar()
+    {
+        if (barDisplay == null) return;
+        barDisplay.SetMaxValue(myActor.stats.GetMaxHP());
+        barDisplay.SetValue(myActor.stats.hp,false);
+    }
+    void ConfigureRollingNumber()
+    {
+        if (rollingNumberDisplay == null) return;
         rollingNumberDisplay.SetPreText(rpg.battleMessage_csv.GetCSVData("HP"));
-        rollingNumberDisplay.SetPostText("/"+myActor.stats.GetMaxHP().ToString());
-
-        rollingNumberDisplay.SetValue(myActor.stats.hp,false);
+        rollingNumberDisplay.SetPostText("/" + myActor.stats.GetMaxHP().ToString());
+        rollingNumberDisplay.SetValue(myActor.stats.hp, false);
         //---
-
     }
     void ConnectToActor(string connectStr)
     {
@@ -63,10 +75,12 @@ public class RpgBattleStatDisplay : MonoBehaviour
         if(useATimeDelay)
         {
             ActionTimerManager.GetInstance().DoActionAfterTime(0.2f, () => rollingNumberDisplay.SetValue(myActor.stats.hp, true));
+            ActionTimerManager.GetInstance().DoActionAfterTime(0.2f, () => barDisplay.SetValue(myActor.stats.hp, true));
         }
         else
         {
-            rollingNumberDisplay.SetValue(myActor.stats.hp, true);
+            if(rollingNumberDisplay!=null) rollingNumberDisplay.SetValue(myActor.stats.hp, true);
+            if (barDisplay != null) barDisplay.SetValue(myActor.stats.hp,true);
         }
 
         //TODO: If hp bar, update here...

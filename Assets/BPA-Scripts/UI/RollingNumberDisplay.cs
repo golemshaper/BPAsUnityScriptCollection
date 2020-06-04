@@ -53,9 +53,12 @@ public class RollingNumberDisplay : MonoBehaviour
     }
     bool doUpdate = true;
 
+
     // Update is called once per frame
     void Update()
     {
+   
+
         if (doUpdate==false)
         {
             return;

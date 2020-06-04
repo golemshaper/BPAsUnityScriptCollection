@@ -175,6 +175,7 @@ namespace RPG.BPA
         }
         void FillMenuInputQueue()
         {
+
             menuHistoryQueue.Clear();
             menusInputQueueList.Clear();
             foreach (RPGActor a in heroParty)
@@ -191,7 +192,7 @@ namespace RPG.BPA
             battleLog.Clear();
             curTurn = 0;
             AllActors.Clear();
-        
+            
             //setup default AI targets...
             foreach (RPGActor a in heroParty)
             {
@@ -229,6 +230,7 @@ namespace RPG.BPA
         public void EndBattle()
         {
             //battle clean up here...
+            
             allowUpdate = false;
         }
         void SetUpBattleActors()
@@ -312,7 +314,7 @@ namespace RPG.BPA
                     break;
             }
         }
-        public void CheckForVictoryOrDefeat()
+        public bool CheckForVictoryOrDefeat()
         {
             Debug.Log("Checking victory...");
             bool heroPartyDead = true;
@@ -328,8 +330,7 @@ namespace RPG.BPA
             {
                 CreateAction(battleMessage_csv.GetCSVData("EnemyPartyWins"), 0.5f, null, () => EndBattle());
                 //Defeat!
-                EndBattle();
-                return;
+                return true;
             }
             bool enemyPartyDead = true;
             foreach (RPGActor a in enemyParty)
@@ -345,8 +346,9 @@ namespace RPG.BPA
                 CreateAction(battleMessage_csv.GetCSVData("HeroPartyWins"),0.5f,null, ()=>EndBattle());
                 
                 //Victory!
-                return;
+                return true;
             }
+            return false;
         }
         //write a message that the player can see. Either YIIK style (Do this by writing damage as an action node), or Breath of Fire IV style (The Default).
         private void SetDisplayString(string input)
@@ -463,7 +465,7 @@ namespace RPG.BPA
                 {
                     //returns true if no input left to give
                   
-                    return;
+                  return;
                 }
             }
 
@@ -697,7 +699,8 @@ namespace RPG.BPA
 
         public void StartOfTurn()
         {
-            if(stats.hp<=0)
+           
+            if (stats.hp<=0)
             {
                 RpgBattleSystemMain.instance.EndTurn();
                 return;
