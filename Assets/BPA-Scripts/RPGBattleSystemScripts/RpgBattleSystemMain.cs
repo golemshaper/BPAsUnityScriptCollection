@@ -614,11 +614,13 @@ namespace RPG.BPA
             skills.Clear();
             string skillsAsString = string.Empty;
             skillsAsString = IniGameMemory.instance.GetDataString(name,"skills",string.Empty);
-            if(skillsAsString==string.Empty)
+            
+            if(skillsAsString == string.Empty)
             {
+                Debug.Log("NO SKILLS!");
                 //default to a single attack if no skills found. change it to some other skill. make it unique so that you know it's not supposed to be used, but
                 //make it functional so that the game never breaks... (NOT DONE YET)
-                iniStatsHolder.GetDataString(name,"skills", "Hard Slash");
+                skillsAsString=iniStatsHolder.GetDataString(name,"skills", "Hard Slash");
             }
             string[] skillNamesList = skillsAsString.Split(",".ToCharArray(),StringSplitOptions.RemoveEmptyEntries);
 

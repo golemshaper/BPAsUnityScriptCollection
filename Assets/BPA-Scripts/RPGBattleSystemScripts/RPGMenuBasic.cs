@@ -21,6 +21,7 @@ public class RPGMenuBasic : MonoBehaviour
 
     public bool debugAwaitingInputMSG = true;
     [Header("Simple Menu interface")]
+    public float spacing = -75f;
     public SimpleMenu simpleMenuDisplay;
     public SimpleMenuSlot slotTemplate;
     public TextMeshProUGUI menuHeaderText;
@@ -275,7 +276,7 @@ public class RPGMenuBasic : MonoBehaviour
         simpleMenuDisplay.menuSlots.Clear();
 
         Vector3 firstSlotPos = slotTemplate.transform.position;
-        Vector3 offsetByAmount = new Vector3(0, -75f, 0f);
+        Vector3 offsetByAmount = new Vector3(0, spacing, 0f);
         slotTemplate.gameObject.SetActive(false); //MAKE SURE SLOT TEMPLATE IS NOT PART OF THE MENU SLOTS< OR THE INITIAL POSITION WILL JUMP!
         for (int i = 0; i < listToDraw.Count; i++)
         {
