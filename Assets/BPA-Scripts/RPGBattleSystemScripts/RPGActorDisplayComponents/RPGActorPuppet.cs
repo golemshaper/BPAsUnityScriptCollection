@@ -16,7 +16,7 @@ namespace RPG.BPA
         public Transform myTransform;
         public GameObject debugPullSword;
         Vector3 initialPosition=Vector3.zero; //override this at start of movement if you want it to be DQ XI style!
-        
+        public bool captueInitPosBeforeAtk;
         public enum State {idle,pullWeapon,attack,returnToIdle,die,dead,revive};
         AckkStateMachine sm = new AckkStateMachine();
         private void Update()
@@ -32,9 +32,17 @@ namespace RPG.BPA
             if (myTransform == null) myTransform = this.transform;
 
             sm.LinkOnEnterState(State.pullWeapon, () => debugPullSword.gameObject.SetActive(true));
-            sm.LinkStates(State.attack,()=>MoveToTargetUpdate(),()=> RpgBattleSystemMain.instance.SetBlockActionQueue(true));
+            sm.LinkStates(State.attack,()=>MoveToTargetUpdate(),()=> AttackStart());
             sm.LinkStates(State.returnToIdle,()=>MoveToStartingPositionUpdate());
-            sm.speed = 2f; //make speed faster!
+            sm.speed = 4f; //make speed faster!
+        }
+        public void AttackStart()
+        {
+            RpgBattleSystemMain.instance.SetBlockActionQueue(true);
+            if (captueInitPosBeforeAtk)
+            {
+                initialPosition = myTransform.position;
+            }
         }
         Vector3 targetPosition=Vector3.zero;
         private void Setup()
@@ -82,7 +90,7 @@ namespace RPG.BPA
                 RpgBattleSystemMain.instance.SetBlockActionQueue(false);
             }
 
-            myTransform.position = GameMath.Parabola(initialPosition, CloseInOnTarget(0.9f), 2f,progress);
+            myTransform.position = GameMath.Parabola(initialPosition, CloseInOnTarget(0.75f), 2f,progress);
 
             //pause a bit at the end before returning
             if (sm.TimeInState > 2f)

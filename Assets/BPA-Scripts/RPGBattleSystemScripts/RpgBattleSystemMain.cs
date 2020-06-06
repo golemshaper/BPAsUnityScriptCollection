@@ -63,6 +63,7 @@ namespace RPG.BPA
         public bool Test2;
         public int test2Data = 100;
         public bool RESET_BATTLE_TEST;
+        public static System.Random rand = new System.Random();
         [Header("Setup")]
         public StringWriter promptDisplay;
         public StringWriter previousPromptDisplay;
@@ -784,6 +785,11 @@ namespace RPG.BPA
             if (stats.hp-preCalculateDamage<=0)return true;
             return false;
         }
+        public bool IsDead()
+        {
+            if (stats.hp <= 0) return true;
+            return false;
+        }
         /// <summary>
         /// Call this after damaging. The attack skill is responsible for this just so that messages are in the correct order and not tied to a weird timing mechanism.
         /// </summary>
@@ -1183,7 +1189,9 @@ namespace RPG.BPA
             //maybe the ActionNode should just be able to hold a skill and a skill can be its own thing.
             //so for now I'll just simulate it and I'll probably make AttackActionStd NOT inherit ActionNode...
             attack.SetMyActor(myActor);
-            attack.SetTargets(targets);
+            int randTarget = RpgBattleSystemMain.rand.Next(0, targets.Count);
+            RPGActor selectedTarget = targets[randTarget];
+            attack.SetTargets(selectedTarget);
             attack.OnStartOfAction();
         }
    
@@ -1202,27 +1210,33 @@ namespace RPG.BPA
         public  List<RPGActor>targets;
         public Affinity affinity = new Affinity();
         //SKILL not sure if SKILL will have any base...
-        public virtual void SetMyActor(RPGActor nActor)
+        public void SetMyActor(RPGActor nActor)
         {
             myActor = nActor;
         }
-        public virtual void SetTargets(List<RPGActor>nTargets)
+        public void SetTargets(List<RPGActor>nTargets)
         {
+            targets = nTargets;
+        }
+        public void SetTargets(RPGActor singleTarget)
+        {
+            var nTargets = new List<RPGActor>();
+            nTargets.Add(singleTarget);
             targets = nTargets;
         }
         public virtual void OnStartOfAction()
         {
             
         }
-        public void CaclulateTargetLocation()
+        public void CalculateTargetLocation()
         {
-          
             int numberOfTransforms = 0;
             Vector3 averagePosition = Vector3.zero;
             bool hasFirstEntry = false;
             for (int i = 0; i < targets.Count; i++)
             {
                 RPGActor targetActor = (RPGActor)targets[i];
+                if(targetActor.IsDead())continue;
                 if (targetActor.myTransform!=null)
                 {
                     if (!hasFirstEntry)
@@ -1335,7 +1349,7 @@ namespace RPG.BPA
             if(DoEndOfAction!=null) endTurn += DoEndOfAction; //do end turn and any animation cleanup or anything like that here.
 
             //get location of the enemy and remember it for animation purposes...
-            CaclulateTargetLocation();
+            CalculateTargetLocation();
             //----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----
 
             bool limitFirstMessageUse = false;
