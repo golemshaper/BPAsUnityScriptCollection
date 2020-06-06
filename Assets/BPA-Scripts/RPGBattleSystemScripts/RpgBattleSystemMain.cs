@@ -128,6 +128,22 @@ namespace RPG.BPA
             }
             return -1;
         }
+        /// <summary>
+        /// WARNING: This will only return the first instance! This isn't really useful except for some work in progress type code.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public int GetEnemyIndex(string name)
+        {
+            for (int i = 0; i < heroParty.Count; i++)
+            {
+                if (enemyParty[i].name.ToLower() == name.ToLower())
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
         void MockData()
         {
             //initialize default hero party. will be overriden by the party menu probably.
@@ -636,12 +652,13 @@ namespace RPG.BPA
 
         public List<Skill> skills= new List<Skill>();
         public System.Action onHpChangedEvents;
-
+     
         //. . . . . . . . . . . . . . . . . . . . . . . 
         //ANIMATION HOOKS
         public Action animEventReadyWeapon;
         public Action animEventAttack;
         public Action animEventMagicAttack;
+        public Transform myTransform;
         public void AnimationReadyWeapon()
         {
             //example: pull out sword
