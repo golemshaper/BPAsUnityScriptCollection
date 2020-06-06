@@ -15,30 +15,64 @@ namespace RPG.BPA
 
         public Transform myTransform;
         public GameObject debugPullSword;
+        Vector3 initialPosition=Vector3.zero; //override this at start of movement if you want it to be DQ XI style!
+
+        public enum State {idle,pullWeapon,attack,die,dead,revive};
+        AckkStateMachine sm = new AckkStateMachine();
+        private void Update()
+        {
+            sm.UpdateTick();
+        }
+
+        //---------------------------SETUP:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         public void Awake()
         {
             //SEE FUNCTION FOR A WARNING ABOUT THE AUTO BINDER!!
             AutoBinders();
             if (myTransform == null) myTransform = this.transform;
-            
+
+            sm.LinkOnEnterState(State.pullWeapon, () => debugPullSword.gameObject.SetActive(true));
+            sm.LinkStates(State.attack,()=>MoveToTargetUpdate());
         }
         private void Setup()
         {
             //called after binding the actor
             watchActor.animEventReadyWeapon += PullWeaponAnim;
+            watchActor.animEventAttack += AttackAnim;
         }
         void UnSetup()
         {
             watchActor.animEventReadyWeapon -= PullWeaponAnim;
+            watchActor.animEventAttack -= AttackAnim;
 
         }
         private void OnDestroy()
         {
             UnSetup();
         }
+        void MoveToTargetUpdate()
+        {
+            //TODO: Add an option to pause the main battle loops message proccessing until an animation has completed!
+            myTransform.position = GameMath.Parabola(initialPosition, watchActor.targetLocation, 2f, sm.TimeInState );
+
+            if (sm.TimeInState > 1f)
+            {
+                sm.TimeInState = 1f;
+                //snap back to position for now...\//when you have an option to halt the message queue until the animation has finished, you can do whatever you would like
+                //and take however long you want
+                //but until then I need the player back at the start quickly before then enemy attacks...
+                myTransform.position = initialPosition;
+                sm.SetState(State.idle);
+            }
+
+        }
+        void AttackAnim()
+        {
+             sm.SetState(State.attack);
+        }
         void PullWeaponAnim()
         {
-            debugPullSword.gameObject.SetActive(true);
+            sm.SetState(State.pullWeapon);
         }
         void AutoBinders()
         {
@@ -82,6 +116,7 @@ namespace RPG.BPA
             watchActor = bindToActor;
             //lock transform to actor so you know the target location on screen!
             watchActor.myTransform = myTransform;
+            initialPosition = myTransform.position;
             Setup();
         }
         /*

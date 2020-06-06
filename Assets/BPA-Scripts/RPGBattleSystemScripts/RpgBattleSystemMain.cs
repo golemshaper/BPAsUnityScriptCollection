@@ -652,13 +652,17 @@ namespace RPG.BPA
 
         public List<Skill> skills= new List<Skill>();
         public System.Action onHpChangedEvents;
-     
+
+        //---POSITIONAL INFO
+        public Transform myTransform;
+        public Vector3 targetLocation = Vector3.zero;
+        //---
         //. . . . . . . . . . . . . . . . . . . . . . . 
         //ANIMATION HOOKS
         public Action animEventReadyWeapon;
         public Action animEventAttack;
         public Action animEventMagicAttack;
-        public Transform myTransform;
+
         public void AnimationReadyWeapon()
         {
             //example: pull out sword
@@ -1187,6 +1191,29 @@ namespace RPG.BPA
         {
             
         }
+        public void CaclulateTargetLocation()
+        {
+            int numberOfTransforms = 0;
+            Vector3 averagePosition = Vector3.zero;
+            for (int i = 0; i < targets.Count; i++)
+            {
+                RPGActor actor = (RPGActor)targets[i];
+                if (actor.myTransform!=null)
+                {
+                    if (i == 0) averagePosition = actor.myTransform.position;
+                    averagePosition += actor.myTransform.position;
+                    numberOfTransforms++;
+                }
+            }
+            if(averagePosition==Vector3.zero)
+            {
+                //avoid NAN
+                averagePosition = myActor.myTransform.position;
+                return;
+            }
+            averagePosition = averagePosition / numberOfTransforms;
+            myActor.targetLocation = averagePosition;
+        }
         string LocalizeSkillName(string stringToLocalize)
         {
             //if you want a list of skill names, and their equivilent in another language use the csv parser, and get the desired language and return results here.
@@ -1273,9 +1300,11 @@ namespace RPG.BPA
             //Setup for end of turn:
             Action endTurn = () => RpgBattleSystemMain.instance.EndTurn();
             if(DoEndOfAction!=null) endTurn += DoEndOfAction; //do end turn and any animation cleanup or anything like that here.
-            
+
+            //get location of the enemy and remember it for animation purposes...
+            CaclulateTargetLocation();
             //----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----
-            
+
             bool limitFirstMessageUse = false;
             foreach (RPGActor target in targets)
             {
@@ -1286,7 +1315,7 @@ namespace RPG.BPA
                 if(useVerboseMessage)
                 {
                     msg = String.Format(attacksMessageVerbose, myActor.displayName, target.displayName,skillName);
-                    RpgBattleSystemMain.instance.CreateAction(msg, 1f, null, null);
+                    RpgBattleSystemMain.instance.CreateAction(msg, 1f, null, () => myActor.AnimationAttack());
                     myActor.AnimationReadyWeapon();
                 }
                 else
@@ -1295,7 +1324,7 @@ namespace RPG.BPA
                     if (limitFirstMessageUse == false)
                     {
                         msg = String.Format(attacksMessageLight, myActor.displayName);
-                        RpgBattleSystemMain.instance.CreateAction(msg, 1f, null, null);
+                        RpgBattleSystemMain.instance.CreateAction(msg, 1f, null, ()=>myActor.AnimationAttack());
                         myActor.AnimationReadyWeapon();
                         limitFirstMessageUse = true;
                     }
