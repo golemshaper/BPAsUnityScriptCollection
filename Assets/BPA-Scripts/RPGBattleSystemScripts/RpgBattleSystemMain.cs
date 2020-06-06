@@ -186,6 +186,35 @@ namespace RPG.BPA
           
             Debug.Log("Full up menu");
         }
+
+        public void AppendAlphabetToName(string originalName)
+        {
+            //sorry about this maddness
+            string[] modifier = "A,B,C,D,E,F,G,h,I,J,K,L,M,N,O,P,Q".Split(",".ToCharArray());
+            int count = 0;
+            int rememberFirstInstance = -1;
+            bool pleaseModifyOriginal = false;
+            for (int i = 0; i < enemyParty.Count; i++)
+            {
+                RPGActor a = enemyParty[i];
+                if (a.name != originalName) continue;
+                if(count>0)
+                {
+                    a.alphabetPlacementAppend = " " + modifier[count];
+                    pleaseModifyOriginal = true;
+                }
+                else
+                {
+                    rememberFirstInstance = i;
+                }
+
+                count++;
+            }
+            if(pleaseModifyOriginal)
+            {
+                enemyParty[rememberFirstInstance].alphabetPlacementAppend = " " + modifier[0];
+            }
+        }
         public void StartBattle()
         {
             //clear last battle log.
@@ -202,6 +231,7 @@ namespace RPG.BPA
             foreach (RPGActor a in enemyParty)
             {
                 a.ai.SetTargets(heroParty);
+                AppendAlphabetToName(a.name);
                 a.LoadDiplayName();
                 WriteToPrompt(String.Format(battleMessage_csv.GetCSVData("EnemyAppears"), a.displayName));
             }
@@ -606,6 +636,38 @@ namespace RPG.BPA
 
         public List<Skill> skills= new List<Skill>();
         public System.Action onHpChangedEvents;
+
+        //. . . . . . . . . . . . . . . . . . . . . . . 
+        //ANIMATION HOOKS
+        public Action animEventReadyWeapon;
+        public Action animEventAttack;
+        public Action animEventMagicAttack;
+        public void AnimationReadyWeapon()
+        {
+            //example: pull out sword
+            if (animEventReadyWeapon != null) animEventReadyWeapon();
+        }
+        public void AnimationAttack()
+        {
+            //example:  move to target and attack!
+            //maybe each skill should send info to the actor so the animation manager can pick an animation and move to targets... no idea for now.
+            //this function and the magic one may not be needed..
+            if (animEventAttack != null) animEventAttack();
+        }
+        public void AnimationMagicAttack()
+        {
+            //example:  move to target and cast spell!
+            if (animEventMagicAttack != null) animEventMagicAttack();
+        }
+        public void AnimationUnbindAll()
+        {
+            animEventReadyWeapon = null;
+            animEventAttack = null;
+            animEventMagicAttack= null;
+        }
+        //. . . . . . . . . . . . . . . . . . . . . . . 
+
+
         public void LoadSkills(IniGeneralUse iniStatsHolder)
         {
             //TODO clear skill list for now. in the future try not to remove items that are already created, and instead only add new names to the list to avoid garbage collection.
@@ -617,7 +679,7 @@ namespace RPG.BPA
             
             if(skillsAsString == string.Empty)
             {
-                Debug.Log("NO SKILLS!");
+             
                 //default to a single attack if no skills found. change it to some other skill. make it unique so that you know it's not supposed to be used, but
                 //make it functional so that the game never breaks... (NOT DONE YET)
                 skillsAsString=iniStatsHolder.GetDataString(name,"skills", "Hard Slash");
@@ -695,10 +757,10 @@ namespace RPG.BPA
         }
         public void LoadDiplayName()
         {
-            //get localized name!
-            displayName = name;
+            //TODO get localized name!
+            displayName = (name)+alphabetPlacementAppend;
         }
-
+       
         public void StartOfTurn()
         {
            
@@ -1196,7 +1258,7 @@ namespace RPG.BPA
             if(DoEndOfAction!=null) endTurn += DoEndOfAction; //do end turn and any animation cleanup or anything like that here.
             
             //----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----//----
-       
+            
             bool limitFirstMessageUse = false;
             foreach (RPGActor target in targets)
             {
@@ -1208,14 +1270,16 @@ namespace RPG.BPA
                 {
                     msg = String.Format(attacksMessageVerbose, myActor.displayName, target.displayName,skillName);
                     RpgBattleSystemMain.instance.CreateAction(msg, 1f, null, null);
+                    myActor.AnimationReadyWeapon();
                 }
                 else
                 {
-                //alternativly, just display the skill name
+                    //alternativly or additionally, just display the skill name (not how it works as of now 06/05/20)
                     if (limitFirstMessageUse == false)
                     {
                         msg = String.Format(attacksMessageLight, myActor.displayName);
                         RpgBattleSystemMain.instance.CreateAction(msg, 1f, null, null);
+                        myActor.AnimationReadyWeapon();
                         limitFirstMessageUse = true;
                     }
                 }
