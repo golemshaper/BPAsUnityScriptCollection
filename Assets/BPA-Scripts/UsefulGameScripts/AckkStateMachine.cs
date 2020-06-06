@@ -11,13 +11,14 @@ public class AckkStateMachine
     public Dictionary<int, Action> onEnterState = new Dictionary<int, Action>();
     public Dictionary<int, Action> onExitState = new Dictionary<int, Action>();
     public float TimeInState = 0f;
+    public float speed = 1f;
     //Call me to make the machine run!
     public void UpdateTick()
     {
         Action result = null;
         stateDictionary.TryGetValue(currentState, out result);
         if (result != null) result();
-        TimeInState += Time.deltaTime;
+        TimeInState += speed*Time.deltaTime;
     }
     public void LinkStates(int state, Action looping)
     {

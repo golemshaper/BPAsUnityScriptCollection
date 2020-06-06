@@ -100,7 +100,15 @@ namespace RPG.BPA
         public List<ActionNode> actionQueue = new List<ActionNode>();
         //maybe re-use actions so you don't need to use the New keyword!
         public List<ActionNode> actionPool = new List<ActionNode>();
-
+        bool blockActionQueue = false;
+        /// <summary>
+        /// If true, the action queue halts. be sure to restore control to the action queue when done!
+        /// </summary>
+        /// <param name="blockingIsOn"></param>
+        public void SetBlockActionQueue(bool blockingIsOn)
+        {
+            blockActionQueue = blockingIsOn;
+        }
         private void Awake()
         {
             instance = this;
@@ -200,7 +208,6 @@ namespace RPG.BPA
                 menusInputQueueList.Add(a.GetMenuInterface());
             }
           
-            Debug.Log("Full up menu");
         }
 
         public void AppendAlphabetToName(string originalName)
@@ -325,6 +332,10 @@ namespace RPG.BPA
         }
         public void ConsumeAction()
         {
+            //remove actions
+            actionQueue[0].doAction = null;
+            actionQueue[0].doActionOnEnd = null;
+            //return to pool
             actionPool.Add(actionQueue[0]);
             actionQueue.Remove(actionQueue[0]);
         }
@@ -362,7 +373,6 @@ namespace RPG.BPA
         }
         public bool CheckForVictoryOrDefeat()
         {
-            Debug.Log("Checking victory...");
             bool heroPartyDead = true;
             foreach(RPGActor a in heroParty)
             {
@@ -526,6 +536,13 @@ namespace RPG.BPA
              * in atb mode, just keep the battle update running and have the menu pop open whenever the atb is ready.
              * 
              */
+            //++++++++++++++++++++++++++++++++++++++++++++++++++++
+            if (blockActionQueue)
+            {
+                //wait for animations or other effects to finish
+                return;
+            }
+            //++++++++++++++++++++++++++++++++++++++++++++++++++++
             //TODO: Define a battle update loop here.
             if (actionQueue.Count > 0)
             {
@@ -662,6 +679,7 @@ namespace RPG.BPA
         public Action animEventReadyWeapon;
         public Action animEventAttack;
         public Action animEventMagicAttack;
+        public Action animEventDeath;
 
         public void AnimationReadyWeapon()
         {
@@ -748,7 +766,12 @@ namespace RPG.BPA
         public void ApplyDamage()
         {
             stats.hp -= preCalculateDamage;
-            if (stats.hp <= 0) stats.hp = 0;
+            if (stats.hp <= 0)
+            {
+                stats.hp = 0;
+                if(animEventDeath!=null)animEventDeath();
+            }
+
             preCalculateDamage = 0;//set to zero for saftey
             if (onHpChangedEvents != null)
             {
@@ -1193,25 +1216,35 @@ namespace RPG.BPA
         }
         public void CaclulateTargetLocation()
         {
+          
             int numberOfTransforms = 0;
             Vector3 averagePosition = Vector3.zero;
+            bool hasFirstEntry = false;
             for (int i = 0; i < targets.Count; i++)
             {
-                RPGActor actor = (RPGActor)targets[i];
-                if (actor.myTransform!=null)
+                RPGActor targetActor = (RPGActor)targets[i];
+                if (targetActor.myTransform!=null)
                 {
-                    if (i == 0) averagePosition = actor.myTransform.position;
-                    averagePosition += actor.myTransform.position;
+                    if (!hasFirstEntry)
+                    {
+                        hasFirstEntry = true;
+                        //assign so you don't average along with zero vector!
+                        averagePosition = targetActor.myTransform.position;
+                        Debug.Log("hit frist run" + averagePosition);
+                    }
+                    else
+                    {
+                        //add to vector!
+                        averagePosition += targetActor.myTransform.position;
+                    }
                     numberOfTransforms++;
                 }
             }
-            if(averagePosition==Vector3.zero)
+           
+            if(numberOfTransforms>0)
             {
-                //avoid NAN
-                averagePosition = myActor.myTransform.position;
-                return;
+                averagePosition = averagePosition / numberOfTransforms;
             }
-            averagePosition = averagePosition / numberOfTransforms;
             myActor.targetLocation = averagePosition;
         }
         string LocalizeSkillName(string stringToLocalize)

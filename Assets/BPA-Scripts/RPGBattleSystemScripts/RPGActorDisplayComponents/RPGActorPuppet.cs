@@ -6,7 +6,7 @@ namespace RPG.BPA
 { 
     public class RPGActorPuppet : MonoBehaviour
     {
-        private RPGActor watchActor;
+        private RPGActor myActor;
         public string actorName;
         public int bindToActorID = 0;
         public bool autoBindByID;
@@ -16,8 +16,8 @@ namespace RPG.BPA
         public Transform myTransform;
         public GameObject debugPullSword;
         Vector3 initialPosition=Vector3.zero; //override this at start of movement if you want it to be DQ XI style!
-
-        public enum State {idle,pullWeapon,attack,die,dead,revive};
+        
+        public enum State {idle,pullWeapon,attack,returnToIdle,die,dead,revive};
         AckkStateMachine sm = new AckkStateMachine();
         private void Update()
         {
@@ -32,36 +32,85 @@ namespace RPG.BPA
             if (myTransform == null) myTransform = this.transform;
 
             sm.LinkOnEnterState(State.pullWeapon, () => debugPullSword.gameObject.SetActive(true));
-            sm.LinkStates(State.attack,()=>MoveToTargetUpdate());
+            sm.LinkStates(State.attack,()=>MoveToTargetUpdate(),()=> RpgBattleSystemMain.instance.SetBlockActionQueue(true));
+            sm.LinkStates(State.returnToIdle,()=>MoveToStartingPositionUpdate());
+            sm.speed = 2f; //make speed faster!
         }
+        Vector3 targetPosition=Vector3.zero;
         private void Setup()
         {
             //called after binding the actor
-            watchActor.animEventReadyWeapon += PullWeaponAnim;
-            watchActor.animEventAttack += AttackAnim;
+            myActor.animEventReadyWeapon += PullWeaponAnim;
+            myActor.animEventAttack += AttackAnim;
+            myActor.animEventDeath += DeathAnim;
+
         }
         void UnSetup()
         {
-            watchActor.animEventReadyWeapon -= PullWeaponAnim;
-            watchActor.animEventAttack -= AttackAnim;
+            myActor.animEventReadyWeapon -= PullWeaponAnim;
+            myActor.animEventAttack -= AttackAnim;
+            myActor.animEventDeath -= DeathAnim;
 
+        }
+        void DeathAnim()
+        {
+            this.gameObject.SetActive(false);
         }
         private void OnDestroy()
         {
             UnSetup();
         }
+        /// <summary>
+        ///TIP: 0 is initial position, 1 is target position. 0.9 is close but not quite on top of target...
+        /// </summary>
+        /// <param name="percentageOfLine"></param>
+        /// <returns></returns>
+        public Vector3 CloseInOnTarget(float percentageOfLine)
+        {
+            return Vector3.Lerp(initialPosition, myActor.targetLocation, percentageOfLine);
+        }
         void MoveToTargetUpdate()
         {
-            //TODO: Add an option to pause the main battle loops message proccessing until an animation has completed!
-            myTransform.position = GameMath.Parabola(initialPosition, watchActor.targetLocation, 2f, sm.TimeInState );
+            //NOTE: IT BLOCKS THE MESSAGE QUEUE UPON ENTERING THIS STATE.
 
+            //TODO: Add an option to pause the main battle loops message proccessing until an animation has completed!
+            float progress = sm.TimeInState;
+            if (progress > 1f)
+            {
+                progress = 1f; //clamp
+                //unblock queue when striking target
+                RpgBattleSystemMain.instance.SetBlockActionQueue(false);
+            }
+
+            myTransform.position = GameMath.Parabola(initialPosition, CloseInOnTarget(0.9f), 2f,progress);
+
+            //pause a bit at the end before returning
+            if (sm.TimeInState > 2f)
+            {
+                
+                sm.SetState(State.returnToIdle);
+            }
+
+        }
+        void MoveToStartingPositionUpdate()
+        {
+            //NOTE: IT BLOCKS THE MESSAGE QUEUE UPON ENTERING THIS STATE.
+
+            //TODO: Add an option to pause the main battle loops message proccessing until an animation has completed!
+            float progress = sm.TimeInState;
+            if (progress > 1f)
+            {
+                myTransform.position = initialPosition;
+                progress = 1f; //clamp
+            }
+            else
+            {
+                myTransform.position = GameMath.Parabola(CloseInOnTarget(0.9f), initialPosition, 2f, progress);
+            }
+            //pause a bit at the end before returning
             if (sm.TimeInState > 1f)
             {
-                sm.TimeInState = 1f;
-                //snap back to position for now...\//when you have an option to halt the message queue until the animation has finished, you can do whatever you would like
-                //and take however long you want
-                //but until then I need the player back at the start quickly before then enemy attacks...
-                myTransform.position = initialPosition;
+               //the queue is already unblocked
                 sm.SetState(State.idle);
             }
 
@@ -113,9 +162,9 @@ namespace RPG.BPA
         }
         public void BindToActor(RPGActor bindToActor)
         {
-            watchActor = bindToActor;
+            myActor = bindToActor;
             //lock transform to actor so you know the target location on screen!
-            watchActor.myTransform = myTransform;
+            myActor.myTransform = myTransform;
             initialPosition = myTransform.position;
             Setup();
         }
