@@ -63,10 +63,13 @@ public class ScreenplayVisualNovelReader : MonoBehaviour
     }
     void DisplayCurrent()
     {
+        //TODO: Set via Text Writer or similar system here...
 
+        SpecialCommandEval(sentenceGroups[group].sentences[line].specialCommands);
     }
-    void SentenceDataCheck(SpecialCommand spc)
+    void SpecialCommandEval(List<SpecialCommand> spc)
     {
-
+        //TODO: Deal with special commands. probably queue the results up for when the next button is pressed.
+        //special commands have things like GOTO and PROMPT
     }
 }
