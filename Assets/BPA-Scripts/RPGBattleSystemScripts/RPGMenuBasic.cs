@@ -34,11 +34,13 @@ public class RPGMenuBasic : MonoBehaviour
     int targetCursorMemory= 0;
     public bool GetConfirm()
     {
-        return PlayerInput.instance.GetFire2_A();
+        // return PlayerInput.instance.GetFire2_A();
+        return PlayerInput.instance.GetFire1_B();
     }
     public bool GetBack()
     {
-        return PlayerInput.instance.GetFire1_B();
+       // return PlayerInput.instance.GetFire1_B();
+        return PlayerInput.instance.GetFire2_A();
     }
     // Start is called before the first frame update
     void Start()
