@@ -325,8 +325,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f075a60e056a6842b19e8b959e60d44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lineCount: 304
+  lineCount: 12
   radius: 0.96
+  quadSpacing: 0.5
+  quadUnitSize: 0.4
 --- !u!4 &1565345712
 Transform:
   m_ObjectHideFlags: 0
