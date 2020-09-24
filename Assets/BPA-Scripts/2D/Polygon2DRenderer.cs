@@ -59,7 +59,7 @@ namespace Polygon2DGE
             // match our transform
             GL.MultMatrix(transform.localToWorldMatrix);
             GL.Begin(GL.QUADS);
-
+            
             for (int i = 0; i < 128; ++i)
             {
                 for (int j = 0; j < 128; ++j)
@@ -73,17 +73,18 @@ namespace Polygon2DGE
                     float Z = Mathf.Sin(j); //Wavy for fun!
 
                     //bottom left
-                    //GL.Color(Color.red);
+                    //GL.Color(Color.red * setColor);
                     GL.Vertex3(X * canvasScale, Y * canvasScale, Z);
                     //bottom right
-                    //GL.Color(Color.blue);
+                    GL.Color(Color.blue * setColor); //<-----COLOR FOR FUN!!
                     GL.Vertex3(quadUnitSize + X * canvasScale, Y * canvasScale, Z);
                     //upper right
-                    //GL.Color(Color.cyan);
+                    //GL.Color(Color.cyan * setColor);
+                    GL.Color(setColor);
                     GL.Vertex3(quadUnitSize + X * canvasScale, quadUnitSize + Y * canvasScale, Z);
 
                     //upper left
-                    //GL.Color(Color.green);
+                    //GL.Color(Color.green * setColor);
                     GL.Vertex3(0 + X * canvasScale, quadUnitSize + Y * canvasScale, Z);
 
                 }

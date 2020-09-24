@@ -31,7 +31,8 @@ namespace Polygon2DGE
         void PlayerLogic()
         {
             spriteList[HeroID].x += 24f * Time.deltaTime;
-            spriteList[HeroID].y = 32f +12f* Mathf.Sin(2*Time.time);
+            //                  initial,range,  speed
+            spriteList[HeroID].y = 64f + 8* Mathf.Sin(2*Time.time);
             animationsList[HeroAnimID].UpdateTick();
             spriteList[HeroID].SetNewTile(animationsList[HeroAnimID].GetTile());
         }
