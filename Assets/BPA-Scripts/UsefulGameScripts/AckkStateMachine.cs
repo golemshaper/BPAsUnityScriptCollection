@@ -5,8 +5,8 @@ using System;
 
 public class AckkStateMachine
 {
-    int currentState=-1;
-    int previousState=-2;
+    int currentState = -1;
+    int previousState = -2;
     public Dictionary<int, Action> stateDictionary = new Dictionary<int, Action>();
     public Dictionary<int, Action> onEnterState = new Dictionary<int, Action>();
     public Dictionary<int, Action> onExitState = new Dictionary<int, Action>();
@@ -18,7 +18,7 @@ public class AckkStateMachine
         Action result = null;
         stateDictionary.TryGetValue(currentState, out result);
         if (result != null) result();
-        TimeInState += speed*Time.deltaTime;
+        TimeInState += speed * Time.deltaTime;
     }
     public void LinkStates(int state, Action looping)
     {
@@ -36,9 +36,23 @@ public class AckkStateMachine
         onEnterState.Add(state, onEnter);
         onExitState.Add(state, onExit);
     }
-    public void LinkOnEnterState(int state,Action onEnter)
+    public void LinkOnEnterState(int state, Action onEnter)
     {
         onEnterState.Add(state, onEnter);
+    }
+    public void LinkOnEnterState(Enum State, Action onEnter)
+    {
+        int state = Convert.ToInt32(State);
+        onEnterState.Add(state, onEnter);
+    }
+    public void LinkOnExitState(int state, Action onExit)
+    {
+        onExitState.Add(state, onExit);
+    }
+    public void LinkOnExitState(Enum State, Action onExit)
+    {
+        int state = Convert.ToInt32(State);
+        onExitState.Add(state, onExit);
     }
     //--generic enum--
     public void LinkStates(Enum State, Action looping, Action onEnter, Action onExit)
@@ -56,11 +70,7 @@ public class AckkStateMachine
         int state = Convert.ToInt32(State);
         LinkStates(state, looping);
     }
-    public void LinkOnEnterState(Enum State, Action onEnter)
-    {
-        int state = Convert.ToInt32(State);
-        LinkOnEnterState(state, onEnter);
-    }
+
     /// <summary>
     /// Cast an Enum to an int to use it as the state.
     /// </summary>
@@ -84,6 +94,11 @@ public class AckkStateMachine
         onEnterState.TryGetValue(currentState, out enterStateAction);
         if (enterStateAction != null) enterStateAction();
     }
+    public void SetState (Enum nState,string log_message)
+    {
+        SetState(Convert.ToInt32(nState));
+        //Do nothing with message for now...
+    }
     public void SetState(Enum nState)
     {
         SetState(Convert.ToInt32(nState));
@@ -95,5 +110,12 @@ public class AckkStateMachine
     public int GetPreviousState()
     {
         return previousState;
+    }
+    /// <summary>
+    /// Warning do not use with without knowing what you are doing!
+    /// </summary>
+    public void ForceStateWithoutEnter(Enum nState)
+    {
+        currentState = Convert.ToInt32(nState);
     }
 }

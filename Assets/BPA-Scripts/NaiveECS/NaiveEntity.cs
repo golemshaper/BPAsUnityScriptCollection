@@ -6,6 +6,7 @@ namespace NaiveECS
     public class NaiveEntity : MonoBehaviour
     {
         public int id;
+        //NO! Bad:
         public Transform myTransform;
     }
 }
